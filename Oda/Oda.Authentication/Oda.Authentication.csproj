@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B85D2F15-8200-4E25-BDE7-9C38AC3E4E4F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Oda</RootNamespace>
+    <AssemblyName>Oda.Authentication</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Oda.Authentication.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activities" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="cs\BCrypt.cs" />
+    <Compile Include="cs\Session.cs" />
+    <Compile Include="cs\Authentication.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="cs\Account.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Oda.Core\Oda.Core.csproj">
+      <Project>{DD24614B-AE6F-4EB8-9D5D-437D096876B8}</Project>
+      <Name>Oda.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Oda.Sql\Oda.Sql.csproj">
+      <Project>{CA985C31-A351-4553-8787-A377929970F8}</Project>
+      <Name>Oda.Sql</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\CreateSessionTable.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\CreateUpdateSession.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\LogonSession.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\CreateUpdateContact.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\GetNonce.sql" />
+    <EmbeddedResource Include="Sql\ChangePassword.sql" />
+    <EmbeddedResource Include="Sql\ResetPassword.sql" />
+    <EmbeddedResource Include="Sql\CreateAccount.sql" />
+    <EmbeddedResource Include="Sql\LogoffSession.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\UpdateSessionProperties.sql" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
