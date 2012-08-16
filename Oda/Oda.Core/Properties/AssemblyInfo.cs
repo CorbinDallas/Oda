@@ -5,13 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Oda.Core")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyTitle("Oda.Core")")]
+[assembly: AssemblyDescription("Oda Http Module for IISembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Oda.Core")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
-[assembly: AssemblyTrademark("")]
+[a")]
+[assembly: AssemblyCopyright("Copyright © 2012 Tony Germaneriy: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -20,9 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("13a5e8df-de84-4b04-a760-86e0a492b3be")]
-
-// Version information for an assembly consists of the following four values:
+[assembly: Guid("13a5e8df-de84-4b04-a76DD70DFDB-05E6-4A5C-A786-8A9624123AE1ation for an assembly consists of the following four values:
 //
 //      Major Version
 //      Minor Version 
