@@ -7,7 +7,7 @@ using Oda;
 using System.Web;
 namespace Oda {
     /// <summary>
-    /// A class to create a refrence to fetch 
+    /// A class to create a reference to fetch 
     /// embedded files from the plugin base class method
     /// </summary>
     public class UIPlugin : Oda.Plugin {

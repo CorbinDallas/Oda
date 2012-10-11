@@ -74,7 +74,7 @@ namespace Oda {
         }
     }
     /// <summary>
-    /// A property drawn from an Oda.Session class and automatically commited
+    /// A property drawn from an Oda.Session class and automatically committed
     /// to the database
     /// </summary>
     public class SessionProperty {
@@ -206,7 +206,7 @@ namespace Oda {
             }
         }
         /// <summary>
-        /// Updates this property by writting it to the database.
+        /// Updates this property by writing it to the database.
         /// </summary>
         /// <returns></returns>
         public SessionProperty Update() {
@@ -214,7 +214,7 @@ namespace Oda {
             return this;
         }
         /// <summary>
-        /// Updates this property by writting it to the database.
+        /// Updates this property by writing it to the database.
         /// </summary>
         /// <returns></returns>
         public SessionProperty Update(SqlConnection cn, SqlTransaction trans) {

@@ -3,7 +3,7 @@ declare @EmptyGuid uniqueidentifier = '00000000-0000-0000-0000-000000000000';
 if exists(select 0 from Accounts with (nolock) where Logon = @Logon and DigestPassword = @DigestPassword) begin;
 	declare @AccountId uniqueidentifier = (select AccountId from Accounts where Logon = @Logon and DigestPassword = @DigestPassword);
 	update Sessions set AccountId = @AccountId where SessionId = @SessionId;
-	/* update SessionProperties aquired before logging on */ 
+	/* update SessionProperties acquired before logging on */ 
 	update SessionProperties set 
 		AccountId = @AccountId
 	where SessionId = @SessionId;

@@ -103,7 +103,7 @@ namespace Oda {
         /// Gets or sets the Json method Url.
         /// </summary>
         /// <value>
-        /// The json method URL.
+        /// The Json method URL.
         /// </value>
         public static string JsonMethodUrl {
             get {
@@ -117,7 +117,7 @@ namespace Oda {
             }
         }
         /// <summary>
-        /// Resolves the embedded assembiles.
+        /// Resolves the embedded assemblies.
         /// </summary>
         /// <param name="_sender">The _sender.</param>
         /// <param name="_args">The <see cref="System.EventArgs"/> instance containing the event data.</param>

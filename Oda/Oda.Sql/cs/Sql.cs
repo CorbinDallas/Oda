@@ -54,7 +54,7 @@ namespace Oda {
             }
         }
         /// <summary>
-        /// The persistant Sql connection.
+        /// The persistent Sql connection.
         /// </summary>
         public static SqlConnection Connection;
         /// <summary>
@@ -82,13 +82,13 @@ namespace Oda {
             return new SqlConnection(connectionString);
         }
         /// <summary>
-        /// Opens the persistant connection.
+        /// Opens the persistent connection.
         /// </summary>
         public static void Open(){
             Connection.Open();
         }
         /// <summary>
-        /// Closes the persistant connection.
+        /// Closes the persistent connection.
         /// </summary>
         public static void Close() {
             Connection.Close();

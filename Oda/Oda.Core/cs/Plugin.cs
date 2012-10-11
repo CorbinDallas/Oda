@@ -82,7 +82,7 @@ namespace Oda
         /// <returns></returns>
         private string FindManifestResourceName(string resourcePath)
         {
-            // make resourcePath resource string compatable
+            // make resourcePath resource string compatible
             string cResPath = resourcePath.Replace("\\", ".").Replace("/", ".").ToLower();
             string[] names = GetType().Assembly.GetManifestResourceNames();
             foreach (string name in names)
@@ -97,7 +97,7 @@ namespace Oda
 
         /// <summary>
         /// Gets the inheritance file path.
-        /// The path is a combonation of
+        /// The path is a combination of
         /// Physical application path + Plugin Assembly name + Resource Path
         /// For example: A resource named /Sql/CreateSession.sql in the plugin
         /// Oda.Authentication in an application in C:\inetpub\www.mysite.com\ would 
@@ -140,7 +140,7 @@ namespace Oda
         }
 
         /// <summary>
-        /// Gets the resrouce string starting from the project root.
+        /// Gets the resource string starting from the project root.
         /// </summary>
         /// <param name="resourcePath">The resource path.</param>
         /// <returns></returns>
@@ -167,7 +167,7 @@ namespace Oda
         }
 
         /// <summary>
-        /// Gets an embedded resrouce stream.
+        /// Gets an embedded resource stream.
         /// </summary>
         /// <param name="resourcePath">The resource path starting from the project root.</param>
         /// <returns></returns>
@@ -208,7 +208,7 @@ namespace Oda
         internal static List<object> _Plugins;
 
         /// <summary>
-        /// A list of methods found whos class inherits the abstract class JsonMethods.
+        /// A list of methods found who's class inherits the abstract class JsonMethods.
         /// </summary>
         internal static Dictionary<string, MethodInfo> _JsonMethods;
 

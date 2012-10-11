@@ -112,8 +112,8 @@ namespace Oda {
         /// </summary>
         public Guid Id;
         /// <summary>
-        /// A place to temporararly store data.
-        /// This object list is not persistant.
+        /// A place to temporarily store data.
+        /// This object list is not persistent.
         /// </summary>
         public List<object> Items;
         /// <summary>
@@ -138,7 +138,7 @@ namespace Oda {
     /// </summary>
     public class Contact : JsonMethods {
         /// <summary>
-        /// Gets a resource string from the static plugin refrence.
+        /// Gets a resource string from the static plugin reference.
         /// </summary>
         /// <param name="resourceString">The resource string.</param>
         /// <returns></returns>
@@ -221,7 +221,7 @@ namespace Oda {
         /// </summary>
         public string First = "";
         /// <summary>
-        /// Middle name or inital.
+        /// Middle name or initial.
         /// </summary>
         public string Middle = "";
         /// <summary>

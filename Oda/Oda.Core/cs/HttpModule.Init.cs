@@ -239,7 +239,7 @@ namespace Oda {
         /// </summary>
         /// <param name="sender">The sender.</param>
         public void Init(HttpApplication sender) {
-            // make a global refrence
+            // make a global reference
             Core.HttpApplication = (HttpApplication)sender;
             // bind events
             Core.HttpApplication.BeginRequest += new EventHandler(BeginRequest);
@@ -287,7 +287,7 @@ namespace Oda {
                 // deserialize the request and execute the requested methods
                 // gather the results and add them to the results collection
                 //
-                // frist do QueryString (get)
+                // first do QueryString (get)
                 if(request.QueryString.Keys.Count == 1) {
                     try {
                         JsonResponse[] rs = JsonResponse.InvokeJsonMethods(HttpUtility.UrlDecode(request.QueryString.ToString()));

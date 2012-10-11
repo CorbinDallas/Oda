@@ -66,11 +66,11 @@ namespace Oda {
         /// </summary>
         event EventHandler AfterChangePassword;
         /// <summary>
-        /// Occurs before reseting password.
+        /// Occurs before resetting password.
         /// </summary>
         event EventHandler BeforeResetPassword;
         /// <summary>
-        /// Occurs after reseting password.
+        /// Occurs after resetting password.
         /// </summary>
         event EventHandler AfterResetPassword;
     }
@@ -102,7 +102,7 @@ namespace Oda {
         /// </value>
         public bool AbortDefault { get; set; }
         /// <summary>
-        /// Gets the json result.
+        /// Gets the Json result.
         /// </summary>
         public JsonResponse JsonResponse { private set; get; }
         /// <summary>
@@ -132,11 +132,11 @@ namespace Oda {
             if(AfterResetPassword != null) { AfterResetPassword(Oda.Core.HttpApplication, args); };
         }
         /// <summary>
-        /// Occurs after reseting password.
+        /// Occurs after resetting password.
         /// </summary>
         public static event EventHandler AfterResetPassword;
         /// <summary>
-        /// Occurs after reseting password.
+        /// Occurs after resetting password.
         /// </summary>
         event EventHandler IAuthentication.AfterResetPassword {
             add {
@@ -389,7 +389,7 @@ namespace Oda {
             }
         }
         /// <summary>
-        /// Gets a resource string from the static plugin refrence.
+        /// Gets a resource string from the static plugin reference.
         /// </summary>
         /// <param name="resourceString">The resource string.</param>
         /// <returns></returns>

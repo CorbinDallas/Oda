@@ -94,10 +94,10 @@ namespace Oda {
         /// </value>
         public int StatusCode { get; set; }
         /// <summary>
-        /// Gets or sets a value indicating whether to supress a response.
+        /// Gets or sets a value indicating whether to suppress a response.
         /// </summary>
         /// <value>
-        ///   <c>true</c> to supress this response; otherwise, <c>false</c>.
+        ///   <c>true</c> to suppress this response; otherwise, <c>false</c>.
         /// </value>
         public bool SupressResponse { get; set; }
         /// <summary>
@@ -238,7 +238,7 @@ namespace Oda {
         /// </value>
         public Guid Id {
             get {
-                // avoid null refrences
+                // avoid null references
                 if(id == null) {
                     id = Guid.Empty;
                 }
@@ -324,7 +324,7 @@ namespace Oda {
         /// Typically 0 means no errors, any other number
         /// indicates an error.</param>
         /// <param name="Message">Sets the message returned by this Json method.</param>
-        /// <param name="Items">Addtional items returned by this Json method.</param>
+        /// <param name="Items">Additional items returned by this Json method.</param>
         public JsonResponse(int Error, string Message, Dictionary<string, object> Items) {
             this.Add("Error", Error);
             this.Add("Message", Message);
@@ -390,7 +390,7 @@ namespace Oda {
         /// <summary>
         /// Turns a JToken into a Dictionary&lt;string,object&gt; or a List&lt;object&gt;.
         /// </summary>
-        /// <param name="jobject">The jobject.</param>
+        /// <param name="jobject">The JObject.</param>
         /// <returns></returns>
         public static object JTokenToGeneric(object jobject) {
             if(jobject.GetType() == typeof(JValue)) {
