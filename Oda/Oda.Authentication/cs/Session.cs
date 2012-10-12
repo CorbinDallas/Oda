@@ -21,13 +21,10 @@
 */
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Web;
 using System.Threading;
 using System.Data.SqlClient;
 using System.Data;
-using System.Data.SqlTypes;
 namespace Oda {
     /// <summary>
     /// The main plugin class for Sessions and Authentication
@@ -39,8 +36,8 @@ namespace Oda {
         /// Bind events to Initialize and BeginHttpRequest.
         /// </summary>
         public SessionInit() {
-            Core.Initialize += new EventHandler(Core_Initialize);
-            Core.BeginHttpRequest +=new EventHandler(Core_BeginHttpRequest);
+            Core.Initialize += CoreInitialize;
+            Core.BeginHttpRequest += Core_BeginHttpRequest;
             SessionInitRef = this;
         }
         /// <summary>
@@ -62,13 +59,13 @@ namespace Oda {
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        void Core_Initialize(object sender, EventArgs e) {
+        void CoreInitialize(object sender, EventArgs e) {
             // wait until the connection is opened
-            while(Sql.State != System.Data.ConnectionState.Open) {
+            while(Sql.State != ConnectionState.Open) {
                 Thread.Sleep(10);
             }
             // check that the session table exists
-            using(SqlCommand cmd = new SqlCommand(this.GetResrouceString("/Sql/CreateSessionTable.sql"), Sql.Connection)) {
+            using(var cmd = new SqlCommand(GetResourceString("/Sql/CreateSessionTable.sql"), Sql.Connection)) {
                 cmd.ExecuteNonQuery();
             }
         }
@@ -82,43 +79,22 @@ namespace Oda {
         /// Don't update on property changes when false.
         /// </summary>
         public bool SuspendUpdates {get; set;}
-        /// <summary>
-        /// Private field for AccountId.
-        /// </summary>
-        private Guid _AccountId;
-        /// <summary>
-        /// Private field for SessionId.
-        /// </summary>
-        private Guid _SessionId;
-        /// <summary>
-        /// Private field for Id.
-        /// </summary>
-        private Guid _Id;
-        /// <summary>
-        /// Private field for Name.
-        /// </summary>
-        private string _Name;
-        /// <summary>
-        /// Private field for Value.
-        /// </summary>
-        private string _Value;
-        /// <summary>
-        /// Private field for DataType.
-        /// </summary>
-        private string _DataType;
+        private Guid _accountId;
+        private Guid _sessionId;
+        private Guid _id;
+        private string _name;
+        private string _value;
+        private string _dataType;
         /// <summary>
         /// The unique id of this property
         /// </summary>
         public Guid Id { 
             set {
-                _Id = value;
+                _id = value;
                 Update();
             }
             get {
-                if(_Id == null) {
-                    _Id = Guid.NewGuid();
-                }
-                return _Id;
+                return _id;
             }
         }
         /// <summary>
@@ -126,14 +102,11 @@ namespace Oda {
         /// </summary>
         public Guid AccountId {
             set {
-                _AccountId = value;
+                _accountId = value;
                 Update();
             }
             get {
-                if(_AccountId == null) {
-                    _AccountId = Guid.Empty;
-                }
-                return _AccountId;
+                return _accountId;
             }
         }
         /// <summary>
@@ -141,14 +114,11 @@ namespace Oda {
         /// </summary>
         public Guid SessionId {
             set {
-                _SessionId = value;
+                _sessionId = value;
                 Update();
             }
             get {
-                if(_SessionId == null) {
-                    _SessionId = Guid.Empty;
-                }
-                return _SessionId;
+                return _sessionId;
             }
         }
         /// <summary>
@@ -159,15 +129,10 @@ namespace Oda {
         /// </value>
         public string Name {
             set {
-                _Name = value;
+                _name = value;
                 Update();
             }
-            get {
-                if(_Name == null) {
-                    _Name = "";
-                }
-                return _Name;
-            }
+            get { return _name ?? (_name = ""); }
         }
         /// <summary>
         /// Gets or sets the value of the property.
@@ -177,15 +142,10 @@ namespace Oda {
         /// </value>
         public string Value {
             set {
-                _Value = value;
+                _value = value;
                 Update();
             }
-            get {
-                if(_Value == null) {
-                    _Value = "";
-                }
-                return _Value;
-            }
+            get { return _value ?? (_value = ""); }
         }
         /// <summary>
         /// Gets or sets the type of the data of of the property.
@@ -195,15 +155,10 @@ namespace Oda {
         /// </value>
         public string DataType {
             set {
-                _DataType = value;
+                _dataType = value;
                 Update();
             }
-            get {
-                if(_DataType == null) {
-                    _DataType = "string";
-                }
-                return _DataType;
-            }
+            get { return _dataType ?? (_dataType = "string"); }
         }
         /// <summary>
         /// Updates this property by writing it to the database.
@@ -221,20 +176,23 @@ namespace Oda {
             if(SuspendUpdates) {
                 return this;
             }
-            string query = SessionInit.SessionInitRef.GetResrouceString("/Sql/UpdateSessionProperties.sql");
+            string query = SessionInit.SessionInitRef.GetResourceString("/Sql/UpdateSessionProperties.sql");
             //@AccountId @SessionId @SessionPropertyId @Name @Value @DataType
-            using(SqlCommand cmd = new SqlCommand(query,cn, trans)){
-                cmd.Parameters.Add("@SessionPropertyId", SqlDbType.UniqueIdentifier).Value = this.Id;
-                cmd.Parameters.Add("@AccountId", SqlDbType.UniqueIdentifier).Value = this.AccountId;
-                cmd.Parameters.Add("@SessionId", SqlDbType.UniqueIdentifier).Value = this.SessionId;
-                cmd.Parameters.Add("@Name", SqlDbType.VarChar).Value = this.Name;
-                cmd.Parameters.Add("@Value", SqlDbType.VarChar).Value = this.Value;
-                cmd.Parameters.Add("@DataType", SqlDbType.VarChar).Value = this.DataType;
+            using(var cmd = new SqlCommand(query,cn, trans)){
+                cmd.Parameters.Add("@SessionPropertyId", SqlDbType.UniqueIdentifier).Value = Id;
+                cmd.Parameters.Add("@AccountId", SqlDbType.UniqueIdentifier).Value = AccountId;
+                cmd.Parameters.Add("@SessionId", SqlDbType.UniqueIdentifier).Value = SessionId;
+                cmd.Parameters.Add("@Name", SqlDbType.VarChar).Value = Name;
+                cmd.Parameters.Add("@Value", SqlDbType.VarChar).Value = Value;
+                cmd.Parameters.Add("@DataType", SqlDbType.VarChar).Value = DataType;
                 cmd.ExecuteNonQuery();
             }
             return this;
         }
     }
+    /// <summary>
+    /// Generic properties collection for sessions
+    /// </summary>
     public class SessionProperties {
         /// <summary>
         /// The accountId associated with these properties.
@@ -244,38 +202,60 @@ namespace Oda {
         /// The account associated with these properties.
         /// </summary>
         public Guid SessionId;
-        List<SessionProperty> Properties;
-        public void Add(SessionProperty _sessionProperty) {
-            _sessionProperty.SuspendUpdates = true;
-            _sessionProperty.AccountId = AccountId;
-            _sessionProperty.SessionId = SessionId;
-            _sessionProperty.Update();
-            _sessionProperty.SuspendUpdates = false;
-            Properties.Add(_sessionProperty);
+        private List<SessionProperty> Properties { get; set; }
+        /// <summary>
+        /// Adds the specified session property.
+        /// </summary>
+        /// <param name="sessionProperty">The _session property.</param>
+        public void Add(SessionProperty sessionProperty) {
+            sessionProperty.SuspendUpdates = true;
+            sessionProperty.AccountId = AccountId;
+            sessionProperty.SessionId = SessionId;
+            sessionProperty.Update();
+            sessionProperty.SuspendUpdates = false;
+            Properties.Add(sessionProperty);
         }
+        /// <summary>
+        /// Finds the specified match.
+        /// </summary>
+        /// <param name="match">The match.</param>
+        /// <returns></returns>
         public SessionProperty Find(Predicate<SessionProperty> match) {
             return Properties.Find(match);
         }
-        public bool Remove(SessionProperty _sessionProperty) {
-            _sessionProperty.SuspendUpdates = true;
-            _sessionProperty.AccountId = AccountId;
-            _sessionProperty.SessionId = SessionId;
-            _sessionProperty.Update();
-            _sessionProperty.SuspendUpdates = false;
-            return Properties.Remove(_sessionProperty);
+        /// <summary>
+        /// Removes the specified _session property.
+        /// </summary>
+        /// <param name="sessionProperty">The _session property.</param>
+        /// <returns></returns>
+        public bool Remove(SessionProperty sessionProperty) {
+            sessionProperty.SuspendUpdates = true;
+            sessionProperty.AccountId = AccountId;
+            sessionProperty.SessionId = SessionId;
+            sessionProperty.Update();
+            sessionProperty.SuspendUpdates = false;
+            return Properties.Remove(sessionProperty);
         }
-        public void AddRange(SessionProperty[] _sessionProperties) {
-            foreach(SessionProperty _sessionProperty in _sessionProperties) {
-                _sessionProperty.SuspendUpdates = true;
-                _sessionProperty.AccountId = AccountId;
-                _sessionProperty.SessionId = SessionId;
-                _sessionProperty.Update();
-                _sessionProperty.SuspendUpdates = false;
-                Properties.Add(_sessionProperty);
+        /// <summary>
+        /// Adds the range.
+        /// </summary>
+        /// <param name="sessionProperties">The session properties.</param>
+        public void AddRange(SessionProperty[] sessionProperties) {
+            foreach(var sessionProperty in sessionProperties) {
+                sessionProperty.SuspendUpdates = true;
+                sessionProperty.AccountId = AccountId;
+                sessionProperty.SessionId = SessionId;
+                sessionProperty.Update();
+                sessionProperty.SuspendUpdates = false;
+                Properties.Add(sessionProperty);
             }
         }
-        public SessionProperties(Guid _sessionId) {
-            SessionId = _sessionId;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SessionProperties" /> class.
+        /// </summary>
+        /// <param name="sessionId">The _session id.</param>
+        public SessionProperties(Guid sessionId) {
+            SessionId = sessionId;
             Properties = new List<SessionProperty>();
         }
     }
@@ -298,22 +278,18 @@ namespace Oda {
         /// <summary>
         /// Gets a property by the properties id.
         /// </summary>
-        /// <param name="_id">The _id.</param>
+        /// <param name="id">The _id.</param>
         /// <returns></returns>
-        public SessionProperty GetProperty(Guid _id) {
-            return Properties.Find(delegate(SessionProperty p) {
-                return p.Id == _id;
-            });
+        public SessionProperty GetProperty(Guid id) {
+            return Properties.Find(p => p.Id == id);
         }
         /// <summary>
         /// Gets the property by the properties name.
         /// </summary>
-        /// <param name="_name">The _name.</param>
+        /// <param name="name">The _name.</param>
         /// <returns></returns>
-        public SessionProperty GetProperty(string _name) {
-            return Properties.Find(delegate(SessionProperty p) {
-                return p.Name == _name;
-            });
+        public SessionProperty GetProperty(string name) {
+            return Properties.Find(p => p.Name == name);
         }
         /// <summary>
         /// An anonymous Account.
@@ -326,13 +302,12 @@ namespace Oda {
         private static Guid GetSessionIdFromCookie() {
             HttpContext context = HttpContext.Current;
             // check if this request has a cookie with a sessionId
-            HttpCookie sessionCookie = context.Request.Cookies[Session.SessionKey];
-            string strSessionId = "";
+            HttpCookie sessionCookie = context.Request.Cookies[SessionKey];
+            string strSessionId;
             if(sessionCookie == null) {
                 // no cookie found, so assign one
                 strSessionId = Guid.NewGuid().ToString();
-                sessionCookie = new HttpCookie(Session.SessionKey);
-                sessionCookie.Value = strSessionId;
+                sessionCookie = new HttpCookie(SessionKey) {Value = strSessionId};
                 context.Response.Cookies.Add(sessionCookie);
             } else {
                 strSessionId = sessionCookie.Value;
@@ -344,7 +319,7 @@ namespace Oda {
         /// </summary>
         public static Session Current {
             get {
-                Session session = ((Session)HttpContext.Current.Items[SessionKey]);
+                var session = ((Session)HttpContext.Current.Items[SessionKey]);
                 if(session == null){
                     session = new Session(GetSessionIdFromCookie());
                     HttpContext.Current.Items[SessionKey] = session;
@@ -377,74 +352,79 @@ namespace Oda {
             // Result 2
             // --> SessionPropertyId, Name, Value, DataType
             // @SessionId, @Referer, @UserAgent, @IpAddress, @AccountId
-            string refreshCommand = SessionInit.SessionInitRef.GetResrouceString("/Sql/CreateUpdateSession.sql");
-            using(SqlCommand cmd = new SqlCommand(refreshCommand, cn)) {
-                cmd.Parameters.Add("@SessionId", SqlDbType.UniqueIdentifier).Value = this.Id;
-                System.Collections.Specialized.NameValueCollection s = HttpContext.Current.Request.ServerVariables;
-                string Referer = s["HTTP_REFERER"];
-                string UserAgent = s["HTTP_USER_AGENT"];
-                string IpAddress = s["REMOTE_ADDR"];
-                if(Referer == null) { Referer = ""; }
-                if(UserAgent == null) { UserAgent = ""; }
-                if(IpAddress == null) { IpAddress = ""; }
-                cmd.Parameters.Add("@Referer", SqlDbType.VarChar).Value = Referer;
-                cmd.Parameters.Add("@UserAgent", SqlDbType.VarChar).Value = UserAgent;
-                cmd.Parameters.Add("@IpAddress", SqlDbType.VarChar).Value = IpAddress;
+            var refreshCommand = SessionInit.SessionInitRef.GetResourceString("/Sql/CreateUpdateSession.sql");
+            using(var cmd = new SqlCommand(refreshCommand, cn)) {
+                cmd.Parameters.Add("@SessionId", SqlDbType.UniqueIdentifier).Value = Id;
+                var s = HttpContext.Current.Request.ServerVariables;
+                var referer = s["HTTP_REFERER"];
+                var userAgent = s["HTTP_USER_AGENT"];
+                var ipAddress = s["REMOTE_ADDR"];
+                if(referer == null) { referer = ""; }
+                if(userAgent == null) { userAgent = ""; }
+                if(ipAddress == null) { ipAddress = ""; }
+                cmd.Parameters.Add("@Referer", SqlDbType.VarChar).Value = referer;
+                cmd.Parameters.Add("@UserAgent", SqlDbType.VarChar).Value = userAgent;
+                cmd.Parameters.Add("@IpAddress", SqlDbType.VarChar).Value = ipAddress;
                 using(SqlDataReader r = cmd.ExecuteReader()) {
                     r.Read();
                     /* get AccountId */
-                    this.AccountId = r.GetGuid(0);
+                    AccountId = r.GetGuid(0);
                     /* get properties */
                     r.NextResult();
                     while(r.Read()) {
-                        SessionProperty p = new SessionProperty();
-                        p.SuspendUpdates = true;
-                        p.SessionId = this.Id;
-                        p.AccountId = this.AccountId;
-                        p.Id = r.GetGuid(0);
-                        p.Name = r.GetString(1);
-                        p.Value = r.GetString(2);
-                        p.DataType = r.GetString(3);
-                        this.Properties.Add(p);
+                        var p = new SessionProperty
+                                    {
+                                        SuspendUpdates = true,
+                                        SessionId = Id,
+                                        AccountId = AccountId,
+                                        Id = r.GetGuid(0),
+                                        Name = r.GetString(1),
+                                        Value = r.GetString(2),
+                                        DataType = r.GetString(3)
+                                    };
+                        Properties.Add(p);
                         p.SuspendUpdates = false;
                     }
                     /* get contacts */
                     r.NextResult();
                     while(r.Read()) {
-                        Contact c = new Contact();
-                        c.Id = r.GetGuid(0);
-                        c.AccountId = r.GetGuid(1);
-                        c.First = r.GetString(2);
-                        c.Middle = r.GetString(3);
-                        c.Last = r.GetString(4);
-                        c.Address = r.GetString(5);
-                        c.Address2 = r.GetString(6);
-                        c.City = r.GetString(7);
-                        c.State = r.GetString(8);
-                        c.Zip = r.GetString(9);
-                        c.Email = r.GetString(10);
-                        c.Company = r.GetString(11);
-                        c.Title = r.GetString(12);
-                        c.WebAddress = r.GetString(13);
-                        c.IMAddress = r.GetString(14);
-                        c.Fax = r.GetString(15);
-                        c.Home = r.GetString(16);
-                        c.Work = r.GetString(17);
-                        c.Mobile = r.GetString(18);
-                        c.Notes = r.GetString(19);
-                        c.Type = (ContactType)r.GetInt32(20);
-                        if(c.Id == this.Id){
+                        var c = new Contact
+                                    {
+                                        Id = r.GetGuid(0),
+                                        AccountId = r.GetGuid(1),
+                                        First = r.GetString(2),
+                                        Middle = r.GetString(3),
+                                        Last = r.GetString(4),
+                                        Address = r.GetString(5),
+                                        Address2 = r.GetString(6),
+                                        City = r.GetString(7),
+                                        State = r.GetString(8),
+                                        Zip = r.GetString(9),
+                                        Email = r.GetString(10),
+                                        Company = r.GetString(11),
+                                        Title = r.GetString(12),
+                                        WebAddress = r.GetString(13),
+                                        IMAddress = r.GetString(14),
+                                        Fax = r.GetString(15),
+                                        Home = r.GetString(16),
+                                        Work = r.GetString(17),
+                                        Mobile = r.GetString(18),
+                                        Notes = r.GetString(19),
+                                        Type = (ContactType) r.GetInt32(20)
+                                    };
+                        if(c.Id == Id){
                             // if this contact id matches the
                             // account id, then this is the account's
                             // primary contact
-                            this.Account.Contact = c;
+                            Account.Contact = c;
                         }else{
-                            this.Account.Contacts.Add(c);
+                            if (Account.Contacts==null) Account.Contacts = new List<Contact>();
+                            Account.Contacts.Add(c);
                         }
                     }
                 }
             }
-            Properties.AccountId = this.AccountId;
+            Properties.AccountId = AccountId;
             return this;
         }
         /// <summary>
@@ -455,32 +435,23 @@ namespace Oda {
         /// The Account of this session.
         /// </summary>
         public Account Account;
-        /// <summary>
-        /// Private field for Id.
-        /// </summary>
-        private Guid _Id;
+
         /// <summary>
         /// Gets or sets the Id of this session.
         /// </summary>
         /// <value>
         /// The id.
         /// </value>
-        public Guid Id {
-            get {
-                return _Id;
-            }
-            set {
-                _Id = value;
-            }
-        }
+        public Guid Id { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Session"/> class.
         /// </summary>
-        /// <param name="_id">The _id.</param>
-        public Session(Guid _id) {
-            Id = _id;
+        /// <param name="id">The _id.</param>
+        public Session(Guid id) {
+            Id = id;
             Account = AnonymousAccount;
-            this.Properties = new SessionProperties(_id);
+            Properties = new SessionProperties(id);
         }
     }
 }

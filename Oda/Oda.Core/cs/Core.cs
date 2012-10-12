@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web;
 using System.Reflection;
 using System.ComponentModel;
@@ -53,7 +52,7 @@ namespace Oda {
     /// <summary>
     /// The core of Oda.
     /// </summary>
-    public partial class Core : IHttpModule, IHttp {
+    public partial class Core {
         #region Module Name For Sandcastle
         /// <summary>
         /// Gets the name of the module.
@@ -86,19 +85,19 @@ namespace Oda {
         /// <summary>
         /// Internal field for Items.
         /// </summary>
-        private static List<object> _Items;
+        private static List<object> _items;
         /// <summary>
         /// A box to put your things in.
         /// </summary>
         public static List<object> Items {
             get {
-                return _Items;
+                return _items;
             }
         }
         /// <summary>
         /// The private field for the JsonMethodUrl property.
         /// </summary>
-        private static string _JsonMethodUrl;
+        private static string _jsonMethodUrl;
         /// <summary>
         /// Gets or sets the Json method Url.
         /// </summary>
@@ -106,33 +105,31 @@ namespace Oda {
         /// The Json method URL.
         /// </value>
         public static string JsonMethodUrl {
-            get {
-                if(_JsonMethodUrl == null) {
-                    _JsonMethodUrl = "/responder";
-                }
-                return _JsonMethodUrl;
-            }
+            get { return _jsonMethodUrl ?? (_jsonMethodUrl = "/responder"); }
             set {
-                _JsonMethodUrl = value;
+                _jsonMethodUrl = value;
             }
         }
         /// <summary>
         /// Resolves the embedded assemblies.
         /// </summary>
-        /// <param name="_sender">The _sender.</param>
-        /// <param name="_args">The <see cref="System.EventArgs"/> instance containing the event data.</param>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The <see cref="EventArgs" /> instance containing the event data.</param>
         /// <returns></returns>
-        private static Assembly resolveEmbeddedAssembiles(object _sender, EventArgs _args) {
-            ResolveEventArgs args = (ResolveEventArgs)_args;
-            string[] names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-            foreach(string name in names) {
-                string cleanName = name.Replace("Oda.lib.", "").Replace(".dll", "");
-                if(args.Name.Contains(cleanName)) {
-                    using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name)) {
-                        Byte[] assemblyData = new Byte[stream.Length];
-                        stream.Read(assemblyData, 0, assemblyData.Length);
-                        return Assembly.Load(assemblyData);
-                    }
+        private static Assembly ResolveEmbeddedAssembiles(object sender, EventArgs args) {
+            var a = (ResolveEventArgs)args;
+            var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            foreach (
+                var name in
+                from name in names 
+                let cleanName = name.Replace("Oda.lib.", "").Replace(".dll", "") 
+                where a.Name.Contains(cleanName) select name)
+            {
+                using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name)) {
+                    if (stream == null) continue;
+                    var assemblyData = new Byte[stream.Length];
+                    stream.Read(assemblyData, 0, assemblyData.Length);
+                    return Assembly.Load(assemblyData);
                 }
             }
             return null;

@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Globalization;
 using System.Text;
 using System.IO;
-using Oda;
 using System.Web;
-namespace Oda {
+namespace Oda.UI {
     /// <summary>
     /// A class to create a reference to fetch 
     /// embedded files from the plugin base class method
     /// </summary>
-    public class UIPlugin : Oda.Plugin {
+    public class UIPlugin : Plugin {
         internal static UIPlugin UIRef;
         /// <summary>
         /// Initializes a new instance of the <see cref="UIPlugin"/> class.
         /// </summary>
         public UIPlugin() {
             UIRef = this;
-            Oda.Core.BeginHttpRequest += new EventHandler(Core_BeginHttpRequest);
+            Core.BeginHttpRequest += Core_BeginHttpRequest;
         }
         /// <summary>
         /// Handles the BeginHttpRequest event of the Core control.
@@ -25,36 +23,34 @@ namespace Oda {
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         void Core_BeginHttpRequest(object sender, EventArgs e) {
-            HttpRequest request = HttpContext.Current.Request;
-            HttpResponse response = HttpContext.Current.Response;
-            string lPath = request.Path.ToLower();
-            string tPath = lPath.Substring(7);
-            if(lPath.StartsWith("/oda.ui/")) {
-                Stream AttachmentStream = new MemoryStream();
-                string AttachmentContent = "";
-                if(IsImageFile(tPath)) {
-                    AttachmentStream = UIPlugin.UIRef.GetResrouce(tPath);
-                } else {
-                    AttachmentContent = UIPlugin.UIRef.GetResrouceString(tPath);
-                }
-                string mimeType = GetMimeType(tPath);
-                if(AttachmentContent.Length > 0) {
-                    response.AddHeader("Content-Length", AttachmentContent.Length.ToString());
-                    response.ContentType = mimeType + ";charset=utf-8";
-                    response.HeaderEncoding = Encoding.UTF8;
-                    response.Write(AttachmentContent);
-                } else if(AttachmentStream != null) {
-                    response.AddHeader("Content-Length", AttachmentStream.Length.ToString());
-                    response.ContentType = mimeType;
-                    response.HeaderEncoding = Encoding.UTF8;
-                    byte[] bytes = new byte[AttachmentStream.Length];
-                    AttachmentStream.Read(bytes, 0, (int)AttachmentStream.Length);
-                    response.BinaryWrite(bytes);
-                }
-                response.Flush();
-                HttpContext.Current.ApplicationInstance.CompleteRequest();
-                return;// Only one file can be output at a time.
+            var request = HttpContext.Current.Request;
+            var response = HttpContext.Current.Response;
+            var lPath = request.Path.ToLower();
+            var tPath = lPath.Substring(7);
+            if (!lPath.StartsWith("/oda.ui/")) return;
+            Stream attachmentStream = new MemoryStream();
+            var attachmentContent = "";
+            if(IsImageFile(tPath)) {
+                attachmentStream = UIRef.GetResource(tPath);
+            } else {
+                attachmentContent = UIRef.GetResourceString(tPath);
             }
+            var mimeType = GetMimeType(tPath);
+            if(attachmentContent.Length > 0) {
+                response.AddHeader("Content-Length", attachmentContent.Length.ToString(CultureInfo.InvariantCulture));
+                response.ContentType = mimeType + ";charset=utf-8";
+                response.HeaderEncoding = Encoding.UTF8;
+                response.Write(attachmentContent);
+            } else if(attachmentStream != null) {
+                response.AddHeader("Content-Length", attachmentStream.Length.ToString(CultureInfo.InvariantCulture));
+                response.ContentType = mimeType;
+                response.HeaderEncoding = Encoding.UTF8;
+                var bytes = new byte[attachmentStream.Length];
+                attachmentStream.Read(bytes, 0, (int)attachmentStream.Length);
+                response.BinaryWrite(bytes);
+            }
+            response.Flush();
+            HttpContext.Current.ApplicationInstance.CompleteRequest();
         }
         /// <summary>
         /// Determines whether the path is an image file.
@@ -75,9 +71,11 @@ namespace Oda {
         /// <param name="fileName">Name of the file.</param>
         /// <returns></returns>
         public static string GetMimeType(string fileName) {
-            string mimeType = "application/unknown";
-            string ext = System.IO.Path.GetExtension(fileName).ToLower();
-            Microsoft.Win32.RegistryKey regKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
+            var mimeType = "application/unknown";
+            var ext = Path.GetExtension(fileName);
+            if (ext == null) return mimeType;
+            ext = ext.ToLower();
+            var regKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
             if(regKey != null && regKey.GetValue("Content Type") != null)
                 mimeType = regKey.GetValue("Content Type").ToString();
             return mimeType;
@@ -93,12 +91,12 @@ namespace Oda {
         /// <param name="fileName">Name of the file.</param>
         /// <returns></returns>
         public static JsonResponse GetFile(string fileName) {
-            JsonResponse j = new JsonResponse();
-            string lName = fileName.ToLower();
+            var j = new JsonResponse();
+            var lName = fileName.ToLower();
             if(UIPlugin.IsImageFile(lName)) {
-                j.AttachmentStream = UIPlugin.UIRef.GetResrouce(fileName);
+                j.AttachmentStream = UIPlugin.UIRef.GetResource(fileName);
             } else {
-                j.AttachmentContent = UIPlugin.UIRef.GetResrouceString(fileName);
+                j.AttachmentContent = UIPlugin.UIRef.GetResourceString(fileName);
             }
             j.AttachmentFileName = fileName;
             j.ContentDisposition = JsonContentDisposition.Normal;

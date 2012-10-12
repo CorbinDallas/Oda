@@ -20,11 +20,7 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
 */
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.SqlClient;
-using System.Data.SqlTypes;
 using System.Data;
 namespace Oda {
     /// <summary>
@@ -106,20 +102,20 @@ namespace Oda {
         /// </summary>
         public JsonResponse JsonResponse { private set; get; }
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateAccountArgs"/> class.
+        /// Initializes a new instance of the <see cref="UpdateAccountArgs" /> class.
         /// </summary>
-        /// <param name="_session">The _session.</param>
-        /// <param name="_account">The _account.</param>
-        /// <param name="_password">The _password.</param>
-        /// <param name="_abortDefault">if set to <c>true</c> [_abort default].</param>
-        /// <param name="_JsonResponse">The _json result.</param>
-        public UpdateAccountArgs(Session _session, Account _account, 
-            string _password, bool _abortDefault, JsonResponse _JsonResponse) {
-            Session = _session;
-            Account = _account;
-            Password = _password;
-            JsonResponse = _JsonResponse;
-            AbortDefault = false;
+        /// <param name="session">The session.</param>
+        /// <param name="account">The account.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="abortDefault">if set to <c>true</c> [abort default].</param>
+        /// <param name="jsonResponse">The json response.</param>
+        public UpdateAccountArgs(Session session, Account account, 
+            string password, bool abortDefault, JsonResponse jsonResponse) {
+            Session = session;
+            Account = account;
+            Password = password;
+            JsonResponse = jsonResponse;
+            AbortDefault = abortDefault;
         }
     }
     /// <summary>
@@ -128,8 +124,8 @@ namespace Oda {
     public class Authentication : JsonMethods, IAuthentication {
         #region Events
         #region Event : AfterResetPassword
-        internal static void raiseOnAfterResetPassword(UpdateAccountArgs args) {
-            if(AfterResetPassword != null) { AfterResetPassword(Oda.Core.HttpApplication, args); };
+        internal static void RaiseOnAfterResetPassword(UpdateAccountArgs args) {
+            if (AfterResetPassword != null) AfterResetPassword(Core.HttpApplication, args);
         }
         /// <summary>
         /// Occurs after resetting password.
@@ -152,11 +148,11 @@ namespace Oda {
         }
         #endregion
         #region Event : BeforeResetPassword
-        internal static void raiseOnBeforeResetPassword(UpdateAccountArgs args) {
-            if(BeforeResetPassword != null) { BeforeResetPassword(Oda.Core.HttpApplication, args); };
+        internal static void RaiseOnBeforeResetPassword(UpdateAccountArgs args) {
+            if (BeforeResetPassword != null) BeforeResetPassword(Core.HttpApplication, args);
         }
         /// <summary>
-        /// Occurs before reseting password.
+        /// Occurs before resetting password.
         /// </summary>
         public static event EventHandler BeforeResetPassword;
         /// <summary>
@@ -176,8 +172,8 @@ namespace Oda {
         }
         #endregion
         #region Event : AfterChangePassword
-        internal static void raiseOnAfterChangePassword(UpdateAccountArgs args) {
-            if(AfterChangePassword != null) { AfterChangePassword(Oda.Core.HttpApplication, args); };
+        internal static void RaiseOnAfterChangePassword(UpdateAccountArgs args) {
+            if (AfterChangePassword != null) AfterChangePassword(Core.HttpApplication, args);
         }
         /// <summary>
         /// Occurs after changing passwords.
@@ -200,8 +196,8 @@ namespace Oda {
         }
         #endregion
         #region Event : BeforeChangePassword
-        internal static void raiseOnBeforeChangePassword(UpdateAccountArgs args) {
-            if(BeforeChangePassword != null) { BeforeChangePassword(Oda.Core.HttpApplication, args); };
+        internal static void RaiseOnBeforeChangePassword(UpdateAccountArgs args) {
+            if (BeforeChangePassword != null) BeforeChangePassword(Core.HttpApplication, args);
         }
         /// <summary>
         /// Occurs before changing passwords.
@@ -224,8 +220,8 @@ namespace Oda {
         }
         #endregion
         #region Event : AfterLogoff
-        internal static void raiseOnAfterLogoff(UpdateAccountArgs args) {
-            if(AfterLogoff != null) { AfterLogoff(Oda.Core.HttpApplication, args); };
+        internal static void RaiseOnAfterLogoff(UpdateAccountArgs args) {
+            if (AfterLogoff != null) AfterLogoff(Core.HttpApplication, args);
         }
         /// <summary>
         /// Occurs after logoff.
@@ -248,8 +244,8 @@ namespace Oda {
         }
         #endregion
         #region Event : BeforeLogoff
-        internal static void raiseOnBeforeLogoff(UpdateAccountArgs args) {
-            if(BeforeLogoff != null) { BeforeLogoff(Oda.Core.HttpApplication, args); };
+        internal static void RaiseOnBeforeLogoff(UpdateAccountArgs args) {
+            if (BeforeLogoff != null) BeforeLogoff(Core.HttpApplication, args);
         }
         /// <summary>
         /// Occurs before logoff.
@@ -272,8 +268,8 @@ namespace Oda {
         }
         #endregion
         #region Event : AfterLogon
-        internal static void raiseOnAfterLogon(UpdateAccountArgs args) {
-            if(AfterLogon != null) { AfterLogon(Oda.Core.HttpApplication, args); };
+        internal static void RaiseOnAfterLogon(UpdateAccountArgs args) {
+            if (AfterLogon != null) AfterLogon(Core.HttpApplication, args);
         }
         /// <summary>
         /// Occurs after logon.
@@ -296,8 +292,8 @@ namespace Oda {
         }
         #endregion
         #region Event : BeforeLogon
-        internal static void raiseOnBeforeLogon(UpdateAccountArgs args) {
-            if(BeforeLogon != null) { BeforeLogon(Oda.Core.HttpApplication, args); };
+        internal static void RaiseOnBeforeLogon(UpdateAccountArgs args) {
+            if(BeforeLogon != null) BeforeLogon(Core.HttpApplication, args);
         }
         /// <summary>
         /// Occurs before logon.
@@ -320,8 +316,8 @@ namespace Oda {
         }
         #endregion
         #region Event : AfterCreateAccount
-        internal static void raiseOnAfterCreateAccount(UpdateAccountArgs args) {
-            if(AfterCreateAccount != null) { AfterCreateAccount(Oda.Core.HttpApplication, args); };
+        internal static void RaiseOnAfterCreateAccount(UpdateAccountArgs args) {
+            if (AfterCreateAccount != null) AfterCreateAccount(Core.HttpApplication, args);
         }
         /// <summary>
         /// Occurs after an account is created.
@@ -344,8 +340,8 @@ namespace Oda {
         }
         #endregion
         #region Event : BeforeCreateAccount
-        internal static void raiseOnBeforeCreateAccount(UpdateAccountArgs args) {
-            if(BeforeCreateAccount != null) { BeforeCreateAccount(Oda.Core.HttpApplication, args); };
+        internal static void RaiseOnBeforeCreateAccount(UpdateAccountArgs args) {
+            if (BeforeCreateAccount != null) BeforeCreateAccount(Core.HttpApplication, args);
         }
         /// <summary>
         /// Occurs before an account is created.
@@ -372,19 +368,14 @@ namespace Oda {
         /// <summary>
         /// Gets the nonce from the database by looking up an account by logon name.
         /// </summary>
-        /// <param name="_logon">The _logon.</param>
+        /// <param name="logon">The logon.</param>
         /// <returns></returns>
-        private static string GetNonce(string _logon) {
-            string nonceQuery = GetResString("/Sql/GetNonce.sql");
-            using(SqlCommand cmd = new SqlCommand(nonceQuery, Sql.Connection)) {
-                cmd.Parameters.Add("@Logon", SqlDbType.VarChar).Value = _logon;
+        private static string GetNonce(string logon) {
+            var nonceQuery = GetResString("/Sql/GetNonce.sql");
+            using(var cmd = new SqlCommand(nonceQuery, Sql.Connection)) {
+                cmd.Parameters.Add("@Logon", SqlDbType.VarChar).Value = logon;
                 using(SqlDataReader r = cmd.ExecuteReader()) {
-                    if(r.Read()) {
-                        return r.GetString(0);
-                    } else {
-                        // 
-                        return BCrypt.GenerateSalt();
-                    }
+                    return r.Read() ? r.GetString(0) : BCrypt.GenerateSalt();
                 }
             }
         }
@@ -395,31 +386,31 @@ namespace Oda {
         /// <returns></returns>
         private static string GetResString(string resourceString) {
             return SessionInit.
-                SessionInitRef.GetResrouceString(resourceString);
+                SessionInitRef.GetResourceString(resourceString);
         }
         #endregion
         #region JSON Methods
         /// <summary>
         /// Creates an account.
         /// </summary>
-        /// <param name="_logon">The _logon.</param>
-        /// <param name="_password">The _password.</param>
+        /// <param name="logon">The logon.</param>
+        /// <param name="password">The password.</param>
         /// <returns></returns>
-        public static JsonResponse CreateAccount(string _logon, string _password) {
-            JsonResponse j = new JsonResponse();
-            Session current = Session.Current;
-            string nonce = BCrypt.GenerateSalt();
-            string query = GetResString("/Sql/CreateAccount.sql");
-            string digestPassword = BCrypt.HashPassword(_password, nonce);
-            UpdateAccountArgs args = new UpdateAccountArgs(current, Session.AnonymousAccount, _password, false, j);
-            raiseOnBeforeCreateAccount(args);
+        public static JsonResponse CreateAccount(string logon, string password) {
+            var j = new JsonResponse();
+            var current = Session.Current;
+            var nonce = BCrypt.GenerateSalt();
+            var query = GetResString("/Sql/CreateAccount.sql");
+            var digestPassword = BCrypt.HashPassword(password, nonce);
+            var args = new UpdateAccountArgs(current, Session.AnonymousAccount, password, false, j);
+            RaiseOnBeforeCreateAccount(args);
             if(!args.AbortDefault) {
                 // @AccountId, @Logon, @DigestPassword
-                using(SqlCommand cmd = new SqlCommand(query, Sql.Connection)) {
-                    cmd.Parameters.Add("@Logon", SqlDbType.VarChar).Value = _logon;
+                using(var cmd = new SqlCommand(query, Sql.Connection)) {
+                    cmd.Parameters.Add("@Logon", SqlDbType.VarChar).Value = logon;
                     cmd.Parameters.Add("@DigestPassword", SqlDbType.VarChar).Value = digestPassword;
                     cmd.Parameters.Add("@Nonce", SqlDbType.VarChar).Value = nonce;
-                    using(SqlDataReader r = cmd.ExecuteReader()) {
+                    using(var r = cmd.ExecuteReader()) {
                         r.Read();
                         current.AccountId = r.GetGuid(0);
                         j.Message = r.GetString(1);
@@ -429,27 +420,27 @@ namespace Oda {
                     }
                 }
             }
-            raiseOnAfterCreateAccount(args);
+            RaiseOnAfterCreateAccount(args);
             return j;
         }
         /// <summary>
         /// Logon the current session using logon and password.
         /// </summary>
-        /// <param name="_logon">The _logon.</param>
-        /// <param name="_password">The _password.</param>
+        /// <param name="logon">The _logon.</param>
+        /// <param name="password">The _password.</param>
         /// <returns></returns>
-        public static JsonResponse Logon(string _logon, string _password) {
-            Session current = Session.Current;
-            JsonResponse j = new JsonResponse();
-            string query = GetResString("/Sql/LogonSession.sql");
-            UpdateAccountArgs args = new UpdateAccountArgs(current, current.Account, _password, false, j);
-            raiseOnBeforeLogon(args);
+        public static JsonResponse Logon(string logon, string password) {
+            var current = Session.Current;
+            var j = new JsonResponse();
+            var query = GetResString("/Sql/LogonSession.sql");
+            var args = new UpdateAccountArgs(current, current.Account, password, false, j);
+            RaiseOnBeforeLogon(args);
             if(!args.AbortDefault) {
-                string nonce = GetNonce(_logon);
-                string digestPassword = BCrypt.HashPassword(_password, nonce);
+                var nonce = GetNonce(logon);
+                var digestPassword = BCrypt.HashPassword(password, nonce);
                 // @Logon @DigestPassword @SessionId
-                using(SqlCommand cmd = new SqlCommand(query, Sql.Connection)) {
-                    cmd.Parameters.Add("@Logon", SqlDbType.VarChar).Value = _logon;
+                using(var cmd = new SqlCommand(query, Sql.Connection)) {
+                    cmd.Parameters.Add("@Logon", SqlDbType.VarChar).Value = logon;
                     cmd.Parameters.Add("@DigestPassword", SqlDbType.VarChar).Value = digestPassword;
                     cmd.Parameters.Add("@SessionId", SqlDbType.UniqueIdentifier).Value = current.Id;
                     using(SqlDataReader r = cmd.ExecuteReader()) {
@@ -465,7 +456,7 @@ namespace Oda {
                     }
                 }
             }
-            raiseOnAfterLogon(args);
+            RaiseOnAfterLogon(args);
             return j;
         }
         /// <summary>
@@ -473,20 +464,20 @@ namespace Oda {
         /// </summary>
         /// <returns></returns>
         public static JsonResponse Logoff() {
-            Session current = Session.Current;
-            JsonResponse j = new JsonResponse();
-            UpdateAccountArgs args = new UpdateAccountArgs(current, current.Account, "", false, j);
-            raiseOnBeforeLogoff(args);
+            var current = Session.Current;
+            var j = new JsonResponse();
+            var args = new UpdateAccountArgs(current, current.Account, "", false, j);
+            RaiseOnBeforeLogoff(args);
             if(!args.AbortDefault) {
-                string query = GetResString("/Sql/LogoffSession.sql");
-                using(SqlCommand cmd = new SqlCommand(query, Sql.Connection)) {
+                var query = GetResString("/Sql/LogoffSession.sql");
+                using(var cmd = new SqlCommand(query, Sql.Connection)) {
                     cmd.Parameters.Add("@SessionId", SqlDbType.UniqueIdentifier).Value = current.Id;
                     cmd.ExecuteNonQuery();
                 }
                 // run another query to update the session data
                 current.Refresh();
             }
-            raiseOnAfterLogoff(args);
+            RaiseOnAfterLogoff(args);
             return j;
         }
         /// <summary>
@@ -495,66 +486,65 @@ namespace Oda {
         /// subscribing to the IAuthentication.AfterResetPassword event.
         /// Failure to do so will create a password nobody can discover.
         /// </summary>
-        /// <param name="_logon">The _logon.</param>
+        /// <param name="logon">The logon.</param>
         /// <returns></returns>
-        public static JsonResponse ResetPassword(string _logon) {
-            string salt = BCrypt.GenerateSalt();
-            string newPassword = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).ToLower().Substring(1, 10);
-            string newDigestPassword = BCrypt.HashPassword(newPassword, salt);
-            Session current = Session.Current;
-            JsonResponse j = new JsonResponse();
-            UpdateAccountArgs args = new UpdateAccountArgs(current, current.Account, "", false, j);
-            raiseOnBeforeResetPassword(args);
+        public static JsonResponse ResetPassword(string logon) {
+            var salt = BCrypt.GenerateSalt();
+            var newPassword = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).ToLower().Substring(1, 10);
+            var newDigestPassword = BCrypt.HashPassword(newPassword, salt);
+            var current = Session.Current;
+            var j = new JsonResponse();
+            var args = new UpdateAccountArgs(current, current.Account, "", false, j);
+            RaiseOnBeforeResetPassword(args);
             if(!args.AbortDefault) {
                 // @NewDigestPassword @Logon
-                string query = GetResString("/Sql/ResetPassword.sql");
-                using(SqlCommand cmd = new SqlCommand(query, Sql.Connection)) {
-                    cmd.Parameters.Add("@Logon", SqlDbType.UniqueIdentifier).Value = _logon;
+                var query = GetResString("/Sql/ResetPassword.sql");
+                using(var cmd = new SqlCommand(query, Sql.Connection)) {
+                    cmd.Parameters.Add("@Logon", SqlDbType.UniqueIdentifier).Value = logon;
                     cmd.Parameters.Add("@NewDigestPassword", SqlDbType.VarChar).Value = newDigestPassword;
-                    using(SqlDataReader r = cmd.ExecuteReader()) {
+                    using(var r = cmd.ExecuteReader()) {
                         r.Read();
                         j.Error = r.GetInt32(0);
                         j.Message = r.GetString(1);
                     }
                 }
             }
-            raiseOnAfterResetPassword(args);
+            RaiseOnAfterResetPassword(args);
             return j;
         }
         /// <summary>
         /// Changes the password by providing a logon, the old password and a new password.
         /// </summary>
-        /// <param name="_logon">The _logon.</param>
-        /// <param name="_oldPassword">The _old password.</param>
-        /// <param name="_newPassword">The _new password.</param>
+        /// <param name="logon">The logon.</param>
+        /// <param name="oldPassword">The old password.</param>
+        /// <param name="newPassword">The new password.</param>
         /// <returns></returns>
-        public static JsonResponse ChangePassword(string _logon, string _oldPassword, string _newPassword) {
-            JsonResponse j = new JsonResponse();
-            string oldNonce = GetNonce(_logon);
-            string newNonce = BCrypt.GenerateSalt();
-            Session current = Session.Current;
-            string oldDigestPassword = BCrypt.HashPassword(_oldPassword, oldNonce);
-            string newDigestPassword = BCrypt.HashPassword(_newPassword, newNonce);
-            UpdateAccountArgs args = new UpdateAccountArgs(current, current.Account, _oldPassword, false, j);
-            args.NewPassword = _newPassword;
-            raiseOnBeforeChangePassword(args);
+        public static JsonResponse ChangePassword(string logon, string oldPassword, string newPassword) {
+            var j = new JsonResponse();
+            var oldNonce = GetNonce(logon);
+            var newNonce = BCrypt.GenerateSalt();
+            var current = Session.Current;
+            var oldDigestPassword = BCrypt.HashPassword(oldPassword, oldNonce);
+            var newDigestPassword = BCrypt.HashPassword(newPassword, newNonce);
+            var args = new UpdateAccountArgs(current, current.Account, oldPassword, false, j) {NewPassword = newPassword};
+            RaiseOnBeforeChangePassword(args);
             if(!args.AbortDefault) {
-                string query = GetResString("/Sql/ChangePassword.sql");
+                var query = GetResString("/Sql/ChangePassword.sql");
                 // @NewDigestPassword @AccountId @DigestPassword
-                using(SqlCommand cmd = new SqlCommand(query, Sql.Connection)) {
-                    cmd.Parameters.Add("@Logon", SqlDbType.UniqueIdentifier).Value = _logon;
+                using(var cmd = new SqlCommand(query, Sql.Connection)) {
+                    cmd.Parameters.Add("@Logon", SqlDbType.UniqueIdentifier).Value = logon;
                     cmd.Parameters.Add("@DigestPassword", SqlDbType.VarChar).Value = oldDigestPassword;
                     cmd.Parameters.Add("@NewDigestPassword", SqlDbType.VarChar).Value = newDigestPassword;
                     cmd.Parameters.Add("@NewNonce", SqlDbType.VarChar).Value = newNonce;
                     cmd.Parameters.Add("@OldNonce", SqlDbType.VarChar).Value = oldNonce;
-                    using(SqlDataReader r = cmd.ExecuteReader()) {
+                    using(var r = cmd.ExecuteReader()) {
                         r.Read();
                         j.Error = r.GetInt32(0);
                         j.Message = r.GetString(1);
                     }
                 }
             }
-            raiseOnAfterChangePassword(args);
+            RaiseOnAfterChangePassword(args);
             return j;
         }
         #endregion

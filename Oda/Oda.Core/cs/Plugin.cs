@@ -144,10 +144,10 @@ namespace Oda
         /// </summary>
         /// <param name="resourcePath">The resource path.</param>
         /// <returns></returns>
-        public string GetResrouceString(string resourcePath)
+        public string GetResourceString(string resourcePath)
         {
             // see if this is a real resource path, if not return
-            string resName = FindManifestResourceName(resourcePath);
+            var resName = FindManifestResourceName(resourcePath);
             if (resName == "")
             {
                 return "";
@@ -171,7 +171,7 @@ namespace Oda
         /// </summary>
         /// <param name="resourcePath">The resource path starting from the project root.</param>
         /// <returns></returns>
-        public Stream GetResrouce(string resourcePath)
+        public Stream GetResource(string resourcePath)
         {
             // see if this is a real resource path, if not return
             var resName = FindManifestResourceName(resourcePath);
@@ -218,10 +218,10 @@ namespace Oda
         internal static void ActivatePlugins()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (Type type in from assembly in assemblies from type in assembly.GetTypes() where type.BaseType != null select type)
+            foreach (var type in from assembly in assemblies from type in assembly.GetTypes() where type.BaseType != null select type)
             {
                 // add plugins that are instantiated now
-                if (type.BaseType.FullName == typeof (Plugin).FullName)
+                if (type.BaseType != null && type.BaseType.FullName == typeof (Plugin).FullName)
                 {
                     var p = Activator.CreateInstance(type);
                     _Plugins.Add(p);
@@ -229,13 +229,9 @@ namespace Oda
                 // get a list of JsonMethods to be called on demand
                 if (type.BaseType.FullName != typeof (JsonMethods).FullName) continue;
                 var methods = type.GetMethods();
-                foreach (var method in methods)
+                foreach (var method in methods.Where(method => method.ReturnType.FullName == typeof (JsonResponse).FullName && method.IsStatic).Where(method => !_JsonMethods.ContainsKey(type.Name + "." + method.Name)))
                 {
-                    if (method.ReturnType.FullName != typeof (JsonResponse).FullName || !method.IsStatic) continue;
-                    if (!_JsonMethods.ContainsKey(type.Name + "." + method.Name))
-                    {
-                        _JsonMethods.Add(type.Name + "." + method.Name, method);
-                    }
+                    _JsonMethods.Add(type.Name + "." + method.Name, method);
                 }
             }
         }

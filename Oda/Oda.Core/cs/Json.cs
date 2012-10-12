@@ -28,7 +28,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Web;
-using System.Reflection;
 namespace Oda {
     #region Json enumerators
     /// <summary>
@@ -68,7 +67,7 @@ namespace Oda {
         /// <summary>
         /// The private field for Status
         /// </summary>
-        private string status;
+        private string _status;
         /// <summary>
         /// Gets or sets the Http header status.
         /// </summary>
@@ -76,14 +75,9 @@ namespace Oda {
         /// The status.
         /// </value>
         public string Status {
-            get {
-                if(status == null) {
-                    status = "200 OK";
-                }
-                return status;
-            }
+            get { return _status ?? (_status = "200 OK"); }
             set {
-                status = value;
+                _status = value;
             }
         }
         /// <summary>
@@ -103,7 +97,7 @@ namespace Oda {
         /// <summary>
         /// The private field for ContentType.
         /// </summary>
-        private string contentType;
+        private string _contentType;
         /// <summary>
         /// Gets or sets the type of the content returned in the Http header ContentType.
         /// </summary>
@@ -111,14 +105,9 @@ namespace Oda {
         /// The type of the content.
         /// </value>
         public string ContentType { 
-            get{
-                if(contentType == null) {
-                    contentType = "application/json; charset=utf-8";
-                }
-                return contentType;
-            }
+            get { return _contentType ?? (_contentType = "application/json; charset=utf-8"); }
             set {
-                contentType = value;
+                _contentType = value;
             }
         }
         /// <summary>
@@ -132,12 +121,7 @@ namespace Oda {
         /// The header encoding.
         /// </value>
         public Encoding HeaderEncoding {
-            get {
-                if(_headerEncoding == null) {
-                    _headerEncoding = Encoding.UTF8;
-                }
-                return _headerEncoding;
-            }
+            get { return _headerEncoding ?? (_headerEncoding = Encoding.UTF8); }
             set {
                 _headerEncoding = value;
             }
@@ -153,12 +137,7 @@ namespace Oda {
         /// The content encoding.
         /// </value>
         public Encoding ContentEncoding {
-            get {
-                if(_contentEncoding == null) {
-                    _contentEncoding = Encoding.UTF8;
-                }
-                return _contentEncoding;
-            }
+            get { return _contentEncoding ?? (_contentEncoding = Encoding.UTF8); }
             set {
                 _contentEncoding = value;
             }
@@ -180,7 +159,7 @@ namespace Oda {
         /// <summary>
         /// The private field for AttachmentFileName.
         /// </summary>
-        private string attachmentFileName;
+        private string _attachmentFileName;
         /// <summary>
         /// Gets or sets the name of the file attachment.
         /// </summary>
@@ -188,20 +167,15 @@ namespace Oda {
         /// The name of the file attachment.
         /// </value>
         public string AttachmentFileName {
-            get {
-                if(attachmentFileName == null) {
-                    attachmentFileName = "";
-                }
-                return attachmentFileName;
-            }
+            get { return _attachmentFileName ?? (_attachmentFileName = ""); }
             set {
-                attachmentFileName = value;
+                _attachmentFileName = value;
             }
         }
         /// <summary>
         /// private field for AttachmentContent.
         /// </summary>
-        private string attachmentContent;
+        private string _attachmentContent;
         /// <summary>
         /// Gets or sets the content of the attachment.
         /// </summary>
@@ -209,14 +183,9 @@ namespace Oda {
         /// The content of the attachment.
         /// </value>
         public string AttachmentContent {
-            get {
-                if(attachmentContent == null) {
-                    attachmentContent = "";
-                }
-                return attachmentContent;
-            }
+            get { return _attachmentContent ?? (_attachmentContent = ""); }
             set {
-                attachmentContent = value;
+                _attachmentContent = value;
             }
         }
         /// <summary>
@@ -226,28 +195,15 @@ namespace Oda {
         /// The attachment stream.
         /// </value>
         public Stream AttachmentStream { get; set; }
-        /// <summary>
-        /// The private field for Id.
-        /// </summary>
-        private Guid id;
+
         /// <summary>
         /// Gets or sets the unique id of the requested method.
         /// </summary>
         /// <value>
         /// The id.
         /// </value>
-        public Guid Id {
-            get {
-                // avoid null references
-                if(id == null) {
-                    id = Guid.Empty;
-                }
-                return id;
-            }
-            set {
-                id = value;
-            }
-        }
+        public Guid Id { get; set; }
+
         /// <summary>
         /// Gets or sets the name of the method.
         /// </summary>
@@ -256,14 +212,14 @@ namespace Oda {
         /// </value>
         public string MethodName { 
             get{
-                if(!this.ContainsKey("MethodName")) {
-                    this.Add("MethodName", "");
+                if(!ContainsKey("MethodName")) {
+                    Add("MethodName", "");
                 }
                 return this["MethodName"].ToString();
             }
             set{
-                if(!this.ContainsKey("MethodName")) {
-                    this.Add("MethodName", value);
+                if(!ContainsKey("MethodName")) {
+                    Add("MethodName", value);
                 } else {
                     this["MethodName"] = value;
                 }
@@ -303,58 +259,57 @@ namespace Oda {
         /// Initializes a new instance of the <see cref="JsonResponse"/> class.
         /// </summary>
         public JsonResponse() {
-            this.Add("Error", 0);
-            this.Add("Message", "");
+            Add("Error", 0);
+            Add("Message", "");
         }
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonResponse"/> class.
         /// </summary>
-        /// <param name="Error">The error number of this Json method.  
+        /// <param name="error">The error number of this Json method.  
         /// Typically 0 means no errors, any other number
         /// indicates an error.</param>
-        /// <param name="Message">Sets the message returned by this Json method.</param>
-        public JsonResponse(int Error, string Message) {
-            this.Add("Error", Error);
-            this.Add("Message", Message);
+        /// <param name="message">Sets the message returned by this Json method.</param>
+        public JsonResponse(int error, string message) {
+            Add("Error", error);
+            Add("Message", message);
         }
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonResponse"/> class.
         /// </summary>
-        /// <param name="Error">The error number of this Json method.  
+        /// <param name="error">The error number of this Json method.  
         /// Typically 0 means no errors, any other number
         /// indicates an error.</param>
-        /// <param name="Message">Sets the message returned by this Json method.</param>
-        /// <param name="Items">Additional items returned by this Json method.</param>
-        public JsonResponse(int Error, string Message, Dictionary<string, object> Items) {
-            this.Add("Error", Error);
-            this.Add("Message", Message);
-            foreach(KeyValuePair<string, object> item in Items) {
-                this.Add(item.Key, item.Value);
+        /// <param name="message">Sets the message returned by this Json method.</param>
+        /// <param name="items">Additional items returned by this Json method.</param>
+        public JsonResponse(int error, string message, Dictionary<string, object> items) {
+            Add("Error", error);
+            Add("Message", message);
+            foreach(var item in items) {
+                Add(item.Key, item.Value);
             }
         }
         #region Json Invoke Methods
         internal static JsonResponse[] InvokeJsonMethods(string decodedMethodRequest) {
-            List<JsonResponse> results = new List<JsonResponse>();
-            JArray requestedMethods = JsonConvert.DeserializeObject<JArray>(decodedMethodRequest);
-            foreach(JToken methodToken in requestedMethods) {
-                string methodName = methodToken[0].ToString();
+            var results = new List<JsonResponse>();
+            var requestedMethods = JsonConvert.DeserializeObject<JArray>(decodedMethodRequest);
+            foreach(var methodToken in requestedMethods) {
+                var methodName = methodToken[0].ToString();
                 if(Plugin._JsonMethods.ContainsKey(methodName)) {
-                    MethodInfo method = Plugin._JsonMethods[methodName];
-                    List<object> args = (List<object>)JsonResponse.JTokenToGeneric((JArray)methodToken[1]);
+                    var method = Plugin._JsonMethods[methodName];
+                    var args = (List<object>)JTokenToGeneric(methodToken[1]);
                     try {
-                        JsonResponse result = (JsonResponse)method.Invoke(null, args.ToArray());
+                        var result = (JsonResponse)method.Invoke(null, args.ToArray());
                         result.MethodName = methodName;
                         results.Add(result);
                     }catch(Exception ex){
-                        Exception iex = Core.GetInnermostException(ex);
-                        JsonResponse errorResult = new JsonResponse(2, string.Format("Error calling method {1}{0}Source: {2}{0} Message: {3}{0}Stack Trace: {4}",
-                            Environment.NewLine, methodName, iex.Source ,iex.Message, iex.StackTrace));
-                        errorResult.MethodName = methodName;
+                        var iex = Core.GetInnermostException(ex);
+                        var errorResult = new JsonResponse(2, string.Format("Error calling method {1}{0}Source: {2}{0} Message: {3}{0}Stack Trace: {4}",
+                            Environment.NewLine, methodName, iex.Source ,iex.Message, iex.StackTrace))
+                                              {MethodName = methodName};
                         results.Add(errorResult);
                     }
                 } else {
-                    JsonResponse errorResult = new JsonResponse(1,string.Format("Method {0} not found.",methodName));
-                    errorResult.MethodName = methodName;
+                    var errorResult = new JsonResponse(1,string.Format("Method {0} not found.",methodName)) {MethodName = methodName};
                     results.Add(errorResult);
                 }
             }
@@ -368,20 +323,19 @@ namespace Oda {
         /// <param name="obj">The obj.</param>
         /// <returns></returns>
         public static string ToJson(object obj) {
-            Newtonsoft.Json.JsonSerializer json = new Newtonsoft.Json.JsonSerializer();
-            json.NullValueHandling = NullValueHandling.Include;
-            json.ObjectCreationHandling = Newtonsoft.Json.ObjectCreationHandling.Replace;
-            json.MissingMemberHandling = Newtonsoft.Json.MissingMemberHandling.Ignore;
-            json.ReferenceLoopHandling = ReferenceLoopHandling.Error;
+            var json = new JsonSerializer
+                           {
+                               NullValueHandling = NullValueHandling.Include,
+                               ObjectCreationHandling = ObjectCreationHandling.Replace,
+                               MissingMemberHandling = MissingMemberHandling.Ignore,
+                               ReferenceLoopHandling = ReferenceLoopHandling.Error
+                           };
             json.Error += delegate(object sender, Newtonsoft.Json.Serialization.ErrorEventArgs args) {
-                string errObject = args.ErrorContext.OriginalObject.GetType().ToString();
                 args.ErrorContext.Handled = true;
             };
-            string output = "";
-            using(StringWriter sw = new StringWriter()) {
-                Newtonsoft.Json.JsonTextWriter writer = new JsonTextWriter(sw);
-                writer.Formatting = Newtonsoft.Json.Formatting.Indented;
-                writer.QuoteChar = '"';
+            string output;
+            using(var sw = new StringWriter()) {
+                var writer = new JsonTextWriter(sw) {Formatting = Formatting.Indented, QuoteChar = '"'};
                 json.Serialize(writer, obj);
                 output = sw.ToString();
             }
@@ -392,25 +346,24 @@ namespace Oda {
         /// </summary>
         /// <param name="jobject">The JObject.</param>
         /// <returns></returns>
-        public static object JTokenToGeneric(object jobject) {
+        public static object JTokenToGeneric(object jobject)
+        {
             if(jobject.GetType() == typeof(JValue)) {
-                JValue o = (JValue)jobject;
+                var o = (JValue)jobject;
                 return o.Value;
-            } else if(jobject.GetType() == typeof(JArray)) {
-                List<object> j = new List<object>();
-                foreach(object b in jobject as JArray) {
-                    j.Add(JTokenToGeneric(b));
-                }
-                return j;
-            } else {
-                Dictionary<string, object> j = new Dictionary<string, object>();
-                JObject o = (JObject)jobject;
-                foreach(KeyValuePair<string, JToken> i in o) {
-                    j.Add(i.Key, JTokenToGeneric(i.Value));
-                }
-                return j;
             }
+            if(jobject.GetType() == typeof(JArray))
+            {
+                return (from object b in jobject as JArray select JTokenToGeneric(b)).ToList();
+            }
+            var j = new Dictionary<string, object>();
+            var jo = (JObject)jobject;
+            foreach(var i in jo) {
+                j.Add(i.Key, JTokenToGeneric(i.Value));
+            }
+            return j;
         }
+
         #endregion
     }
     #endregion

@@ -19,11 +19,6 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE 
  * OR OTHER DEALINGS IN THE SOFTWARE.
 */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
@@ -43,14 +38,14 @@ namespace Oda {
         /// <summary>
         /// The private field for the Name property
         /// </summary>
-        private static string _Name;
+        private static string _name;
         /// <summary>
         /// Gets the name of the connection specified in the web.config of the host site.
         /// If no name is specified then the name "sql" will be used.
         /// </summary>
         public static string Name {
             get {
-                return _Name;
+                return _name;
             }
         }
         /// <summary>
@@ -60,17 +55,14 @@ namespace Oda {
         /// <summary>
         /// Private connection string drawn from the web.config
         /// </summary>
-        private static string connectionString;
+        private static string _connectionString;
         /// <summary>
         /// Initializes a new instance of the <see cref="Sql"/> class.
         /// </summary>
         public Sql() {
-            _Name = ConfigurationManager.AppSettings["connectionName"];
-            if(_Name == null) {
-                _Name = "sql";
-            }
-            connectionString = ConfigurationManager.ConnectionStrings[_Name].ConnectionString;
-            Connection = new SqlConnection(connectionString);
+            _name = ConfigurationManager.AppSettings["connectionName"] ?? "sql";
+            _connectionString = ConfigurationManager.ConnectionStrings[_name].ConnectionString;
+            Connection = new SqlConnection(_connectionString);
             Open();
         }
         /// <summary>
@@ -79,7 +71,7 @@ namespace Oda {
         /// </summary>
         /// <returns></returns>
         public static SqlConnection CreateConnection() {
-            return new SqlConnection(connectionString);
+            return new SqlConnection(_connectionString);
         }
         /// <summary>
         /// Opens the persistent connection.
