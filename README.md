@@ -20,6 +20,8 @@ A few help pages are already available for people interested in giving it a spin
 
 [Making Requests and Reading Responses](https://github.com/CorbinDallas/Oda/wiki/Making-Requests-and-Reading-Responses)
 
+[Creating Plugins](https://github.com/CorbinDallas/Oda/wiki/Creating-Plugins)
+
 Hope you enjoy Oda, or at the very least I hope it doesn't kill your dog.
 
 -CorbinDallas
