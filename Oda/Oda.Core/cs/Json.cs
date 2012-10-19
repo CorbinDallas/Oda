@@ -294,8 +294,8 @@ namespace Oda {
             var requestedMethods = JsonConvert.DeserializeObject<JArray>(decodedMethodRequest);
             foreach(var methodToken in requestedMethods) {
                 var methodName = methodToken[0].ToString();
-                if(Plugin._JsonMethods.ContainsKey(methodName)) {
-                    var method = Plugin._JsonMethods[methodName];
+                if(Plugin.InternalJsonMethods.ContainsKey(methodName)) {
+                    var method = Plugin.InternalJsonMethods[methodName];
                     var args = (List<object>)JTokenToGeneric(methodToken[1]);
                     try {
                         var result = (JsonResponse)method.Invoke(null, args.ToArray());

@@ -246,8 +246,8 @@ namespace Oda {
             // create box to put stuff in
             _items = new List<object>();
             // init plugins
-            Plugin._Plugins = new List<object>();
-            Plugin._JsonMethods = new Dictionary<string, System.Reflection.MethodInfo>();
+            Plugin.InternalPlugins = new List<object>();
+            Plugin.InternalJsonMethods = new Dictionary<string, System.Reflection.MethodInfo>();
             Plugin.ActivatePlugins();
             // raise init event
             var args = new HttpEventArgs(HttpApplication);

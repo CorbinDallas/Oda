@@ -50,7 +50,7 @@ namespace Oda
         /// </summary>
         public static object[] Plugins
         {
-            get { return _Plugins.ToArray(); }
+            get { return InternalPlugins.ToArray(); }
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Oda
         /// <returns></returns>
         public static object GetPlugin(Type pluginType)
         {
-            return _Plugins.Cast<Plugin>().FirstOrDefault(plugin => plugin.GetType().FullName == pluginType.FullName);
+            return InternalPlugins.Cast<Plugin>().FirstOrDefault(plugin => plugin.GetType().FullName == pluginType.FullName);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Oda
         /// <returns></returns>
         public static object GetPlugin(string pluginName)
         {
-            return _Plugins.Cast<Plugin>().FirstOrDefault(plugin => plugin.GetType().Name == pluginName);
+            return InternalPlugins.Cast<Plugin>().FirstOrDefault(plugin => plugin.GetType().Name == pluginName);
         }
 
         /// <summary>
@@ -160,7 +160,12 @@ namespace Oda
                     return sr.ReadToEnd();
                 }
             }
-            using (var sr = new StreamReader(GetType().Assembly.GetManifestResourceStream(resName)))
+            var s = GetType().Assembly.GetManifestResourceStream(resName);
+            if(s==null)
+            {
+                return "";
+            }
+            using (var sr = new StreamReader(s))
             {
                 return sr.ReadToEnd();
             }
@@ -196,8 +201,13 @@ namespace Oda
             {
                 return null;
             }
+            var s = GetType().Assembly.GetManifestResourceStream(resName);
+            if(s==null)
+            {
+                return null;
+            }
             // see if an inheritance file exists
-            return InheritanceFileExist(resourcePath) ? new Bitmap(GetInheritanceFile(resourcePath)) : new Bitmap(GetType().Assembly.GetManifestResourceStream(resName));
+            return InheritanceFileExist(resourcePath) ? new Bitmap(GetInheritanceFile(resourcePath)) : new Bitmap(s);
         }
 
         #region Private plugin field and plugin instantiator method
@@ -205,12 +215,12 @@ namespace Oda
         /// <summary>
         /// Internal list of plugins.
         /// </summary>
-        internal static List<object> _Plugins;
+        internal static List<object> InternalPlugins;
 
         /// <summary>
         /// A list of methods found who's class inherits the abstract class JsonMethods.
         /// </summary>
-        internal static Dictionary<string, MethodInfo> _JsonMethods;
+        internal static Dictionary<string, MethodInfo> InternalJsonMethods;
 
         /// <summary>
         /// Activates the plugins located in the host sites AppDomain (/bin).
@@ -224,14 +234,16 @@ namespace Oda
                 if (type.BaseType != null && type.BaseType.FullName == typeof (Plugin).FullName)
                 {
                     var p = Activator.CreateInstance(type);
-                    _Plugins.Add(p);
+                    InternalPlugins.Add(p);
                 }
                 // get a list of JsonMethods to be called on demand
+                if (type.BaseType == null) { continue; }
                 if (type.BaseType.FullName != typeof (JsonMethods).FullName) continue;
                 var methods = type.GetMethods();
-                foreach (var method in methods.Where(method => method.ReturnType.FullName == typeof (JsonResponse).FullName && method.IsStatic).Where(method => !_JsonMethods.ContainsKey(type.Name + "." + method.Name)))
+                var t = type;
+                foreach (var method in methods.Where(method => method.ReturnType.FullName == typeof (JsonResponse).FullName && method.IsStatic).Where(method => !InternalJsonMethods.ContainsKey(t.Name + "." + method.Name)))
                 {
-                    _JsonMethods.Add(type.Name + "." + method.Name, method);
+                    InternalJsonMethods.Add(type.Name + "." + method.Name, method);
                 }
             }
         }
