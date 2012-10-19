@@ -15,14 +15,14 @@ namespace Oda.UI {
         /// </summary>
         public UIPlugin() {
             UIRef = this;
-            Core.BeginHttpRequest += Core_BeginHttpRequest;
+            Core.BeginHttpRequest += CoreBeginHttpRequest;
         }
         /// <summary>
         /// Handles the BeginHttpRequest event of the Core control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-        void Core_BeginHttpRequest(object sender, EventArgs e) {
+        static void CoreBeginHttpRequest(object sender, EventArgs e) {
             var request = HttpContext.Current.Request;
             var response = HttpContext.Current.Response;
             var lPath = request.Path.ToLower();
