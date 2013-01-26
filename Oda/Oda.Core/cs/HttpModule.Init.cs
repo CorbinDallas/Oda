@@ -275,7 +275,7 @@ namespace Oda {
             var response = HttpContext.Current.Response;
             // check for Json requests made to the JsonMethodUrl
             // and clear the requests
-            if(request.FilePath == JsonMethodUrl) {
+            if(request.FilePath.Equals(JsonMethodUrl)) {
                 // a request was made to the responder Url
                 // deserialize the request and execute the requested methods
                 // gather the results and add them to the results collection

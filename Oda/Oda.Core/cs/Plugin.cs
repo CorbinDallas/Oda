@@ -60,7 +60,7 @@ namespace Oda
         /// <returns></returns>
         public static object GetPlugin(Type pluginType)
         {
-            return InternalPlugins.Cast<Plugin>().FirstOrDefault(plugin => plugin.GetType().FullName == pluginType.FullName);
+            return InternalPlugins.Cast<Plugin>().FirstOrDefault(plugin => plugin.GetType().FullName.Equals(pluginType.FullName));
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Oda
         /// <returns></returns>
         public static object GetPlugin(string pluginName)
         {
-            return InternalPlugins.Cast<Plugin>().FirstOrDefault(plugin => plugin.GetType().Name == pluginName);
+            return InternalPlugins.Cast<Plugin>().FirstOrDefault(plugin => plugin.GetType().Name.Equals(pluginName));
         }
 
         /// <summary>
@@ -148,9 +148,9 @@ namespace Oda
         {
             // see if this is a real resource path, if not return
             var resName = FindManifestResourceName(resourcePath);
-            if (resName == "")
+            if (resName.Equals(string.Empty))
             {
-                return "";
+                return string.Empty;
             }
             // see if an inheritance file exists
             if (InheritanceFileExist(resourcePath))
@@ -163,7 +163,7 @@ namespace Oda
             var s = GetType().Assembly.GetManifestResourceStream(resName);
             if(s==null)
             {
-                return "";
+                return string.Empty;
             }
             using (var sr = new StreamReader(s))
             {
@@ -180,7 +180,7 @@ namespace Oda
         {
             // see if this is a real resource path, if not return
             var resName = FindManifestResourceName(resourcePath);
-            if (resName == "")
+            if (resName.Equals(string.Empty))
             {
                 return null;
             }
@@ -197,7 +197,7 @@ namespace Oda
         {
             // see if this is a real resource path, if not return
             var resName = FindManifestResourceName(resourcePath);
-            if (resName == "")
+            if (resName.Equals(string.Empty))
             {
                 return null;
             }
@@ -231,17 +231,17 @@ namespace Oda
             foreach (var type in from assembly in assemblies from type in assembly.GetTypes() where type.BaseType != null select type)
             {
                 // add plugins that are instantiated now
-                if (type.BaseType != null && type.BaseType.FullName == typeof (Plugin).FullName)
+                if (type.BaseType != null && type.BaseType.FullName.Equals(typeof (Plugin).FullName))
                 {
                     var p = Activator.CreateInstance(type);
                     InternalPlugins.Add(p);
                 }
                 // get a list of JsonMethods to be called on demand
                 if (type.BaseType == null) { continue; }
-                if (type.BaseType.FullName != typeof (JsonMethods).FullName) continue;
+                if (!type.BaseType.FullName.Equals(typeof (JsonMethods).FullName)){ continue;}
                 var methods = type.GetMethods();
                 var t = type;
-                foreach (var method in methods.Where(method => method.ReturnType.FullName == typeof (JsonResponse).FullName && method.IsStatic).Where(method => !InternalJsonMethods.ContainsKey(t.Name + "." + method.Name)))
+                foreach (var method in methods.Where(method => method.ReturnType.FullName.Equals(typeof (JsonResponse).FullName) && method.IsStatic).Where(method => !InternalJsonMethods.ContainsKey(t.Name + "." + method.Name)))
                 {
                     InternalJsonMethods.Add(type.Name + "." + method.Name, method);
                 }

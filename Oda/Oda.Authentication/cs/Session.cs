@@ -300,9 +300,9 @@ namespace Oda {
         /// </summary>
         /// <returns></returns>
         private static Guid GetSessionIdFromCookie() {
-            HttpContext context = HttpContext.Current;
+            var context = HttpContext.Current;
             // check if this request has a cookie with a sessionId
-            HttpCookie sessionCookie = context.Request.Cookies[SessionKey];
+            var sessionCookie = context.Request.Cookies[SessionKey];
             string strSessionId;
             if(sessionCookie == null) {
                 // no cookie found, so assign one
