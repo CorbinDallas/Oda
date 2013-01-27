@@ -60,7 +60,7 @@ namespace Oda
         /// <returns></returns>
         public static object GetPlugin(Type pluginType)
         {
-            return InternalPlugins.Cast<Plugin>().FirstOrDefault(plugin => plugin.GetType().FullName.Equals(pluginType.FullName));
+            return InternalPlugins.Cast<Plugin>().FirstOrDefault(plugin => plugin.GetType() == pluginType);
         }
 
         /// <summary>
@@ -231,17 +231,17 @@ namespace Oda
             foreach (var type in from assembly in assemblies from type in assembly.GetTypes() where type.BaseType != null select type)
             {
                 // add plugins that are instantiated now
-                if (type.BaseType != null && type.BaseType.FullName.Equals(typeof (Plugin).FullName))
+                if (type.BaseType != null && type.BaseType == typeof(Plugin))
                 {
                     var p = Activator.CreateInstance(type);
                     InternalPlugins.Add(p);
                 }
                 // get a list of JsonMethods to be called on demand
                 if (type.BaseType == null) { continue; }
-                if (!type.BaseType.FullName.Equals(typeof (JsonMethods).FullName)){ continue;}
+                if (type.BaseType != typeof(JsonMethods)){ continue;}
                 var methods = type.GetMethods();
                 var t = type;
-                foreach (var method in methods.Where(method => method.ReturnType.FullName.Equals(typeof (JsonResponse).FullName) && method.IsStatic).Where(method => !InternalJsonMethods.ContainsKey(t.Name + "." + method.Name)))
+                foreach (var method in methods.Where(method => method.ReturnType == typeof(JsonResponse) && method.IsStatic).Where(method => !InternalJsonMethods.ContainsKey(t.Name + "." + method.Name)))
                 {
                     InternalJsonMethods.Add(type.Name + "." + method.Name, method);
                 }
