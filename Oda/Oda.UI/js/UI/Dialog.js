@@ -713,6 +713,7 @@ Oda.UI.Dialog = function (args) {
     };
     self.title = function title(obj) {
         if (self.raiseEvent('titleChanged', self.titleBarText, obj, undefined)) { return self; };
+        if (obj === undefined) { return self; }
         self.titleBarText.originalText = undefined;
         self.appendObj(self.titleBarText, obj);
         return self.titleBarText.textContent || self.titleBarText.innerText;
