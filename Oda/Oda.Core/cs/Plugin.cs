@@ -26,6 +26,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Oda
 {
@@ -222,13 +223,111 @@ namespace Oda
         /// </summary>
         internal static Dictionary<string, MethodInfo> InternalJsonMethods;
 
+        private static void LoadJsonMethods(IEnumerable<Assembly> assemblies)
+        {
+            var jsonMethods = (from assembly in assemblies from type in assembly.GetTypes() where type.BaseType == typeof(JsonMethods) select type).ToList();
+            foreach (var type in jsonMethods)
+            {
+                // get a list of JsonMethods to be called on demand
+                var methods = type.GetMethods();
+                foreach (var method in methods.
+                    Where(method => method.ReturnType == typeof (JsonResponse) && method.IsStatic).
+                    Where(method => !InternalJsonMethods.ContainsKey(type.Name + "." + method.Name)))
+                {
+                    InternalJsonMethods.Add(type.Name + "." + method.Name, method);
+                }
+            }
+        }
+        /// <summary>
+        /// Used internally to load a plugin when dependencies are satisfied.
+        /// </summary>
+        /// <param name="type">The type to load.</param>
+        /// <param name="unloadedPlugins">List of unloaded plugins.</param>
+        /// <param name="loadedPlugins">List of loaded plugins.</param>
+        /// <returns></returns>
+        private static void LoadPlugin(Type type, ICollection<Type> unloadedPlugins, ICollection<Type> loadedPlugins)
+        {
+            var p = Activator.CreateInstance(type);
+            InternalPlugins.Add(p);
+            unloadedPlugins.Remove(type);
+            loadedPlugins.Add(type);
+        }
         /// <summary>
         /// Activates the plugins located in the host sites AppDomain (/bin).
         /// </summary>
         internal static void ActivatePlugins()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var type in from assembly in assemblies from type in assembly.GetTypes() where type.BaseType != null select type)
+            // load all types that have a base class of Oda.Plugin
+            var unloadedPlugins = (from assembly in assemblies from type in assembly.GetTypes() where type.BaseType == typeof (Plugin) select type).ToList();
+            var loadedPlugins = new List<Type>();
+            // index counter for walking through dependencies
+            var x = 0;
+            while (unloadedPlugins.Count>0)
+            {
+                // if the index is too high, start over from the begining
+                // this can happen if a dependencies are in an unusual order (e.g.: 1 requires 3, 3 requires 2, 2 requires 4)
+                if(x>unloadedPlugins.Count-1)
+                {
+                    x = 0;
+                }
+                // get the first unloaded plugin
+                var type = unloadedPlugins[x];
+                // get the plugins dependencies from the classes PluginDependencies attribute 
+                var d = (PluginDependencies[])type.GetCustomAttributes(typeof(PluginDependencies), true);
+                // if there are no dependencies load
+                // the plugin now and remove from the
+                // unloaded plugins list.
+                if(d.Length == 0)
+                {
+                    LoadPlugin(type, unloadedPlugins, loadedPlugins);
+                    x = 0;
+                    continue;
+                } 
+                // there are dependencies
+                var dependencies = d[0].RequiredTypes;
+                // next try and invalidate this boolean by ...
+                var allDependenciesFound = true;
+                // ... checking already loaded plugins for the presence of loaded dependancies
+                foreach (var dependentType in dependencies.Where(dependentType => !loadedPlugins.Contains(dependentType)))
+                {
+                    allDependenciesFound = false;
+                    // check to see if this dependency will _ever_ be loaded
+                    if (unloadedPlugins.Contains(dependentType)) continue;
+                    // there is a missing dependency. 
+                    // Throw and exception telling the user what plugin needs it and what the needed plugin is called.
+                    
+                    // create a string list of the plugins required
+                    var sb = new StringBuilder();
+                    foreach(var dpn in dependencies)
+                    {
+                        sb.Append(dpn.FullName + ", ");
+                    }
+                    sb.Remove(sb.Length - 2, 2);// remove trailing ', '
+                    Exception e = new DllNotFoundException(string.Format(@"The plugin {0} requires the following plugins {1}, however plugin {2} is missing.",
+                                                                         type.FullName, sb, dependentType.FullName));
+                    throw e;
+                }
+                if(allDependenciesFound)
+                {
+                    // All dependencies were found
+                    // go ahead and load this type now.
+                    LoadPlugin(type, unloadedPlugins, loadedPlugins);
+                    x = 0;
+                }else{
+                    // one or more dependencies were not found
+                    // skip loading this type for now until
+                    // the proper dependency can be found
+                    x++;
+                }
+            }
+            // now load json methods
+            LoadJsonMethods(assemblies);
+
+
+
+            /*
+            foreach ()
             {
                 // add plugins that are instantiated now
                 if (type.BaseType != null && type.BaseType == typeof(Plugin))
@@ -246,8 +345,62 @@ namespace Oda
                     InternalJsonMethods.Add(type.Name + "." + method.Name, method);
                 }
             }
+             */
         }
 
         #endregion
+    }
+    /// <summary>
+    /// Attribute class for specifiying list of
+    /// Oda plugins required by this plugin that should
+    /// be loaded first.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class PluginDependencies : Attribute
+    {
+        /// <summary>
+        /// List of dependant types that this plugin requires
+        /// loaded before instantiation.
+        /// </summary>
+        public Type[] RequiredTypes { get; private set; }
+        /// <summary>
+        /// List of dependant types that this plugin requires
+        /// loaded before instantiation.
+        /// </summary>
+        /// <param name="types">Array of dependant types.</param>
+        public PluginDependencies(Type[] types)
+        {
+            RequiredTypes = types;
+        }
+        /// <summary>
+        /// List of dependant types that this plugin requires
+        /// loaded before instantiation.
+        /// </summary>
+        /// <param name="type1"></param>
+        /// <param name="type2"></param>
+        /// <param name="type3"></param>
+        /// <param name="type4"></param>
+        /// <param name="type5"></param>
+        /// <param name="type6"></param>
+        /// <param name="type7"></param>
+        /// <param name="type8"></param>
+        /// <param name="type9"></param>
+        /// <param name="type10"></param>
+        public PluginDependencies(Type type1, Type type2 = null, Type type3 = null, Type type4 = null,
+            Type type5 = null, Type type6 = null, Type type7 = null, Type type8 = null, Type type9 = null, Type type10 = null)
+        {
+            var typesToAdd = new List<Type>();
+            if (type1 != null) { typesToAdd.Add(type1); }
+            if (type2 != null) { typesToAdd.Add(type2); }
+            if (type3 != null) { typesToAdd.Add(type3); }
+            if (type4 != null) { typesToAdd.Add(type4); }
+            if (type5 != null) { typesToAdd.Add(type5); }
+            if (type6 != null) { typesToAdd.Add(type6); }
+            if (type7 != null) { typesToAdd.Add(type7); }
+            if (type8 != null) { typesToAdd.Add(type8); } 
+            if (type9 != null) { typesToAdd.Add(type9); }
+            if (type10 != null) { typesToAdd.Add(type10); }
+            RequiredTypes = typesToAdd.ToArray();
+        }
     }
 }
