@@ -385,8 +385,8 @@ namespace Oda {
         /// <param name="resourceString">The resource string.</param>
         /// <returns></returns>
         private static string GetResString(string resourceString) {
-            return SessionInit.
-                SessionInitRef.GetResourceString(resourceString);
+            return AuthenticationPlugin.
+                AuthenticationPluginRef.GetResourceString(resourceString);
         }
         #endregion
         #region JSON Methods
@@ -483,7 +483,7 @@ namespace Oda {
         /// <summary>
         /// Resets the password based on logon.
         /// Warning: this method shouldn't be used without
-        /// subscribing to the IAuthentication.AfterResetPassword event.
+        /// subscribing to the AfterResetPassword event.
         /// Failure to do so will create a password nobody can discover.
         /// </summary>
         /// <param name="logon">The logon.</param>

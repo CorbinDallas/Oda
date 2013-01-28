@@ -164,8 +164,8 @@ namespace Oda {
         /// <param name="resourceString">The resource string.</param>
         /// <returns></returns>
         private static string GetResString(string resourceString) {
-            return SessionInit.
-                SessionInitRef.GetResourceString(resourceString);
+            return AuthenticationPlugin.
+                AuthenticationPluginRef.GetResourceString(resourceString);
         }
         #region JSON Methods
         /// <summary>

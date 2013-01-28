@@ -29,16 +29,18 @@ namespace Oda {
     /// <summary>
     /// The main plugin class for Sessions and Authentication
     /// </summary>
-    public class SessionInit : Plugin {
-        internal static SessionInit SessionInitRef;
+    [PluginDependencies(typeof(Sql))]
+    public class AuthenticationPlugin : Plugin {
+        internal static AuthenticationPlugin AuthenticationPluginRef;
         /// <summary>
-        /// Initializes a new instance of the <see cref="SessionInit"/> class.
+        /// Initializes a new instance of the <see cref="AuthenticationPlugin"/> class.
         /// Bind events to Initialize and BeginHttpRequest.
         /// </summary>
-        public SessionInit() {
+        public AuthenticationPlugin()
+        {
             Core.Initialize += CoreInitialize;
             Core.BeginHttpRequest += Core_BeginHttpRequest;
-            SessionInitRef = this;
+            AuthenticationPluginRef = this;
         }
         /// <summary>
         /// Handles the BeginHttpRequest event of the Core control.
@@ -176,7 +178,7 @@ namespace Oda {
             if(SuspendUpdates) {
                 return this;
             }
-            string query = SessionInit.SessionInitRef.GetResourceString("/Sql/UpdateSessionProperties.sql");
+            string query = AuthenticationPlugin.AuthenticationPluginRef.GetResourceString("/Sql/UpdateSessionProperties.sql");
             //@AccountId @SessionId @SessionPropertyId @Name @Value @DataType
             using(var cmd = new SqlCommand(query,cn, trans)){
                 cmd.Parameters.Add("@SessionPropertyId", SqlDbType.UniqueIdentifier).Value = Id;
@@ -352,7 +354,7 @@ namespace Oda {
             // Result 2
             // --> SessionPropertyId, Name, Value, DataType
             // @SessionId, @Referer, @UserAgent, @IpAddress, @AccountId
-            var refreshCommand = SessionInit.SessionInitRef.GetResourceString("/Sql/CreateUpdateSession.sql");
+            var refreshCommand = AuthenticationPlugin.AuthenticationPluginRef.GetResourceString("/Sql/CreateUpdateSession.sql");
             using(var cmd = new SqlCommand(refreshCommand, cn)) {
                 cmd.Parameters.Add("@SessionId", SqlDbType.UniqueIdentifier).Value = Id;
                 var s = HttpContext.Current.Request.ServerVariables;
