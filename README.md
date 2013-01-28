@@ -10,9 +10,6 @@ Oda right now supports a sophisticated JSON request/response system, plugins and
 ##Examples? Yeah, we got examples.##
 There are a few (two) sample plugins (SQL, Authentication).  More plugins will come later as we test how Oda needs to fit the needs of plugin developers.
 
-##Don't hate me because you don't even know me yet!##
-Oda is still in the very early stages of development, so there is very little documentation, but there will eventually be full documentation of every aspect of Oda.
-
 ##Well hey, sign me up!##
 A few help pages are already available for people interested in giving it a spin:
 
@@ -22,7 +19,7 @@ A few help pages are already available for people interested in giving it a spin
 
 [Creating Plugins](https://github.com/CorbinDallas/Oda/wiki/Creating-Plugins)
 
-Hope you enjoy Oda, or at the very least I hope it doesn't kill your dog.
+I Hope you enjoy Oda as much as I enjoyed creating it.
 
 -CorbinDallas
 
