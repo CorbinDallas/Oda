@@ -349,13 +349,6 @@ var Oda = {
             * @public
             */
             rectToString: function (rect) {
-                ///	<summary>
-                ///     Converts a <c>Oda.UI.Rect</c> object into a string for debugging.
-                ///	</summary>
-                ///	<param name="rect" type="Oda.UI.Rect">
-                ///     The object to clip.
-                ///	</param>
-                /// <returns type="String"/>
                 return "x:" + rect.x + ",y:" + rect.y + ",w:" + rect.w + ",h:" + rect.h;
             },
             /**
