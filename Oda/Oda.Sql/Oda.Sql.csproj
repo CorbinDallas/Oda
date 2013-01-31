@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Oda.Core\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -45,6 +48,7 @@
   <ItemGroup>
     <Compile Include="cs\Sql.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Sql\CreateUIColumns.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Oda.Core\Oda.Core.csproj">
@@ -52,6 +56,11 @@
       <Name>Oda.Core</Name>
       <Private>False</Private>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Sql\CreateJsonCrud.sql" />
+    <Content Include="Sql\JsonCrud.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
