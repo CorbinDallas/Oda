@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
-using System.Threading;
 using System.Data.SqlClient;
 using System.Data;
 namespace Oda {
@@ -62,10 +61,6 @@ namespace Oda {
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         void CoreInitialize(object sender, EventArgs e) {
-            // wait until the connection is opened
-            while(Sql.State != ConnectionState.Open) {
-                Thread.Sleep(10);
-            }
             // check that the session table exists
             using(var cmd = new SqlCommand(GetResourceString("/Sql/CreateSessionTable.sql"), Sql.Connection)) {
                 cmd.ExecuteNonQuery();
