@@ -48,7 +48,9 @@
   <ItemGroup>
     <Compile Include="cs\Sql.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="Sql\CreateUIColumns.sql" />
+    <EmbeddedResource Include="Sql\ColumnSchema.sql" />
+    <EmbeddedResource Include="Sql\CreateUIColumns.sql" />
+    <EmbeddedResource Include="Sql\ObjectSchema.sql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Oda.Core\Oda.Core.csproj">
@@ -59,8 +61,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Sql\CreateJsonCrud.sql" />
-    <Content Include="Sql\JsonCrud.sql" />
+    <EmbeddedResource Include="Sql\CreateJsonCrud.sql" />
+    <EmbeddedResource Include="Sql\JsonCrud.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
