@@ -1,0 +1,2 @@
+﻿select 0 as OrderBy, 0 as OrderDirection, name, id, 0 as Rows, 0 as Columns,
+0 as Checksum, '' as Title, '' as Description, '' as Help, 0 as hidden, type, parent_obj as ParentId from sysobjects with (nolock);
