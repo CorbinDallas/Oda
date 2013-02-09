@@ -9,12 +9,11 @@ The goals of Oda is to provide an easy way to make AJAX/JSON web sites
 without having to employ heavy weight frameworks to get JSON requests and responses flowing through your application. 
 
 ##What can it do right now?##
-Oda right now supports a JSON request/response method mapping system, 
-plugins.  There are a few plugins available too:
+Oda right now supports a JSON method mapping system and plugins.  There are a few plugins available too:
 
 1. Oda.Sql.  Allows connections to a Microsoft SQL Server 2003 or newer.  Comes with many JSON utilities for SQL.
 2. Oda.Authentication.  Allows for secure authentication, account and contact management.
-3. Oda.UI.  JavaScript UI API for making JavaScript applications that use Oda.
+3. Oda.UI.  JavaScript UI API for making JavaScript applications that use Oda.  This plugin in not yet finished.
 
 ##Roadmap##
 1. Oda.UI
