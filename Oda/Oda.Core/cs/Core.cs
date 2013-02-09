@@ -22,6 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web;
 using System.Reflection;
 using System.ComponentModel;
@@ -64,6 +66,50 @@ namespace Oda {
             }
         }
         #endregion
+        /// <summary>
+        /// Logging utility.
+        /// </summary>
+        public static Log Log { get; internal set; }
+        /// <summary>
+        /// Gets or sets the log verbosity.  0 = less detail 10 = more detail.  Default is 5. Max value is Int32.MaxValue.
+        /// This is set via the Web.Config application setting LogVerbosity.
+        /// </summary>
+        /// <seealso cref="Oda.Log"/>
+        /// <seealso cref="LogTimestamp"/>
+        /// <seealso cref="LogPath"/>
+        public static int LogVerbosity { get; internal set; }
+        /// <summary>
+        /// When <c>true</c> then a timestamp will be included in the log output.
+        /// This is set via the Web.Config application setting LogTimestamp.
+        /// </summary>
+        /// <seealso cref="Oda.Log"/>
+        /// <seealso cref="LogVerbosity"/>
+        /// <seealso cref="LogPath"/>
+        public static bool LogTimestamp { get; internal set; }
+        /// <summary>
+        /// The path the log will write to.
+        /// This is set via the Web.Config application setting LogPath.
+        /// </summary>
+        /// <seealso cref="Oda.Log"/>
+        /// <seealso cref="LogVerbosity"/>
+        /// <seealso cref="LogTimestamp"/>
+        public static string LogPath { get; internal set; }
+        /// <summary>
+        /// Path to the executing assembly file.
+        /// </summary>
+        public static string DynamicDirectory { get; internal set; }
+        /// <summary>
+        /// Physical path to root of the site that is running Oda.Core.
+        /// </summary>
+        public static string BaseDirectory { get; internal set; }
+        /// <summary>
+        /// Physical path to the directory that contains the Oda.Core.dll file and plugins.
+        /// </summary>
+        public static string RelativeSearchPath { get; internal set; }
+        /// <summary>
+        /// Gets version information about Oda Core.
+        /// </summary>
+        public static string Version { get; internal set; }
         /// <summary>
         /// Gets the state of Oda Core.
         /// </summary>
@@ -109,6 +155,17 @@ namespace Oda {
             set {
                 _jsonMethodUrl = value;
             }
+        }
+        /// <summary>
+        /// Hashes the specified message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
+        public static string Hash(string message){
+            var md5 = new MD5CryptoServiceProvider();
+            var digest = md5.ComputeHash(Encoding.UTF8.GetBytes(message));
+            var base64Digest = Convert.ToBase64String(digest, 0, digest.Length);
+            return base64Digest.Substring(0, base64Digest.Length - 2);
         }
         /// <summary>
         /// Resolves the embedded assemblies.

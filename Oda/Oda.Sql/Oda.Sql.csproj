@@ -46,8 +46,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="cs\OrderDirection.cs" />
     <Compile Include="cs\Sql.cs" />
+    <Compile Include="cs\SqlParameters.cs" />
+    <Compile Include="cs\SqlWhere.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Sql\CreateParameterTypeToDeclarationFunction.sql" />
+    <EmbeddedResource Include="Sql\CreateRowUpdateTableToUpdateStringFunction.sql" />
+    <EmbeddedResource Include="Sql\CreateSplitFunction.sql" />
+    <EmbeddedResource Include="Sql\ParameterTypeToDeclarationFunction.sql" />
+    <EmbeddedResource Include="Sql\RowUpdateTableToUpdateStringFunction.sql" />
+    <EmbeddedResource Include="Sql\CreateParameterListTableType.sql" />
     <EmbeddedResource Include="Sql\ColumnSchema.sql" />
     <EmbeddedResource Include="Sql\CreateUIColumns.sql" />
     <EmbeddedResource Include="Sql\ObjectSchema.sql" />
@@ -59,10 +68,23 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="Sql\CreateJsonCrud.sql" />
-    <EmbeddedResource Include="Sql\JsonCrud.sql" />
+    <EmbeddedResource Include="Sql\CreateCreateDeleteOrUpdate.sql" />
+    <EmbeddedResource Include="Sql\CreateDeleteOrUpdate..sql" />
+    <EmbeddedResource Include="Sql\CreateRowUpdateTableType.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\CreateJsonReadOrDelete.sql" />
+    <EmbeddedResource Include="Sql\JsonReadOrDelete.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\ExecCreateDeleteOrUpdate.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\ExecJsonReadOrDelete.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Sql\SplitFunction.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

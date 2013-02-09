@@ -247,10 +247,15 @@ namespace Oda
         /// <returns></returns>
         private static void LoadPlugin(Type type, ICollection<Type> unloadedPlugins, ICollection<Type> loadedPlugins)
         {
-            var p = Activator.CreateInstance(type);
-            InternalPlugins.Add(p);
-            unloadedPlugins.Remove(type);
-            loadedPlugins.Add(type);
+            try {
+                var p = Activator.CreateInstance(type);
+                InternalPlugins.Add(p);
+                Core.Log.WriteLine(Core.GetAssemblyVersionString(Assembly.GetAssembly(type)),1);
+                unloadedPlugins.Remove(type);
+                loadedPlugins.Add(type);
+            }catch(Exception e) {
+                throw Core.GetInnermostException(e);
+            }
         }
         /// <summary>
         /// Activates the plugins located in the host sites AppDomain (/bin).

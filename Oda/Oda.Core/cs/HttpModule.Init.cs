@@ -21,7 +21,9 @@
 */
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
+using System.Reflection;
 using System.Web;
 namespace Oda {
     #region Http Event Interface
@@ -228,17 +230,48 @@ namespace Oda {
         #endregion
         #endregion
         #region HttpModule Event Interface Subscriber
+        private static void GetWebConfigSettings() {
+            LogVerbosity = GetWebConfigSetting("LogVerbosity", 5);
+            LogTimestamp = GetWebConfigSetting("LogTimestamp", true);
+            LogPath = GetWebConfigSetting("LogPath", "~/log").Replace("~/", BaseDirectory);
+        }
+        private static void LogVersionInformation() {
+            Version = GetAssemblyVersionString(Assembly.GetExecutingAssembly());
+            Log.WriteLine(Version);
+        }
         /// <summary>
-        /// Inits the specified sender.
+        /// Gets the assembly name, version and copyright information.
         /// </summary>
-        /// <param name="sender">The sender.</param>
+        /// <param name="asm"></param>
+        /// <returns></returns>
+        public static string GetAssemblyVersionString(Assembly asm) {
+            var version = asm.GetName().Version;
+            var c = asm.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+            var copyright = ((AssemblyCopyrightAttribute)c[0]).Copyright;
+            return String.Format("{0} {1}",asm.FullName, copyright);
+        }
+        /// <summary>
+        /// Starts up Oda HttpModule.  Starts logging, instantiates plugins, connects to events and creates Json mapper.
+        /// </summary>
+        /// <param name="sender">The HTTP application.</param>
         public void Init(HttpApplication sender) {
-            // make a global reference
-            HttpApplication = sender;
             // bind events
-            HttpApplication.BeginRequest += BeginRequest;
-            HttpApplication.EndRequest += EndRequest;
-            HttpApplication.Error += AppError;
+            sender.BeginRequest += BeginRequest;
+            sender.EndRequest += EndRequest;
+            sender.Error += AppError;
+            // only init the http module one time
+            if (HttpApplication != null) return;
+            HttpApplication = sender;
+            var domain = AppDomain.CurrentDomain;
+            BaseDirectory = domain.BaseDirectory;
+            RelativeSearchPath = domain.RelativeSearchPath;
+            DynamicDirectory = domain.DynamicDirectory;
+            GetWebConfigSettings();
+            // start logging
+            var logFileName = string.Format("{0}.log", DateTime.Now.ToString("G").Replace("/", ".").Replace(":", ".").Replace(" ", "_"));
+            Log = new Log(System.IO.Path.Combine(LogPath, logFileName), LogVerbosity, LogTimestamp);
+            // write some info about the assembly
+            LogVersionInformation();
             // resolve embedded assemblies
             AppDomain.CurrentDomain.AssemblyResolve += ResolveEmbeddedAssembiles;
             if (StartupState != StartupState.NotYetStarted) return;
@@ -372,6 +405,76 @@ namespace Oda {
         public void AppError(object sender, EventArgs e) {
             var args = new HttpEventArgs(HttpApplication);
             RaiseOnApplicationError(args);
+        }
+        #endregion
+        #region GetWebConfigSetting Overloads
+        /// <summary>
+        /// Gets a web config setting, converts the string to the target type and returns an object type.
+        /// </summary>
+        /// <param name="appSettingKeyName">The sender.</param>
+        /// <param name="defaultValue">The sender.</param>
+        public static bool GetWebConfigSetting(string appSettingKeyName, bool defaultValue) {
+            var keyValue = ConfigurationManager.AppSettings[appSettingKeyName];
+            bool output;
+            return keyValue == null ? defaultValue : (bool.TryParse(keyValue, out output) ? output : defaultValue);
+        }
+        /// <summary>
+        /// Gets a web config setting, converts the string to the target type and returns an object type.
+        /// </summary>
+        /// <param name="appSettingKeyName">The sender.</param>
+        /// <param name="defaultValue">The sender.</param>
+        public static int GetWebConfigSetting(string appSettingKeyName, int defaultValue) {
+            var keyValue = ConfigurationManager.AppSettings[appSettingKeyName];
+            int output;
+            return keyValue == null ? defaultValue : (int.TryParse(keyValue, out output) ? output : defaultValue);
+        }
+        /// <summary>
+        /// Gets a web config setting, converts the string to the target type and returns an object type.
+        /// </summary>
+        /// <param name="appSettingKeyName">The sender.</param>
+        /// <param name="defaultValue">The sender.</param>
+        public static Guid GetWebConfigSetting(string appSettingKeyName, Guid defaultValue) {
+            var keyValue = ConfigurationManager.AppSettings[appSettingKeyName];
+            Guid output;
+            return keyValue == null ? defaultValue : (Guid.TryParse(keyValue, out output) ? output : defaultValue);
+        }
+        /// <summary>
+        /// Gets a web config setting, converts the string to the target type and returns an object type.
+        /// </summary>
+        /// <param name="appSettingKeyName">The sender.</param>
+        /// <param name="defaultValue">The sender.</param>
+        public static DateTime GetWebConfigSetting(string appSettingKeyName, DateTime defaultValue) {
+            var keyValue = ConfigurationManager.AppSettings[appSettingKeyName];
+            DateTime output;
+            return keyValue == null ? defaultValue : (DateTime.TryParse(keyValue, out output) ? output : defaultValue);
+        }
+        /// <summary>
+        /// Gets a web config setting, converts the string to the target type and returns an object type.
+        /// </summary>
+        /// <param name="appSettingKeyName">The sender.</param>
+        /// <param name="defaultValue">The sender.</param>
+        public static string GetWebConfigSetting(string appSettingKeyName, string defaultValue) {
+            return ConfigurationManager.AppSettings[appSettingKeyName] ?? defaultValue;
+        }
+        /// <summary>
+        /// Gets a web config setting, converts the string to the target type and returns an object type.
+        /// </summary>
+        /// <param name="appSettingKeyName">The sender.</param>
+        /// <param name="defaultValue">The sender.</param>
+        public static decimal GetWebConfigSetting(string appSettingKeyName, decimal defaultValue) {
+            var keyValue = ConfigurationManager.AppSettings[appSettingKeyName];
+            decimal output;
+            return keyValue == null ? defaultValue : (decimal.TryParse(keyValue, out output) ? output : defaultValue);
+        }
+        /// <summary>
+        /// Gets a web config setting, converts the string to the target type and returns an object type.
+        /// </summary>
+        /// <param name="appSettingKeyName">The sender.</param>
+        /// <param name="defaultValue">The sender.</param>
+        public static Int64 GetWebConfigSetting(string appSettingKeyName, Int64 defaultValue) {
+            var keyValue = ConfigurationManager.AppSettings[appSettingKeyName];
+            Int64 output;
+            return keyValue == null ? defaultValue : (Int64.TryParse(keyValue, out output) ? output : defaultValue);
         }
         #endregion
     }

@@ -1,5 +1,5 @@
 -- this is the original 'clean' version of this SP.  This file should never be called, but is only here for reference.
-create procedure [dbo].[JsonCrud] 
+create procedure [dbo].[JsonReadOrDelete] ( 
 	@objName varchar(50), 
 	@record_from int, 
 	@record_to int, 
@@ -12,10 +12,20 @@ create procedure [dbo].[JsonCrud]
 	@checksum bigint,
 	@delete bit,
 	@orderBy_override varchar(50),
-	@orderDirection_override varchar(4)
+	@orderDirection_override varchar(4),
+	@whereParameterList ParameterList READONLY,
+	@searchParameterList ParameterList READONLY
+)
 as
 	set XACT_ABORT ON
 	set nocount on
+	-- set parameter lists
+	declare @wherePramaters varchar(max);
+	declare @searchPramaters varchar(max);
+	select @wherePramaters = coalesce(@wherePramaters,'')+ dbo.ParameterTypeToDeclaration(name,type,length,value) from @whereParameterList
+	select @searchPramaters = coalesce(@searchPramaters,'')+ dbo.ParameterTypeToDeclaration(name,type,length,value) from @searchParameterList
+	if @wherePramaters is null begin set @wherePramaters = '' end;
+	if @searchPramaters is null begin set @searchPramaters = '' end;
 	if(LEN(@objName)=0)begin return end
 	declare @name varchar(50)
 	declare @type varchar(50)
@@ -116,11 +126,11 @@ as
 	declare @count table(row_count int);
 	declare @tableChecksum table(tableChecksum bigint);
 	if(@includeSchema=1) begin
-		insert into @count exec ('select cast(count(1) as varchar(50)) from ['+@objName+'] '+@suffix);
+		insert into @count exec (@wherePramaters + 'select cast(count(1) as varchar(50)) from ['+@objName+'] '+@suffix);
 	end else begin
 		insert into @count select -1
 	end
-	insert into @tableChecksum exec ('select sum(cast(BINARY_CHECKSUM(VerCol) as bigint)) from ['+@objName+']'); /* checksum looks w/o suffix */
+	insert into @tableChecksum exec ('select sum(cast(BINARY_CHECKSUM([RowVersion]) as bigint)) from ['+@objName+']'); /* checksum looks w/o suffix */
 	set @newChecksum = (select tableChecksum from @tableChecksum)
 	set @sql = SUBSTRING(@sql,0,len(@sql)-2)
 	declare @newTableChecksum bigint = (select CAST(tableChecksum as varchar(100)) from @tableChecksum)
@@ -177,7 +187,7 @@ as
 			set @schema = replace(@schema,'"description":""','"description":"Table version checksum error / table has changed since last update - delete aborted."')
 		end
 	end else if (@aggregateColumns = '') begin/* search for a row number, don't output any data */
-		set @sql = '
+		set @sql = @searchPramaters + '
 		select ROW_NUMBER
 		from (
 			select '+@searchCols+',
@@ -213,38 +223,10 @@ as
 			set @SQL = substring(@sql,0,len(@sql)-9)/*remove the last union all<space> command*/
 		end
 	end
-	BEGIN TRY
-		/* sp_executesql wrapper used to pass (and cache) very large query to sp_executesql */
-		declare @prep2 nchar(1000) = 'EXEC sp_executesql @Rsql,N''@Rfrom int,@Rto int'',@Rfrom='+cast(@record_from as varchar(50))+',@Rto='+cast(@record_to as varchar(50))+''
-		exec sp_executesql @prep2,N'@Rsql ntext',@Rsql = @sql
-	END TRY
-	BEGIN CATCH
-		if(ERROR_NUMBER()=1204 or ERROR_NUMBER()=1205)begin
-			/* if there was a deadlock then try again after the timeout */
-			execute dbo.toJson
-			@objName, 
-			@record_from, 
-			@record_to, 
-			@suffix, 
-			@accountId, 
-			@searchSuffix, 
-			@aggregateColumns,
-			@selectedRowsCSV,
-			@includeSchema,
-			@checksum,
-			@delete,
-			@orderBy_override,
-			@orderDirection_override
-		end else begin
-			print @sql;
-			declare @ERROR_NUMBER int = ERROR_NUMBER();
-			declare @ERROR_MESSAGE varchar(255) = ERROR_MESSAGE();
-			RAISERROR (@ERROR_NUMBER,
-			16, -- Severity,
-			1, -- State,
-			@ERROR_MESSAGE);
-		end
-	END CATCH;
+	set @sql = @wherePramaters + @sql;
+	/* sp_executesql wrapper used to pass (and cache) very large query to sp_executesql */
+	declare @prep2 nchar(1000) = 'EXEC sp_executesql @Rsql,N''@Rfrom int,@Rto int'',@Rfrom='+cast(@record_from as varchar(50))+',@Rto='+cast(@record_to as varchar(50))+''
+	exec sp_executesql @prep2,N'@Rsql ntext',@Rsql = @sql
 	if (@delete = 1 and len(@deleteStatement) > 0) begin
 		/* execute delete statement after the select statment */
 		print @deleteStatement;

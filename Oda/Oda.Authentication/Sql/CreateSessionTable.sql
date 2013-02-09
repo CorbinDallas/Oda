@@ -7,7 +7,7 @@ if not exists(select 0 from sys.tables where name = 'Sessions' and type = 'U') b
 		UserAgent varchar(1000) NOT NULL,
 		IpAddress varchar(15) NOT NULL,
 		AccountId uniqueidentifier NOT NULL,
-		VerCol timestamp NOT NULL,
+		[RowVersion] rowversion NOT NULL,
 		CONSTRAINT PK_Sessions PRIMARY KEY CLUSTERED ( SessionId ASC )
 		WITH 
 		(
@@ -30,7 +30,7 @@ if not exists(select 0 from sys.tables where name = 'SessionProperties' and type
 		Name varchar(50) NOT NULL,
 		Value varchar(max) NOT NULL,
 		DataType varchar(25) NOT NULL,
-		VerCol timestamp NOT NULL,
+		[RowVersion] rowversion NOT NULL,
 		CONSTRAINT PK_SessionProperties PRIMARY KEY CLUSTERED ( SessionPropertyId ASC )
 		WITH 
 		(
@@ -50,7 +50,7 @@ if not exists(select 0 from sys.tables where name = 'Accounts' and type = 'U') b
 		Logon varchar(50) NOT NULL,
 		DigestPassword varchar(100) NOT NULL,
 		Nonce varchar(100) NOT NULL,
-		VerCol timestamp NOT NULL,
+		[RowVersion] rowversion NOT NULL,
 		CONSTRAINT PK_Accounts PRIMARY KEY CLUSTERED ( AccountId ASC )
 		WITH 
 		(
@@ -87,7 +87,7 @@ if not exists(select 0 from sys.tables where name = 'Contacts' and type = 'U') b
 		Mobile varchar(25) NOT NULL,
 		Notes varchar(max) NOT NULL,
 		Type int NOT NULL,
-		VerCol timestamp NOT NULL,
+		[RowVersion] rowversion NOT NULL,
 		CONSTRAINT PK_Contacts PRIMARY KEY CLUSTERED (ContactId ASC)
 		WITH (
 			PAD_INDEX = OFF,

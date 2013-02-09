@@ -8,7 +8,7 @@
 	    [OrderBy] [int] NULL,
 	    [Direction] [char](5) NULL,
 	    [Visibility] [bit] NULL,
-	    [VerCol] [timestamp] NOT NULL,
+	    [RowVersion] rowversion NOT NULL,
      CONSTRAINT [PK_UIColumns] PRIMARY KEY CLUSTERED 
     (
 	    [UIColumnId] ASC
