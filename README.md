@@ -17,14 +17,14 @@ plugins.  There are a few plugins available too:
 3. Oda.UI.  JavaScript UI API for making JavaScript applications that use Oda.
 
 ##Roadmap##
-1. Oda.UI.
-2. Oda.Imaging.
-3. Oda.Blog.
-4. Oda.Commerce.
-5. Oda.Pdf.
-6. Oda.Email.
-7. Oda.Menu.
-8. Oda.Console.
+1. Oda.UI
+2. Oda.Imaging
+3. Oda.Blog
+4. Oda.Commerce
+5. Oda.Pdf
+6. Oda.Email
+7. Oda.Menu
+8. Oda.Console
 
 
 ##Documentation##
