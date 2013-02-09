@@ -65,11 +65,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cs\Core.cs" />
-    <Compile Include="cs\HttpModule.Init.cs" />
-    <Compile Include="cs\Json.cs" />
-    <Compile Include="cs\Log.cs" />
-    <Compile Include="cs\Plugin.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="HttpModule.Init.cs" />
+    <Compile Include="Json.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -46,11 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cs\BCrypt.cs" />
-    <Compile Include="cs\Session.cs" />
-    <Compile Include="cs\Authentication.cs" />
+    <Compile Include="BCrypt.cs" />
+    <Compile Include="Session.cs" />
+    <Compile Include="Authentication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="cs\Account.cs" />
+    <Compile Include="Account.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Oda.Core\Oda.Core.csproj">

@@ -46,10 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="cs\OrderDirection.cs" />
-    <Compile Include="cs\Sql.cs" />
-    <Compile Include="cs\SqlParameters.cs" />
-    <Compile Include="cs\SqlWhere.cs" />
+    <Compile Include="OrderDirection.cs" />
+    <Compile Include="Sql.cs" />
+    <Compile Include="SqlParameters.cs" />
+    <Compile Include="SqlWhere.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Sql\CreateParameterTypeToDeclarationFunction.sql" />
     <EmbeddedResource Include="Sql\CreateRowUpdateTableToUpdateStringFunction.sql" />
