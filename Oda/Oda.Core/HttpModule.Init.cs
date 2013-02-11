@@ -245,7 +245,6 @@ namespace Oda {
         /// <param name="asm"></param>
         /// <returns></returns>
         public static string GetAssemblyVersionString(Assembly asm) {
-            var version = asm.GetName().Version;
             var c = asm.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
             var copyright = ((AssemblyCopyrightAttribute)c[0]).Copyright;
             return String.Format("{0} {1}",asm.FullName, copyright);
