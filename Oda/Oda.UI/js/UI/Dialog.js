@@ -53,7 +53,7 @@
 Oda.UI.Dialog = function (args) {
     args = args || {};
     var self = Oda.beget(Oda.UI.Widget);
-    self.interface = {};
+    self.publicMembers = {};
     self.style = args.style || Oda.UI.Style.Dialog();
     self.type = 'Dialog';
     // setup events, set events from args
@@ -179,8 +179,9 @@ Oda.UI.Dialog = function (args) {
         */
         titleChanged: self.addInitalEvents(args.titleChanged)
     };
-    self.createInterface = function () {
+    self.createPublicMembers = function () {
         // API Interface
+        
         /**
         * When used in an event listener, prevents the default event.
         * @function
@@ -189,9 +190,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.preventDefault = function () {
+        self.publicMembers.preventDefault = function () {
             self.cancelDefault = true;
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Closes the Oda.UI.Dialog.
@@ -201,9 +202,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.close = function () {
+        self.publicMembers.close = function () {
             self.close();
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Initializes the Oda.UI.Dialog.  Should only be run once and only if dontInit argument was used during instantiation.
@@ -213,9 +214,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.init = function () {
+        self.publicMembers.init = function () {
             self.init();
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Minimizes the Oda.UI.Dialog if it isn't already minimized.
@@ -225,9 +226,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.minimize = function () {
+        self.publicMembers.minimize = function () {
             self.minimize();
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Maximizes the Oda.UI.Dialog if it is not already maximized.
@@ -237,9 +238,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.maximize = function () {
-            self.minimize();
-            return self.interface;
+        self.publicMembers.maximize = function () {
+            self.maximize();
+            return self.publicMembers;
         };
         /**
         * Restores the the Oda.UI.Dialog to the original size if it is maximized.
@@ -249,9 +250,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.restore = function () {
+        self.publicMembers.restore = function () {
             self.restore();
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * When returns true the Oda.UI.Dialog is the active Oda.UI.Dialog, otherwise false.
@@ -261,7 +262,7 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Native.Boolean} True the Oda.UI.Dialog is the active Oda.UI.Dialog, otherwise false.
         */
-        self.interface.isActive = function () {
+        self.publicMembers.isActive = function () {
             return self.isActive();
         };
         /**
@@ -273,7 +274,7 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.title = function (obj) {
+        self.publicMembers.title = function (obj) {
             return self.title(obj);
         };
         /**
@@ -285,9 +286,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.moveToCenter = function () {
+        self.publicMembers.moveToCenter = function () {
             self.moveToCenter();
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Places the Oda.UI.Dialog in a new position.
@@ -298,10 +299,10 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.setPosition = function (point) {
+        self.publicMembers.setPosition = function (point) {
             var rect = { x: point.x, y: point.y, w: self.rect.w, h: self.rect.h };
             self.setRect(rect);
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Sets the Oda.UI.Dialog to a new size and position.
@@ -312,9 +313,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.setRect = function (rect) {
+        self.publicMembers.setRect = function (rect) {
             self.setRect(rect);
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Shows the Oda.UI.Dialog if hidden.
@@ -324,9 +325,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.show = function () {
+        self.publicMembers.show = function () {
             self.show();
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Hides the Oda.UI.Dialog if visible.
@@ -336,21 +337,21 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.hide = function () {
+        self.publicMembers.hide = function () {
             self.hide();
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Applies the current Oda.UI.Style.Dialog to the Oda.UI.Dialog.
         * @function
-        * @name stylize
+        * @name redraw
         * @memberOf Oda.UI.Dialog
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.stylize = function () {
+        self.publicMembers.redraw = function () {
             self.stylize();
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Adds a function to an event for this widget.   When the event occurs the function will execute in the context of this widget. 
@@ -363,9 +364,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.addEventListener = function (eventName, procedure, capturePhase) {
+        self.publicMembers.addEventListener = function (eventName, procedure, capturePhase) {
             self.addEventListener(eventName, procedure, capturePhase);
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * Removes a function from an event for this widget.  This function must match exactly the function to remove.
@@ -377,9 +378,9 @@ Oda.UI.Dialog = function (args) {
         * @public
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.removeEventListener = function (eventName, procedure, capturePhase) {
+        self.publicMembers.removeEventListener = function (eventName, procedure, capturePhase) {
             self.removeEventListener(eventName, procedure, capturePhase);
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * The Oda.UI.Style.Dialog of this Oda.UI.Dialog.
@@ -388,7 +389,7 @@ Oda.UI.Dialog = function (args) {
         * @type Oda.UI.Style.Dialog
         * @memberOf Oda.UI.Dialog
         */
-        self.interface.style = self.style;
+        self.publicMembers.style = self.style;
         /**
         * When set true, the dialog will be centered horizontally when moveToCenter.
         * @field
@@ -396,7 +397,7 @@ Oda.UI.Dialog = function (args) {
         * @type Native.Boolean
         * @memberOf Oda.UI.Dialog
         */
-        self.interface.centerHorizontally = self.centerHorizontally;
+        self.publicMembers.centerHorizontally = self.centerHorizontally;
         /**
         * When set true, the dialog will be centered vertically when moveToCenter.
         * @field
@@ -404,7 +405,7 @@ Oda.UI.Dialog = function (args) {
         * @type Native.Boolean
         * @memberOf Oda.UI.Dialog
         */
-        self.interface.centerVertically = self.centerVertically;
+        self.publicMembers.centerVertically = self.centerVertically;
         /**
         * The session unique id of the dialog.
         * @field
@@ -412,7 +413,7 @@ Oda.UI.Dialog = function (args) {
         * @type Native.String
         * @memberOf Oda.UI.Dialog
         */
-        self.interface.id = self.id;
+        self.publicMembers.id = self.id;
         /**
         * The type of widget. Returns Dialog.
         * @field
@@ -420,7 +421,7 @@ Oda.UI.Dialog = function (args) {
         * @type Native.String
         * @memberOf Oda.UI.Dialog
         */
-        self.interface.type = self.type;
+        self.publicMembers.type = self.type;
         /**
         * If the Oda.UI.Dialog is modal, then true otherwise false.
         * @function
@@ -428,7 +429,7 @@ Oda.UI.Dialog = function (args) {
         * @memberOf Oda.UI.Dialog
         * @returns {Native.Boolean} If the Oda.UI.Dialog is modal, then true otherwise false.
         */
-        self.interface.isModal = function () {
+        self.publicMembers.isModal = function () {
             return self.modal;
         };
         /**
@@ -438,7 +439,7 @@ Oda.UI.Dialog = function (args) {
         * @type Native.Boolean
         * @memberOf Oda.UI.Dialog
         */
-        self.interface.showContentWhileMoving = self.showContentWhileMoving;
+        self.publicMembers.showContentWhileMoving = self.showContentWhileMoving;
         /**
         * When true, the Oda.UI.Dialog can be resized.
         * @field
@@ -446,7 +447,7 @@ Oda.UI.Dialog = function (args) {
         * @type Native.Boolean
         * @memberOf Oda.UI.Dialog
         */
-        self.interface.resizable = self.resizable;
+        self.publicMembers.resizable = self.resizable;
         /**
         * Sets any number of objects as the content of the Oda.UI.Dialog. Can be a string, function or array of strings or functions.
         * @function
@@ -455,9 +456,9 @@ Oda.UI.Dialog = function (args) {
         * @memberOf Oda.UI.Dialog
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
-        self.interface.content = function (obj) {
+        self.publicMembers.content = function (obj) {
             self.appendObj(self.content, obj);
-            return self.interface;
+            return self.publicMembers;
         };
         /**
         * The current Oda.UI.Rect of this Oda.UI.Dialog.
@@ -466,7 +467,7 @@ Oda.UI.Dialog = function (args) {
         * @type Oda.UI.Rect
         * @memberOf Oda.UI.Dialog
         */
-        self.interface.rect = self.rect;
+        self.publicMembers.rect = self.rect;
         /**
         * The current state of the Oda.UI.Dialog.  0: Normal, 1: minimized, 2: maximized, 3: hidden.
         * @field
@@ -474,13 +475,27 @@ Oda.UI.Dialog = function (args) {
         * @type Native.Number
         * @memberOf Oda.UI.Dialog
         */
-        self.interface.state = self.state;
+        self.publicMembers.state = self.state;
+        /**
+        * When true the dialog will be drawn on top of other non modal dialogs.
+        * @field
+        * @name alwaysOnTop
+        * @type Native.Number
+        * @memberOf Oda.UI.Dialog
+        */
+        self.publicMembers.alwaysOnTop = self.alwaysOnTop;
+        /**
+        * When true the dialog will be moveable if false, the dialog cannot move.
+        * @field
+        * @name moveable
+        * @type Native.Number
+        * @memberOf Oda.UI.Dialog
+        */
+        self.publicMembers.moveable = self.moveable;
         return self;
     };
     // start the dialog
     self.init = function init() {
-        // create interface
-        self.createInterface();
         // raise init event
         if (self.raiseEvent('init', undefined, undefined, undefined)) { return self; };
         // create an id for this widget
@@ -566,7 +581,7 @@ Oda.UI.Dialog = function (args) {
         self.dialog.appendChild(self.nw);
         // preview
         self.preview = this.createElement('div');
-        if (!self.showContentWhileMoving) {
+        if (!self.publicMembers.showContentWhileMoving) {
             self.preview.style.position = 'absolute';
             self.preview.style.visibility = 'hidden';
             self.preview.style.background = self.style.previewBackground;
@@ -591,7 +606,7 @@ Oda.UI.Dialog = function (args) {
         self.maximizeButton, self.minimizeButton, self.preview]);
         // setup initial rect
         args.rect = args.rect || {};
-        self.interface.rect = self.rect = {
+        self.publicMembers.rect = self.rect = {
             x: args.rect.x || self.style.rect.x,
             y: args.rect.y || self.style.rect.y,
             w: args.rect.w || self.style.rect.w,
@@ -628,6 +643,8 @@ Oda.UI.Dialog = function (args) {
         self.closeButon.addEventListener('mouseover', function () { self.mouseoverButtons(0); }, true);
         self.maximizeButton.addEventListener('mouseover', function () { self.mouseoverButtons(1); }, true);
         self.minimizeButton.addEventListener('mouseover', function () { self.mouseoverButtons(2); }, true);
+        // create publicMembers
+        self.createPublicMembers();
         return self;
     };
     self.mouseoffButtons = function () {
@@ -666,40 +683,41 @@ Oda.UI.Dialog = function (args) {
     self.moveState = 0;
     // states 0: Normal, 1: minimized, 2: maximized, 3: hidden
     self.state = 0;
+    self.originalBodyOverflowStyle = '';
     // set the move state of the dialog
     self.getMoveState = function (e) {
         if (self.attached) { return self.moveState; };
         var pos = self.mouse(e, self.dialog);
         var s = self.style;
         if (pos.y <= s.neRect.h + s.neRect.y &&
-        pos.x >= (self.rect.w - (s.eRect.x + s.neRect.w)) && self.resizable) {
+        pos.x >= (self.rect.w - (s.eRect.x + s.neRect.w)) && self.publicMembers.resizable) {
             self.moveState = 4; //ne
             self.dialog.style.cursor = 'ne-resize';
         } else if (pos.y >= (self.rect.h - (s.seRect.y + s.seRect.h)) &&
-        pos.x >= (self.rect.w - (s.seRect.x + s.seRect.w)) && self.resizable) {
+        pos.x >= (self.rect.w - (s.seRect.x + s.seRect.w)) && self.publicMembers.resizable) {
             self.moveState = 6; //se
             self.dialog.style.cursor = 'se-resize';
         } else if (pos.y >= (self.rect.h - (s.swRect.y + s.swRect.h)) &&
-        pos.x <= s.swRect.w && self.resizable) {
+        pos.x <= s.swRect.w && self.publicMembers.resizable) {
             self.moveState = 8; //sw
             self.dialog.style.cursor = 'sw-resize';
         } else if (pos.y <= s.nwRect.h + s.nwRect.y &&
-        pos.x <= s.nwRect.w && self.resizable) {
+        pos.x <= s.nwRect.w && self.publicMembers.resizable) {
             self.moveState = 2; //nw
             self.dialog.style.cursor = 'nw-resize';
-        } else if (pos.y <= s.nRect.h + s.nRect.y && self.resizable) {
+        } else if (pos.y <= s.nRect.h + s.nRect.y && self.publicMembers.resizable) {
             self.moveState = 3; //n
             self.dialog.style.cursor = 'n-resize';
-        } else if (pos.y >= (self.rect.h - (s.sRect.y + s.sRect.h)) && self.resizable) {
+        } else if (pos.y >= (self.rect.h - (s.sRect.y + s.sRect.h)) && self.publicMembers.resizable) {
             self.moveState = 7; //s
             self.dialog.style.cursor = 's-resize';
-        } else if (pos.x >= (self.rect.w - (s.eRect.x + s.eRect.w)) && self.resizable) {
+        } else if (pos.x >= (self.rect.w - (s.eRect.x + s.eRect.w)) && self.publicMembers.resizable) {
             self.moveState = 5; //e
             self.dialog.style.cursor = 'e-resize';
-        } else if (pos.x <= s.wRect.w && self.resizable) {
+        } else if (pos.x <= s.wRect.w && self.publicMembers.resizable) {
             self.moveState = 9; //w
             self.dialog.style.cursor = 'w-resize';
-        } else if (pos.y <= (s.titleRect.h + s.titleRect.y) && self.moveable) {
+        } else if (pos.y <= (s.titleRect.h + s.titleRect.y) && self.publicMembers.moveable) {
             self.moveState = 1; //titlebar
             self.dialog.style.cursor = 'move';
         } else {
@@ -722,7 +740,7 @@ Oda.UI.Dialog = function (args) {
     self.mouseOffset = { x: 0, y: 0 };
     self.showPosition = { x: 0, y: 0 };
     self.mouseMove = function (e) {
-        if (!self.showContentWhileMoving && self.attached && self.moveState !== 0) {
+        if (!self.publicMembers.showContentWhileMoving && self.attached && self.moveState !== 0) {
             self.preview.style.visibility = 'visible';
         }
         self.getMoveState(e);
@@ -781,8 +799,8 @@ Oda.UI.Dialog = function (args) {
         if (self.controlButtonDepressed) { return; };
         Oda.UI.activeDialog = self;
         Oda.UI.stylizeDialogs();
-        self.centerHorizontally = false;
-        self.centerVertically = false;
+        self.publicMembers.centerHorizontally = false;
+        self.publicMembers.centerVertically = false;
         self.attached = true;
         self.mouseOffset = self.mouse(e, self.titleBar);
         self.mouseOffset.x += self.style.wRect.x + self.style.wRect.w;
@@ -792,17 +810,17 @@ Oda.UI.Dialog = function (args) {
     self.stopMoving = function stopMoving() {
         self.controlButtonDepressed = false;
         self.attached = false;
-        if (!self.showContentWhileMoving) {
+        if (!self.publicMembers.showContentWhileMoving) {
             self.preview.style.visibility = 'hidden';
             self.setRect(self.rect);
         }
     };
     self.moveToCenter = function moveToCenter() {
-        if (self.centerHorizontally) {
+        if (self.publicMembers.centerHorizontally) {
             self.rect.x = parseInt(self.client().w * .5, 10) -
                 parseInt(self.rect.w * .5, 10);
         }
-        if (self.centerVertically) {
+        if (self.publicMembers.centerVertically) {
             self.rect.y = parseInt(self.client().h * .5, 10) -
                 parseInt(self.rect.h * .5, 10);
         }
@@ -814,10 +832,10 @@ Oda.UI.Dialog = function (args) {
     };
     self.resizeMaximized = function () {
         if (self.state === 2) {
-            self.rect.x = 0;
-            self.rect.y = 0;
-            self.rect.w = self.client().w;
-            self.rect.h = self.client().h;
+            self.rect.x = 0 + self.style.maximizeOffsetRect.x;
+            self.rect.y = 0 + self.style.maximizeOffsetRect.y;
+            self.rect.w = self.client().w + self.style.maximizeOffsetRect.w;
+            self.rect.h = self.client().h + self.style.maximizeOffsetRect.h;
             self.setRect(self.rect).stylize();
             if (self.raiseEvent('resize', undefined, undefined, undefined)) { return self; };
         }
@@ -825,6 +843,8 @@ Oda.UI.Dialog = function (args) {
     };
     self.minimize = function () {
         if (self.raiseEvent('minimize', undefined, undefined, undefined)) { return self; };
+        self.originalBodyOverflowStyle = document.body.style.overflow;
+        self.originalScroll = { top: window.document.documentElement.scrollTop, left: window.document.documentElement.scrollLeft };
         self.state = 1;
         self.dialog.style.visibility = 'hidden';
         return self;
@@ -832,17 +852,25 @@ Oda.UI.Dialog = function (args) {
     self.maximize = function () {
         if (self.raiseEvent('maximize', undefined, undefined, undefined)) { return self; };
         self.state = 2;
-        self.resizable = false;
-        self.moveable = false;
+        self.publicMembers.resizable = false;
+        self.publicMembers.moveable = false;
         self.restoreRect = { x: self.rect.x, y: self.rect.y, h: self.rect.h, w: self.rect.w };
+        self.originalBodyOverflowStyle = document.body.style.overflow;
+        self.originalScroll = { top: window.document.documentElement.scrollTop, left: window.document.documentElement.scrollLeft };
+        window.document.documentElement.scrollTop = 0;
+        window.document.documentElement.scrollLeft = 0;
+        document.body.style.overflow = 'hidden';
         self.resizeMaximized();
         return self;
     };
     self.restore = function () {
         if (self.raiseEvent('restore', undefined, undefined, undefined)) { return self; };
+        document.body.style.overflow = self.originalBodyOverflowStyle;
+        window.document.documentElement.scrollTop = self.originalScroll.top;
+        window.document.documentElement.scrollLeft = self.originalScroll.left;
         self.state = 0;
-        self.resizable = true;
-        self.moveable = true;
+        self.publicMembers.resizable = true;
+        self.publicMembers.moveable = true;
         self.rect = { x: self.restoreRect.x, y: self.restoreRect.y, h: self.restoreRect.h, w: self.restoreRect.w };
         self.dialog.style.visibility = 'visible';
         self.setRect(self.rect).stylize();
@@ -873,7 +901,7 @@ Oda.UI.Dialog = function (args) {
     };
     self.close = function close() {
         if (self.raiseEvent('close', undefined, undefined, undefined)) { return self; }
-        self.dipose();
+        self.dispose();
         return self;
     };
     self.updateElementRect = function (e, w, h, x, y) {
@@ -884,15 +912,19 @@ Oda.UI.Dialog = function (args) {
         return self;
     };
     self.show = function () {
+        if (!self.hidden) { return self; }
         if (self.raiseEvent('show', undefined, undefined, undefined)) { return self; };
         self.hidden = false;
         self.rect.x = self.showPosition.x;
         self.rect.y = self.showPosition.y;
+        self.showPosition = undefined;
         return self.setRect(self.rect);
     };
     self.hide = function () {
+        if (self.hidden) { return self; }
         if (self.raiseEvent('hide', undefined, undefined, undefined)) { return self; };
         self.hidden = true;
+        self.showPosition = undefined;
         return self.setRect(self.rect);
     };
     self.setRect = function (rect) {
@@ -901,14 +933,13 @@ Oda.UI.Dialog = function (args) {
         rect.y = rect.y <= s.minRect.y ? s.minRect.y : rect.y;
         rect.w = rect.w <= s.minRect.w ? s.minRect.w : rect.w;
         rect.h = rect.h <= s.minRect.h ? s.minRect.h : rect.h;
-        self.interface.rect = self.rect = rect;
-        if (self.hidden) {
-            self.showPosition.x = self.rect.x;
-            self.showPosition.y = self.rect.y;
+        self.publicMembers.rect = self.rect = rect;
+        if (self.hidden && self.showPosition === undefined) {
+            self.showPosition = { x:self.rect.x,y:self.rect.y };
             rect.x = -10000;
             rect.y = -10000;
         }
-        if (self.attached && !self.showContentWhileMoving) {
+        if (self.attached && !self.publicMembers.showContentWhileMoving) {
             self.updateElementRect(self.preview, rect.w, rect.h, rect.x, rect.y);
             return self;
         }
@@ -923,9 +954,10 @@ Oda.UI.Dialog = function (args) {
         self.titleBarText.style.height = s.titleRect.h - s.titlePadding.t - s.titlePadding.b + 'px';
         //content
         self.updateElementRect(self.content,
-        rect.w + s.contentRect.w - s.wRect.x - s.wRect.x - s.wRect.w - s.eRect.w,
-        rect.h + s.contentRect.h - s.titleRect.h, s.wRect.w + s.wRect.x + s.contentRect.x,
-        s.contentRect.y + s.titleRect.h - s.sRect.h - s.Active.titleBorder.size);
+        rect.w + s.contentRect.w - s.wRect.x - s.wRect.x - s.wRect.w - s.eRect.w, // w
+        rect.h + s.contentRect.h - s.titleRect.h - s.titleRect.y - s.nRect.y - s.nRect.h + s.sRect.y - s.sRect.h, // h
+        s.wRect.w + s.wRect.x + s.contentRect.x, // x
+        s.contentRect.y + s.titleRect.h + s.nRect.h + s.nRect.y + s.titleRect.y); // y
         // n
         self.updateElementRect(self.n, rect.w - s.wRect.x - s.wRect.w - s.eRect.w,
         s.nRect.h, s.nRect.x + s.wRect.w + s.wRect.x, s.nRect.y);
@@ -987,7 +1019,7 @@ Oda.UI.Dialog = function (args) {
         var s = self.style;
         var a = Oda.UI.activeDialog === self ? self.style.Active : self.style.Inactive;
         if (Oda.UI.activeDialog === self) {
-            if (self.modal || self.alwaysOnTop) {
+            if (self.modal || self.publicMembers.alwaysOnTop) {
                 self.modalBackground.style.zIndex = ++Oda.UI.topModalZIndex;
                 self.dialog.style.zIndex = ++Oda.UI.topModalZIndex;
             } else {
@@ -1023,7 +1055,7 @@ Oda.UI.Dialog = function (args) {
         }
         return self;
     };
-    self.dipose = function dispose() {
+    self.dispose = function dispose() {
         if (self.raiseEvent('dispose', undefined, undefined, undefined)) { return self; }
         // remove events
         self.titleBar.removeEventListener('dblclick', self.maxRestoreButtonEvent, true);
@@ -1052,6 +1084,6 @@ Oda.UI.Dialog = function (args) {
     if (!args.dontInit) {
         self.init();
     }
-    // return interface
-    return self.interface;
+    // return publicMembers
+    return self.publicMembers;
 };

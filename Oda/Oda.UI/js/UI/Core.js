@@ -571,7 +571,7 @@ var Oda = {
             * @public
             */
             mouseLiteral: function (e) {
-                return { x: e.clientX, y: e.clientY };
+                return { x: window.document.documentElement.scrollLeft + e.clientX, y: window.document.documentElement.scrollTop + e.clientY };
             },
             /**
             * Safely creates a message in the debugging console by checking to see if it exists first then sending the message.

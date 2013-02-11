@@ -119,6 +119,15 @@ Oda.UI.Style.Dialog = function (args) {
     */
     self.Inactive.Hover = {};
     /**
+    * The offset rect used when maximizing the dialog.  
+    * Sometimes the border is transparent on the edge, so maximizing must be over the normal size of the dialog.
+    * @field
+    * @name maximizeOffsetRect
+    * @type Oda.UI.Rect
+    * @memberOf Oda.UI.Style.Dialog
+    */
+    self.maximizeOffsetRect = args.maximizeOffsetRect || { x: -5, y: -5, h: 10, w: 10 };
+    /**
     * The Oda.UI.Rect used by the Oda.UI.Dialog during initialization.
     * @field
     * @name rect
