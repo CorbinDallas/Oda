@@ -350,6 +350,7 @@ Oda.UI.Dialog = function (args) {
         * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
         */
         self.publicMembers.redraw = function () {
+            self.moveToCenter();
             self.stylize();
             return self.publicMembers;
         };
