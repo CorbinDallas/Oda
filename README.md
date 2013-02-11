@@ -1,8 +1,8 @@
 #Welcome#
 Oda is a lightweight JSON plugin framework that replaces the GET/POST key/value pair dichotomy 
 with a pure JSON solution, adds JSON method mapping as well as a easy to use plugin 
-architecture.  Oda will eventually have many plugins that can be used to connect to connect
-to a database, authenticate, commerce and a full JavaScript UI API.
+architecture.  Oda will eventually have many plugins that can be used to connect
+to a database, authenticate, commerce, a full JavaScript UI API and much more.
 
 ##Goals##
 The goals of Oda is to provide an easy way to make AJAX/JSON web sites 
