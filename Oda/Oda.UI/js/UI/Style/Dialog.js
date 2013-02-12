@@ -86,6 +86,9 @@ Oda.UI.Style.Dialog = function (args) {
     args.Inactive = args.Inactive || {};
     args.Active.Hover = args.Active.Hover || {};
     args.Inactive.Hover = args.Inactive.Hover || {};
+    // create an id for this widget
+    self.id = Oda.UI.widgetIdCount++;
+    self.type = 'DialogStyle';
     /**
     * Collection of active element styles.
     * @Class
@@ -134,7 +137,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @type Oda.UI.Rect
     * @memberOf Oda.UI.Style.Dialog
     */
-    self.rect = args.rect || { x: parseInt(Oda.UI.Widget.client().w * .5, 10) - 250, y: 100, h: 350, w: 500 };
+    self.rect = args.rect || { x: parseInt(document.documentElement.clientWidth * .5, 10) - 250, y: 100, h: 350, w: 500 };
     /**
     * The minimum size Oda.UI.Rect used by the Oda.UI.Dialog.
     * @field

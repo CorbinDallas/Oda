@@ -618,6 +618,8 @@ Oda.UI.Dialog = function (args) {
         self.centerHorizontally = args.centerHorizontally === undefined ? false : args.centerHorizontally;
         // add dialog to set of dialogs
         Oda.UI.Widgets.Dialogs[self.id] = self;
+        // add dialog to set of widgets
+        Oda.UI.Widgets.Widgets[self.id] = self;
         // set zIndex
         self.dialog.style.zIndex = ++Oda.UI.topZIndex;
         // make the dialog the active dialog
@@ -644,6 +646,28 @@ Oda.UI.Dialog = function (args) {
         self.closeButon.addEventListener('mouseover', function () { self.mouseoverButtons(0); }, true);
         self.maximizeButton.addEventListener('mouseover', function () { self.mouseoverButtons(1); }, true);
         self.minimizeButton.addEventListener('mouseover', function () { self.mouseoverButtons(2); }, true);
+        // if a taskbar exists then add this dialog to it.
+        if(Oda.UI.Widgets.TaskBar) {
+            self.taskBarItem = Oda.UI.Widgets.TaskBar.add(self, function () {
+                if(Oda.UI.activeDialog === self){
+                    if (self.state === 0) {
+                        self.minimize();
+                    }else{
+                        self.restore();
+                        Oda.UI.activeDialog = self;
+                        Oda.UI.stylizeDialogs();
+                    }
+                } else {
+                    if (self.state === 1) {
+                        self.restore();
+                    }
+                    Oda.UI.activeDialog = self;
+                    Oda.UI.stylizeDialogs();
+                }
+            }, function () {
+                return self.titleBarText.originalText;
+            });
+        }
         // create publicMembers
         self.createPublicMembers();
         return self;
@@ -732,9 +756,12 @@ Oda.UI.Dialog = function (args) {
     };
     self.title = function title(obj) {
         if (self.raiseEvent('titleChanged', self.titleBarText, obj, undefined)) { return self; };
-        if (obj === undefined) { return self; }
+        if (obj === undefined) { return self.titleBarText.textContent || self.titleBarText.innerText; }
         self.titleBarText.originalText = undefined;
         self.appendObj(self.titleBarText, obj);
+        if(Oda.UI.Widgets.TaskBar) {
+            Oda.UI.Widgets.TaskBar.stylize();
+        }
         return self.titleBarText.textContent || self.titleBarText.innerText;
     };
     self.attached = false;
@@ -833,10 +860,12 @@ Oda.UI.Dialog = function (args) {
     };
     self.resizeMaximized = function () {
         if (self.state === 2) {
+            // if there's a task bar then don't get so big
+            var tbOffsetH = Oda.UI.Widgets.TaskBar ? Oda.UI.Widgets.TaskBar.rect.h + Oda.UI.Widgets.TaskBar.style.border.size : 0;
             self.rect.x = 0 + self.style.maximizeOffsetRect.x;
             self.rect.y = 0 + self.style.maximizeOffsetRect.y;
             self.rect.w = self.client().w + self.style.maximizeOffsetRect.w;
-            self.rect.h = self.client().h + self.style.maximizeOffsetRect.h;
+            self.rect.h = self.client().h + self.style.maximizeOffsetRect.h - tbOffsetH;
             self.setRect(self.rect).stylize();
             if (self.raiseEvent('resize', undefined, undefined, undefined)) { return self; };
         }
@@ -846,6 +875,7 @@ Oda.UI.Dialog = function (args) {
         if (self.raiseEvent('minimize', undefined, undefined, undefined)) { return self; };
         self.originalBodyOverflowStyle = document.body.style.overflow;
         self.originalScroll = { top: window.document.documentElement.scrollTop, left: window.document.documentElement.scrollLeft };
+        self.restoreRect = { x: self.rect.x, y: self.rect.y, h: self.rect.h, w: self.rect.w };
         self.state = 1;
         self.dialog.style.visibility = 'hidden';
         return self;
@@ -903,13 +933,6 @@ Oda.UI.Dialog = function (args) {
     self.close = function close() {
         if (self.raiseEvent('close', undefined, undefined, undefined)) { return self; }
         self.dispose();
-        return self;
-    };
-    self.updateElementRect = function (e, w, h, x, y) {
-        e.style.width = w + 'px';
-        e.style.height = h + 'px';
-        e.style.left = x + 'px';
-        e.style.top = y + 'px';
         return self;
     };
     self.show = function () {
@@ -1058,6 +1081,10 @@ Oda.UI.Dialog = function (args) {
     };
     self.dispose = function dispose() {
         if (self.raiseEvent('dispose', undefined, undefined, undefined)) { return self; }
+        // remove from taskbar
+        if (Oda.UI.Widgets.TaskBar && self.taskBarItem){
+            Oda.UI.Widgets.TaskBar.remove(self.taskBarItem);
+        }
         // remove events
         self.titleBar.removeEventListener('dblclick', self.maxRestoreButtonEvent, true);
         self.dialog.removeEventListener('mousedown', self.startMoving, false);
@@ -1075,6 +1102,7 @@ Oda.UI.Dialog = function (args) {
         self.minimizeButton.removeEventListener('mouseover', function () { self.mouseoverButtons(2); }, true);
         // remove global ref
         delete Oda.UI.Widgets.Dialogs[self.id];
+        delete Oda.UI.Widgets.Widgets[self.id];
         // remove from DOM
         document.body.removeChild(self.dialog);
         if (self.modal) {

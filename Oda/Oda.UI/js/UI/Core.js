@@ -22,6 +22,27 @@ var Oda = {
         return new f();
     },
     /**
+    * Creates a UUID.  
+    * http://www.rfc-archive.org/getrfc.php?rfc=4122 4.4.  Algorithms for Creating a UUID from Truly Random or Pseudo-Random Numbers
+    * @function
+    * @public
+    * @name Rendition.UI.createUUID
+    * @returns {Native.String} New GUID/UUID.
+    */
+    createUUID: function () {
+        var s = [];
+        var hexDigits = '0123456789ABCDEF';
+        for (var i = 0; i < 32; i++) {
+            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        /*bits 12-15 of the time_hi_and_version field to 0010*/
+        s[12] = '4';
+        /*bits 6-7 of the clock_seq_hi_and_reserved to 01*/
+        s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);
+        var uuid = s.join('');
+        return uuid.substring(0, 8) + '-' + uuid.substring(8, 12) + '-' + uuid.substring(12, 16) + '-' + uuid.substring(16, 20) + '-' + uuid.substring(20, 32);
+    },
+    /**
     * Tests a value to see if it's a number.
     * @function 
     * @name Oda.isNumber
@@ -288,13 +309,29 @@ var Oda = {
         */
         Widgets: {
             /**
-            * Collection of Oda.UI.Dialog instances.
+            * Array of Oda.UI.Dialog instances.
+            * @field
+            * @name Dialogs
+            * @type Native.Array
+            * @memberOf Oda.UI
+            */
+            Dialogs: {},
+            /**
+            * The Oda.UI.TaskBar.
             * @field
             * @name Dialogs
             * @type Native.String
             * @memberOf Oda.UI
             */
-            Dialogs: {}
+            TaskBar: undefined,
+            /**
+            * Collection of Oda.UI.Widgets.
+            * @field
+            * @name Widgets
+            * @type Native.Object
+            * @memberOf Oda.UI
+            */
+            Widgets: {}
         },
         /**
         * Set of styles for objects implementing Oda.UI.Widget.
@@ -338,6 +375,27 @@ var Oda = {
             * @memberOf Oda.UI.Widget
             */
             cancelDefault: false,
+            /**
+            * Updates an elements width, height, left (x) and top (y).
+            * @function
+            * @type Native.Function
+            * @name updateElementRect
+            * @memberOf Oda.UI.Widget
+            * @param {Native.HTMLElement} [e] The element to resize.
+            * @param {Native.Integer} [w] The new width of the element.
+            * @param {Native.Integer} [h] The new height of the element.
+            * @param {Native.Integer} [x] The new left (x) of the element.
+            * @param {Native.Integer} [y] The new top (y) of the element.
+            * @returns {Native.Object} The widget to which this function belongs.
+            * @public
+            */
+            updateElementRect : function (e, w, h, x, y) {
+                e.style.width = w + 'px';
+                e.style.height = h + 'px';
+                e.style.left = x + 'px';
+                e.style.top = y + 'px';
+                return this;
+            },
             /**
             * Converts a Oda.UI.Rect object into a string for debugging.
             * @function
