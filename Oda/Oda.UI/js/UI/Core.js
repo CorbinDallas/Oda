@@ -42,6 +42,11 @@ var Oda = {
         f.prototype = o;
         return new f();
     },
+    assert: function (outcome, description) {
+        if (!outcome){
+            Oda.UI.Widget.log(description);
+        }
+    },
     /**
     * Creates a UUID.  
     * http://www.rfc-archive.org/getrfc.php?rfc=4122 4.4.  Algorithms for Creating a UUID from Truly Random or Pseudo-Random Numbers
