@@ -23,7 +23,9 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Web;
 namespace Oda {
     #region Http Event Interface
@@ -53,6 +55,10 @@ namespace Oda {
         /// Occurs when an Http application error occurs.
         /// </summary>
         event EventHandler ApplicationError;
+        /// <summary>
+        /// Occurs each time the memory buffer of a large upload is flushed.
+        /// </summary>
+        event EventHandler UploadStatus;
     }
     #endregion
     #region Http Event Arguments
@@ -79,6 +85,14 @@ namespace Oda {
         public HttpEventArgs(HttpApplication app) {
             HttpApplication = app;
         }
+    }
+    public class HttpUploadStatusEventArgs : EventArgs {
+        public int BytesRead { get; internal set; }
+        public int BytesTotal { get; internal set; }
+        public DateTime StartedOn { get; internal set; }
+        public DateTime LastUpdated { get; internal set; }
+        public bool Complete { get; internal set; }
+        public Guid Id { get; internal set; }
     }
     #endregion
     /// <summary>
@@ -200,6 +214,34 @@ namespace Oda {
             }
         }
         #endregion
+        #region Event : UploadStatus
+        /// <summary>
+        /// Raises the Upload Status event.
+        /// </summary>
+        /// <param name="args">The <see cref="Oda.HttpUploadStatusEventArgs"/> instance containing the event data.</param>
+        internal void RaiseOnUploadStatus(HttpUploadStatusEventArgs args) {
+            if (UploadStatus != null) UploadStatus(this, args);
+        }
+        /// <summary>
+        /// Occurs each time the memory buffer of a large upload is flushed.
+        /// </summary>
+        public static event EventHandler UploadStatus;
+        /// <summary>
+        /// Occurs each time the memory buffer of a large upload is flushed.
+        /// </summary>
+        event EventHandler IHttp.UploadStatus {
+            add {
+                lock (UploadStatus) {
+                    UploadStatus += value;
+                }
+            }
+            remove {
+                lock (UploadStatus) {
+                    UploadStatus -= value;
+                }
+            }
+        }
+        #endregion
         #region Event : Dispose
         /// <summary>
         /// Raises the on dispose.
@@ -293,6 +335,44 @@ namespace Oda {
             var args = new HttpEventArgs(HttpApplication);
             RaiseOnDispose(args);
         }
+        private MemoryStream getPostUpload(HttpWorkerRequest workerRequest) {
+            var ms = new MemoryStream();
+            const int bufferSize = 16384;
+            var request = HttpContext.Current.Request;
+            var bytesRead = bufferSize;
+            var totalSize = Convert.ToInt32(workerRequest.GetKnownRequestHeader(HttpWorkerRequest.HeaderContentLength));
+            var bodyLength = workerRequest.GetPreloadedEntityBodyLength();
+            var currentSizeComplete = bodyLength;
+            var preloadedBody = workerRequest.GetPreloadedEntityBody();
+            var uid = request.QueryString["id"] != null ? Guid.Parse(request.QueryString["id"]) : Guid.NewGuid();
+            var status = new HttpUploadStatusEventArgs() {
+                BytesRead = bytesRead,
+                Complete = false,
+                BytesTotal = totalSize,
+                StartedOn = DateTime.Now,
+                LastUpdated = DateTime.Now,
+                Id = uid
+            };
+            RaiseOnUploadStatus(status);
+            // read all form data into a memory stream
+            // write preloaded body to ms
+            ms.Write(preloadedBody, 0, bodyLength);
+            var buffer = new byte[bufferSize];
+            //stream in the rest
+            while ((totalSize - currentSizeComplete) >= bytesRead) {
+                bytesRead = workerRequest.ReadEntityBody(buffer, bufferSize);
+                currentSizeComplete += bytesRead;
+                status.BytesRead = currentSizeComplete;
+                status.LastUpdated = DateTime.Now;
+                ms.Write(buffer, 0, bufferSize);
+                RaiseOnUploadStatus(status);
+            }
+            bytesRead = workerRequest.ReadEntityBody(buffer, totalSize - currentSizeComplete);
+            ms.Write(buffer, 0, bytesRead);
+            status.Complete = true;
+            RaiseOnUploadStatus(status);
+            return ms;
+        }
         /// <summary>
         /// The start of an Http request
         /// </summary>
@@ -311,29 +391,57 @@ namespace Oda {
                 // a request was made to the responder Url
                 // deserialize the request and execute the requested methods
                 // gather the results and add them to the results collection
-                //
-                // first do QueryString (get)
-                if(request.QueryString.Keys.Count == 1) {
-                    try {
-                        var rs = JsonResponse.InvokeJsonMethods(HttpUtility.UrlDecode(request.QueryString.ToString()));
-                        results.AddRange(rs);
-                    } catch(Exception ex) {
-                        var iex = GetInnermostException(ex);
-                        var errorResult = new JsonResponse(3, string.Format("Error invoking method. Source: {1}{0} Message: {2}{0} Stack Trace: {3}",
-                           Environment.NewLine, iex.Source, iex.Message, iex.StackTrace));
-                        results.Add(errorResult);
+                // do post - Don't use the request.Form object because it is silly.
+                var workerRequest = (HttpWorkerRequest)HttpContext.Current.GetType().GetProperty("WorkerRequest",BindingFlags.Instance | BindingFlags.NonPublic).GetValue(HttpContext.Current, null);
+                var bodyLength = workerRequest.GetPreloadedEntityBodyLength();
+                if (bodyLength>0) {
+                    var contentType = workerRequest.GetKnownRequestHeader(HttpWorkerRequest.HeaderContentType);
+                    if (contentType == null) { throw new NullReferenceException("Header Content-Type cannot be empty.  Acceptable post values are multipart/form-data or application/json."); }
+                    if (contentType.Contains("application/json")) {
+                        var requestBody = "";
+                        var preloadedBody = workerRequest.GetPreloadedEntityBody();
+                        if(workerRequest.IsEntireEntityBodyIsPreloaded()){
+                            if (contentType.Contains("charset=utf-8")) {
+                                var utf8 = new UTF8Encoding();
+                                requestBody = utf8.GetString(preloadedBody);
+                            }
+                        } else {
+                            var ms = getPostUpload(workerRequest);
+                            if (contentType.Contains("charset=utf-8")) {
+                                var utf8 = new UTF8Encoding();
+                                var allBytes = new byte[ms.Length];
+                                ms.Position = 0;
+                                ms.Read(allBytes,0,allBytes.Length);
+                                requestBody = utf8.GetString(allBytes);
+                                ms.Dispose();
+                            }
+                        }
+                        if (requestBody.Length == 0) { throw new FormatException("Content must be sent in UTF-8 encoding.  charset=utf-8 must be included in the Content-Type header. E.g.: application/json; charset=utf-8."); }
+                        try {
+                            var rs = JsonResponse.InvokeJsonMethods(requestBody);
+                            results.AddRange(rs);
+                        } catch(Exception ex) {
+                            var iex = GetInnermostException(ex);
+                            var errorResult = new JsonResponse(3, string.Format("Error invoking method. Source: {1}{0} Message: {2}{0} Stack Trace: {3}", 
+                                Environment.NewLine, iex.Source ,iex.Message, iex.StackTrace));
+                            results.Add(errorResult);
+                        }
+                    } else if (contentType.Contains("multipart/form-data")) {
+                        // TODO: file upload stream
                     }
-                }
-                // then do Form (post)
-                if(request.Form.Keys.Count == 1) {
-                    try {
-                        var rs = JsonResponse.InvokeJsonMethods(HttpUtility.UrlDecode(request.Form.ToString()));
-                        results.AddRange(rs);
-                    } catch(Exception ex) {
-                        var iex = GetInnermostException(ex);
-                        var errorResult = new JsonResponse(3, string.Format("Error invoking method. Source: {1}{0} Message: {2}{0} Stack Trace: {3}", 
-                            Environment.NewLine, iex.Source ,iex.Message, iex.StackTrace));
-                        results.Add(errorResult);
+                } else {
+                    // if there was no post
+                    // do QueryString (get)
+                    if (request.QueryString.Keys.Count == 1) {
+                        try {
+                            var rs = JsonResponse.InvokeJsonMethods(HttpUtility.UrlDecode(request.QueryString.ToString()));
+                            results.AddRange(rs);
+                        } catch (Exception ex) {
+                            var iex = GetInnermostException(ex);
+                            var errorResult = new JsonResponse(3, string.Format("Error invoking method. Source: {1}{0} Message: {2}{0} Stack Trace: {3}",
+                               Environment.NewLine, iex.Source, iex.Message, iex.StackTrace));
+                            results.Add(errorResult);
+                        }
                     }
                 }
             }
@@ -371,13 +479,20 @@ namespace Oda {
                     return;// Only one file can be output at a time.
                 }
                 var methodName = result.MethodName;
-                var methodNameCounter = 0;
+                var methodNameCounter = 1;
                 // make sure and create a unique name
                 // for the returned method
-                while(outputRestults.ContainsKey(methodName + "_" + methodNameCounter)) {
+                if(outputRestults.ContainsKey(methodName)) {
+                    // if the key with no number exists, rename the key to key_0
+                    var temp = outputRestults[methodName];
+                    outputRestults.Add(methodName + "_1",temp);
+                    outputRestults.Remove(methodName);
+                }
+                while (outputRestults.ContainsKey(methodName + "_" + methodNameCounter)) {
+                    //find the first non conflicting number for the new key
                     methodNameCounter++;
                 }
-                if(methodNameCounter>0) {
+                if(methodNameCounter>1) {
                     outputRestults.Add(methodName + "_" + methodNameCounter, result);
                 }else{
                     outputRestults.Add(methodName, result);
