@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthenticationPlugin.cs" />
     <Compile Include="BCrypt.cs" />
     <Compile Include="Session.cs" />
     <Compile Include="Authentication.cs" />
