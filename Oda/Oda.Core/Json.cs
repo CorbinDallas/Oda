@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
@@ -197,6 +198,15 @@ namespace Oda {
         public Stream AttachmentStream { get; set; }
 
         /// <summary>
+        /// Gets or sets the instance of this method.  When more than one method with the same
+        /// name is called an instance greater than zero is possible.
+        /// </summary>
+        /// <value>
+        /// The instance.
+        /// </value>
+        public int Instance { get; set; }
+
+        /// <summary>
         /// Gets or sets the unique id of the requested method.
         /// </summary>
         /// <value>
@@ -289,31 +299,92 @@ namespace Oda {
             }
         }
         #region Json Invoke Methods
-        internal static JsonResponse[] InvokeJsonMethods(string decodedMethodRequest) {
-            var results = new List<JsonResponse>();
-            var requestedMethods = JsonConvert.DeserializeObject<JArray>(decodedMethodRequest);
+        internal static void InvokeJsonMethods(Mapper mapper, ref Dictionary<string, JsonResponse> results) {
+            var requestedMethods = JsonConvert.DeserializeObject<JArray>(mapper.Map);
             foreach(var methodToken in requestedMethods) {
-                var methodName = methodToken[0].ToString();
+                var orignalMethodName = methodToken[0].ToString();
+                var methodName = orignalMethodName;
                 if(Plugin.InternalJsonMethods.ContainsKey(methodName)) {
                     var method = Plugin.InternalJsonMethods[methodName];
                     var args = (List<object>)JTokenToGeneric(methodToken[1]);
+                    // make sure and create a unique name
+                    // for the returned method
+                    var methodNameCounter = 0;
+                    if (results.ContainsKey(methodName)) {
+                        // if the key with no number exists, rename the key to key_0
+                        var temp = results[methodName];
+                        results.Add(methodName + "_0", temp);
+                        results.Remove(methodName);
+                    }
+                    while (results.ContainsKey(methodName + "_" + methodNameCounter)) {
+                        //find the first non conflicting number for the new key
+                        methodNameCounter++;
+                    }
+                    if (methodNameCounter > 0) {
+                        methodName = methodName + "_" + methodNameCounter;
+                    }
+                    // check if this method has files attached to it
+                    var x = mapper.Files.Where(f => f.Method == methodName && f.Instance == methodNameCounter).ToArray();
+                    if (x.Length > 0) {
+                        // replace sub file holders with refrence to files uploaded
+                        for (var z=0;args.Count>z;z++) {
+                            var t = args[z];
+                            if (t is List<object> || t is string) {
+                                var a = new List<object>();
+                                var fa = new List<UploadedFile>();
+                                if (t is List<object>) {
+                                    a.AddRange((List<object>) t);
+                                }
+                                else {
+                                    a.Add(t);
+                                }
+                                if (a[0] is string){;
+                                    if(((string) a[0]).Contains("file:::")) {
+                                        for (var j = 0; a.Count > j; j++) {
+                                            // becuase HTML 5 file fileds can support more than one file per field, we must require the same
+                                            var fileSigs = Regex.Split((string) a[j], "file:::");
+                                            foreach (var sig in fileSigs) {
+                                                if (sig.Length == 0) {
+                                                    continue;
+                                                }
+                                                // this is a file argument.  Replace it with an uploaded file.
+                                                var regex = new Regex(@"(.*)_(\d)_files_(\d+)_(\d+)");
+                                                var m = regex.Match(sig);
+                                                var fieldNumber = int.Parse(m.Groups[3].Value);
+                                                var fileNumber = int.Parse(m.Groups[4].Value);
+                                                foreach (var f in x) {
+                                                    if (f.FieldNumber == fieldNumber && f.FileNumber == fileNumber) {
+                                                        fa.Add(f);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (a.Count > 0) {
+                                            args[z] = fa.ToArray();
+                                        }
+                                    }
+                                }
+                            };
+                        }
+                    }
                     try {
                         var result = (JsonResponse)method.Invoke(null, args.ToArray());
-                        result.MethodName = methodName;
-                        results.Add(result);
+                        result.MethodName = orignalMethodName;
+                        result.Instance = methodNameCounter;
+                        result.Id = Guid.NewGuid();
+                        results.Add(methodName, result);
                     }catch(Exception ex){
                         var iex = Core.GetInnermostException(ex);
                         var errorResult = new JsonResponse(2, string.Format("Error calling method {1}{0}Source: {2}{0} Message: {3}{0}Stack Trace: {4}",
                             Environment.NewLine, methodName, iex.Source ,iex.Message, iex.StackTrace))
                                               {MethodName = methodName};
-                        results.Add(errorResult);
+                        results.Add(methodName, errorResult);
                     }
                 } else {
                     var errorResult = new JsonResponse(1,string.Format("Method {0} not found.",methodName)) {MethodName = methodName};
-                    results.Add(errorResult);
+                    results.Add(methodName, errorResult);
                 }
             }
-            return results.ToArray();
         }
         #endregion
         #region Json converter methods

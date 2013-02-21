@@ -24,8 +24,10 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 namespace Oda {
     #region Http Event Interface
@@ -87,14 +89,31 @@ namespace Oda {
         }
     }
     public class HttpUploadStatusEventArgs : EventArgs {
-        public int BytesRead { get; internal set; }
-        public int BytesTotal { get; internal set; }
+        public long BytesRead { get; internal set; }
+        public long BytesTotal { get; internal set; }
         public DateTime StartedOn { get; internal set; }
         public DateTime LastUpdated { get; internal set; }
         public bool Complete { get; internal set; }
         public Guid Id { get; internal set; }
     }
     #endregion
+    class Mapper {
+        public List<UploadedFile> Files { get; set; }
+        public string Map { get; set; }
+        public Guid Id { get; set; }
+        public Mapper() {
+            Files = new List<UploadedFile>();
+        }
+    }
+    public class UploadedFile {
+        public string Method { get; set; }
+        public int Instance { get; set; }
+        public int FileNumber { get; set; }
+        public int FieldNumber { get; set; }
+        public string Path { get; set; }
+        public string OrginalFileName { get; set; }
+        public string ContentType { get; set; }
+    }
     /// <summary>
     /// The main Http module.
     /// </summary>
@@ -335,43 +354,214 @@ namespace Oda {
             var args = new HttpEventArgs(HttpApplication);
             RaiseOnDispose(args);
         }
-        private MemoryStream getPostUpload(HttpWorkerRequest workerRequest) {
-            var ms = new MemoryStream();
-            const int bufferSize = 16384;
-            var request = HttpContext.Current.Request;
-            var bytesRead = bufferSize;
-            var totalSize = Convert.ToInt32(workerRequest.GetKnownRequestHeader(HttpWorkerRequest.HeaderContentLength));
-            var bodyLength = workerRequest.GetPreloadedEntityBodyLength();
-            var currentSizeComplete = bodyLength;
-            var preloadedBody = workerRequest.GetPreloadedEntityBody();
-            var uid = request.QueryString["id"] != null ? Guid.Parse(request.QueryString["id"]) : Guid.NewGuid();
-            var status = new HttpUploadStatusEventArgs() {
-                BytesRead = bytesRead,
-                Complete = false,
-                BytesTotal = totalSize,
-                StartedOn = DateTime.Now,
-                LastUpdated = DateTime.Now,
-                Id = uid
-            };
-            RaiseOnUploadStatus(status);
-            // read all form data into a memory stream
-            // write preloaded body to ms
-            ms.Write(preloadedBody, 0, bodyLength);
-            var buffer = new byte[bufferSize];
-            //stream in the rest
-            while ((totalSize - currentSizeComplete) >= bytesRead) {
-                bytesRead = workerRequest.ReadEntityBody(buffer, bufferSize);
-                currentSizeComplete += bytesRead;
-                status.BytesRead = currentSizeComplete;
-                status.LastUpdated = DateTime.Now;
-                ms.Write(buffer, 0, bufferSize);
-                RaiseOnUploadStatus(status);
+        byte[] getBoundary(byte[] b) {
+            // read until the first CR
+            var r = new List<byte>();
+            var i = 0;
+            while(b[i] != 13){
+                r.Add(b[i]);
+                i++;
+                if(i>60) {
+                    throw new FormatException("Malformed form-data.  Boundary cannot be greater than 60 characters.");
+                }
             }
-            bytesRead = workerRequest.ReadEntityBody(buffer, totalSize - currentSizeComplete);
-            ms.Write(buffer, 0, bytesRead);
-            status.Complete = true;
-            RaiseOnUploadStatus(status);
-            return ms;
+            return r.ToArray();
+        }
+        static int FindPosition(Stream haystack, byte[] needle, long offset) {
+            int b;
+            int i = 0;
+            haystack.Position = offset;
+            while ((b = haystack.ReadByte()) != -1) {
+                if (b == needle[i++]) {
+                    if (i == needle.Length) {
+                        return (int)(haystack.Position - needle.Length);
+                    }
+                } else {
+                    i = 0;
+                }
+            }
+            return -1;
+        }
+        Mapper createTempFilesAndMapFromPost(HttpWorkerRequest r) {
+            var isIdFound = false;
+            var isMapFound = false;
+            var e = new UTF8Encoding();
+            // bytes for "Content-Disposition: form-data; "
+            var mapSig = new byte[] {
+67,111,110,116,101,110,116,45,68,105,115,112,111,
+115,105,116,105,111,110,58,32,102,111,114,109,
+45,100,97,116,97,59,32,110,97,109,101,61,
+34,109,97,112,34,13,10,13,10
+            };
+            var idSig = new byte[] { 
+67,111,110,116,101,110,116,45,68,105,115,112,111,115,105,116,105,
+111,110,58,32,102,111,114,109,45,100,97,116,97,59,32,110,
+97,109,101,61,34,105,100,34,13,10,13,10};
+            var m = new Mapper();
+            // first 46 bytes = boundary signature
+            const int f = 4096;
+            var p = r.GetPreloadedEntityBody();
+            var b = getBoundary(p);
+            var l = r.GetTotalEntityBodyLength();
+            // load stream into temp file
+            var fst = Path.GetTempFileName();
+            var fs = new FileStream(fst, FileMode.OpenOrCreate);
+            // write preloaded body to file
+            fs.Write(p,0,p.Length);
+            var c = p.Length;
+            var q = 0;
+            var u = new byte[f];
+            while(l-c>q) {
+                q = r.ReadEntityBody(u, 0, f);
+                fs.Write(u, 0, q);
+                c += q;
+            }
+            if (l-c > 0) {
+                var ux = new byte[l - c];
+                q = r.ReadEntityBody(ux, 0, (int)l - c);
+                fs.Write(ux, 0, q);
+            }
+            fs.Flush();
+            fs.Position = 0;
+            // read the entire file finding all boundaries
+            var s = new List<long>();
+            while (fs.Position<fs.Length) {
+                s.Add(FindPosition(fs, b, fs.Position));
+            }
+            fs.Position = 0;
+            // load each boundary into seperate files
+            var j = new List<string>();
+            // the last boundary is the eof
+            for(var i=0;s.Count-1>i;i++) {
+                // indexes between boundaries - this is the new file size in bytes
+                if (s[i + 1] == -1) {
+                    break;
+                }
+                var z = s[i + 1] - s[i]; // this is the size of the object between the boundaries (including current boundary)
+                var x = s[i + 1]; // end position is the begining of the next boundary -1
+                var g = (z) < f ? z : f; // chunk size (g) = 4096 (f) or next boundary pos - current boundary pos (z)
+                var h = z%g; // get remaining bytes to wrte at the end of the while loop
+                var n = Path.GetTempFileName();
+                fs.Position = s[i]; // start reading from the begining position of the object (including boundary)
+                using(var a = new FileStream(n, FileMode.OpenOrCreate)) {
+                    q = 0;
+                    c = 0;
+                    while (z-c>q){ //read blocks while position - mod block size  is less than end position
+                        q = fs.Read(u, 0, (int)g);
+                        a.Write(u, 0, q);
+                        c += q;
+                    }
+                    q = fs.Read(u, 0, (int)z-c);
+                    a.Write(u, 0, q);
+                    a.Position = 0;
+                    // read in form data
+                    if(!isMapFound){
+                        if(FindPosition(a, mapSig, 0)>-1) {
+                            // this is the map field
+                            var mapBytes = new byte[a.Length - a.Position - 2]; // -2 to drop the \r\n
+                            a.Read(mapBytes, 0, mapBytes.Length);
+                            m.Map = e.GetString(mapBytes);
+                            a.Close();
+                            File.Delete(n);
+                            isMapFound = true;
+                            continue; ;
+                        }
+                    } 
+                    if (!isIdFound) {
+                        if(FindPosition(a, idSig, 0) > -1) {
+                            // id is always 36 bytes
+                            var idBytes = new byte[36];
+                            a.Read(idBytes, 0, 36);
+                            m.Id = Guid.Parse(e.GetString(idBytes));
+                            a.Close();
+                            File.Delete(n);
+                            isIdFound = true;
+                            continue;
+                        }
+                    } 
+
+                    // this must be a binary file attachment, rip file apart
+
+                    a.Position = 0;
+
+                    //1) remove boundary 
+                    while (a.ReadByte() != 13) {}
+                    a.Position++; // read past lf
+                    //2) parse form data
+                    var startOfFormData = a.Position;
+                    while(a.ReadByte()!=13) {}
+                    a.Position++; // read past lf
+                    var endOfFormdata = a.Position;
+                    a.Position = startOfFormData;
+                    // create a byte array to hold form data
+                    var formDataBuffer = new byte[endOfFormdata-startOfFormData];
+                    a.Read(formDataBuffer, 0, formDataBuffer.Length);
+                    var formData = e.GetString(formDataBuffer);
+                    // form data looks like Content-Disposition: form-data; name="Authentication.CreateAccount_files_0_0"; filename="tiny.gif"
+
+                    //3) parse content type
+                    a.Position = endOfFormdata;
+                    while(a.ReadByte()!=13) {}
+                    a.Position++; // read past lf
+                    var endOfContentType = a.Position - 2; // -2 so we don't capture \r\n in content type string
+                    var contentTypeBuffer = new byte[endOfContentType - endOfFormdata];
+                    a.Position = endOfFormdata;
+                    a.Read(contentTypeBuffer, 0, contentTypeBuffer.Length);
+                    var contentType = e.GetString(contentTypeBuffer);
+                        
+                    //4) remove extra \r\n\r\n
+                    a.Position = endOfContentType + 4;
+                        
+                    //5) the rest is the binary file 
+                    // read it and store it in a new file
+                    var binLength = a.Length - a.Position;
+                    var bufferSize = f > binLength ? binLength : f;
+                    var remainingChunckSize = binLength%bufferSize;
+                    var bytesRead = 0L;
+                    var tempFileName = Path.GetTempFileName();
+                    using(var bin = new FileStream(tempFileName,FileMode.OpenOrCreate)){
+                        while (binLength - remainingChunckSize > bytesRead) {
+                            var buffer = new byte[bufferSize];
+                            bytesRead += a.Read(buffer, 0, (int)bufferSize);
+                            bin.Write(buffer,0,(int)bufferSize);
+                        }
+                        if(remainingChunckSize>0) {
+                            var buffer = new byte[remainingChunckSize];
+                            a.Read(buffer, 0, (int)remainingChunckSize);
+                            bin.Write(buffer, 0, (int) remainingChunckSize);
+                        }
+                        // delete temp file
+                        a.Close();
+                        File.Delete(n);
+                        // make mapper ref
+                        var regex = new Regex(@".*name=""([^""]+)""; filename=""([^""]+)""");
+                        var matches = regex.Match(formData);
+                        var methodSig = matches.Groups[1].Value;
+                        var oFileName = matches.Groups[2].Value;
+                        regex = new Regex(@"file:::(.*)_(\d)_files_(\d+)_(\d+)");
+                        var matchesMetthod = regex.Match(methodSig);
+                        var method = matchesMetthod.Groups[1].Value;
+                        var methodInstance = matchesMetthod.Groups[2].Value;
+                        var fileField = matchesMetthod.Groups[3].Value;
+                        var fileNumber = matchesMetthod.Groups[4].Value;
+                        var fm = new UploadedFile() {
+                            ContentType = contentType.Replace("Content-Type: ", ""), // remove the words "Content-Type: " from value
+                            Path = tempFileName,
+                            FileNumber = int.Parse(fileNumber),
+                            Instance = int.Parse(methodInstance),
+                            Method = method,
+                            FieldNumber = int.Parse(fileField),
+                            OrginalFileName = oFileName
+                        };
+                        m.Files.Add(fm);
+                    }
+                    
+                };
+            }
+            fs.Close();
+            fs.Dispose();
+            File.Delete(fst);
+            return m;
         }
         /// <summary>
         /// The start of an Http request
@@ -382,7 +572,7 @@ namespace Oda {
             // begin request events
             var hArgs = new HttpEventArgs(HttpApplication);
             RaiseOnBeginRequest(hArgs);
-            var results = new List<JsonResponse>();
+            var results = new Dictionary<string, JsonResponse>();
             var request = HttpContext.Current.Request;
             var response = HttpContext.Current.Response;
             // check for Json requests made to the JsonMethodUrl
@@ -397,50 +587,31 @@ namespace Oda {
                 if (bodyLength>0) {
                     var contentType = workerRequest.GetKnownRequestHeader(HttpWorkerRequest.HeaderContentType);
                     if (contentType == null) { throw new NullReferenceException("Header Content-Type cannot be empty.  Acceptable post values are multipart/form-data or application/json."); }
-                    if (contentType.Contains("application/json")) {
-                        var requestBody = "";
-                        var preloadedBody = workerRequest.GetPreloadedEntityBody();
-                        if(workerRequest.IsEntireEntityBodyIsPreloaded()){
-                            if (contentType.Contains("charset=utf-8")) {
-                                var utf8 = new UTF8Encoding();
-                                requestBody = utf8.GetString(preloadedBody);
-                            }
-                        } else {
-                            var ms = getPostUpload(workerRequest);
-                            if (contentType.Contains("charset=utf-8")) {
-                                var utf8 = new UTF8Encoding();
-                                var allBytes = new byte[ms.Length];
-                                ms.Position = 0;
-                                ms.Read(allBytes,0,allBytes.Length);
-                                requestBody = utf8.GetString(allBytes);
-                                ms.Dispose();
-                            }
+                    var filePathsAndMap = createTempFilesAndMapFromPost(workerRequest);
+                    try {
+                        JsonResponse.InvokeJsonMethods(filePathsAndMap, ref results);
+                        // after methods have been invoked, remove files from temp
+                        foreach (var f in filePathsAndMap.Files) {
+                            File.Delete(f.Path);
                         }
-                        if (requestBody.Length == 0) { throw new FormatException("Content must be sent in UTF-8 encoding.  charset=utf-8 must be included in the Content-Type header. E.g.: application/json; charset=utf-8."); }
-                        try {
-                            var rs = JsonResponse.InvokeJsonMethods(requestBody);
-                            results.AddRange(rs);
-                        } catch(Exception ex) {
-                            var iex = GetInnermostException(ex);
-                            var errorResult = new JsonResponse(3, string.Format("Error invoking method. Source: {1}{0} Message: {2}{0} Stack Trace: {3}", 
-                                Environment.NewLine, iex.Source ,iex.Message, iex.StackTrace));
-                            results.Add(errorResult);
-                        }
-                    } else if (contentType.Contains("multipart/form-data")) {
-                        // TODO: file upload stream
+                    } catch(Exception ex) {
+                        var iex = GetInnermostException(ex);
+                        var errorResult = new JsonResponse(3, string.Format("Error invoking method. Source: {1}{0} Message: {2}{0} Stack Trace: {3}", 
+                            Environment.NewLine, iex.Source ,iex.Message, iex.StackTrace));
+                        results.Add("Exception", errorResult);
                     }
                 } else {
                     // if there was no post
                     // do QueryString (get)
                     if (request.QueryString.Keys.Count == 1) {
                         try {
-                            var rs = JsonResponse.InvokeJsonMethods(HttpUtility.UrlDecode(request.QueryString.ToString()));
-                            results.AddRange(rs);
+                            var m = new Mapper() {Map = HttpUtility.UrlDecode(request.QueryString.ToString())};
+                            JsonResponse.InvokeJsonMethods(m, ref results);
                         } catch (Exception ex) {
                             var iex = GetInnermostException(ex);
                             var errorResult = new JsonResponse(3, string.Format("Error invoking method. Source: {1}{0} Message: {2}{0} Stack Trace: {3}",
                                Environment.NewLine, iex.Source, iex.Message, iex.StackTrace));
-                            results.Add(errorResult);
+                            results.Add("Exception", errorResult);
                         }
                     }
                 }
@@ -448,8 +619,9 @@ namespace Oda {
             // if one or more Json methods returned a result
             // respond with that result
             if (results.Count <= 0) return;
-            var outputRestults = new Dictionary<string, JsonResponse>();
-            foreach(var result in results) {
+            foreach(var r in results) {
+                var result = r.Value;
+                if (result.SupressResponse) continue;
                 response.Status = result.Status;
                 response.StatusCode = result.StatusCode;
                 response.ContentType = result.ContentType;
@@ -458,7 +630,6 @@ namespace Oda {
                 if(result.HttpCookie != null) {
                     response.AppendCookie(result.HttpCookie);
                 }
-                if (result.SupressResponse) continue;
                 if(result.ContentDisposition == JsonContentDisposition.Attachment || result.ContentDisposition == JsonContentDisposition.Normal) {
                     if(result.ContentDisposition == JsonContentDisposition.Attachment) {
                         response.AddHeader("Content-Disposition", string.Format(@"attachment; filename=""{0}""", result.AttachmentFileName));
@@ -478,27 +649,8 @@ namespace Oda {
                     HttpContext.Current.ApplicationInstance.CompleteRequest();
                     return;// Only one file can be output at a time.
                 }
-                var methodName = result.MethodName;
-                var methodNameCounter = 1;
-                // make sure and create a unique name
-                // for the returned method
-                if(outputRestults.ContainsKey(methodName)) {
-                    // if the key with no number exists, rename the key to key_0
-                    var temp = outputRestults[methodName];
-                    outputRestults.Add(methodName + "_1",temp);
-                    outputRestults.Remove(methodName);
-                }
-                while (outputRestults.ContainsKey(methodName + "_" + methodNameCounter)) {
-                    //find the first non conflicting number for the new key
-                    methodNameCounter++;
-                }
-                if(methodNameCounter>1) {
-                    outputRestults.Add(methodName + "_" + methodNameCounter, result);
-                }else{
-                    outputRestults.Add(methodName, result);
-                }
             }
-            response.Write(JsonResponse.ToJson(outputRestults));
+            response.Write(JsonResponse.ToJson(results));
             response.Flush();
             HttpContext.Current.ApplicationInstance.CompleteRequest();
         }
