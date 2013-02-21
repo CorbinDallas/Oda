@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oda.Sql", "Oda.Sql\Oda.Sql.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oda.UI", "Oda.UI\Oda.UI.csproj", "{8BAE3195-A6D2-449B-9C26-BB287A978329}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oda.FileManager", "Oda.FileManager\Oda.FileManager.csproj", "{161BFBD6-09B6-48B6-B892-114497D30F20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{8BAE3195-A6D2-449B-9C26-BB287A978329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8BAE3195-A6D2-449B-9C26-BB287A978329}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BAE3195-A6D2-449B-9C26-BB287A978329}.Release|Any CPU.Build.0 = Release|Any CPU
+		{161BFBD6-09B6-48B6-B892-114497D30F20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{161BFBD6-09B6-48B6-B892-114497D30F20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{161BFBD6-09B6-48B6-B892-114497D30F20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{161BFBD6-09B6-48B6-B892-114497D30F20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
