@@ -201,30 +201,36 @@ namespace Oda {
             //@ContactId, @AccountId, @First, @Middle, @Last, @Address, @Address2, @City, @State, 
             //@Zip, @Email, @Company, @Title, @WebAddress, @IMAddress, @Fax, 
             //@Home, @Work, @Mobile, @Notes, @Type
-            var query = GetResString("/Sql/CreateUpdateContact.sql");
-            using(var cmd = new SqlCommand(query, Sql.Connection)) {
-                cmd.Parameters.Add("@ContactId", SqlDbType.UniqueIdentifier).Value = new Guid(contactId);
-                cmd.Parameters.Add("@AccountId", SqlDbType.UniqueIdentifier).Value = new Guid(accountId);
-                cmd.Parameters.Add("@First", SqlDbType.VarChar).Value = first;
-                cmd.Parameters.Add("@Middle", SqlDbType.VarChar).Value = middle;
-                cmd.Parameters.Add("@Last", SqlDbType.VarChar).Value = last;
-                cmd.Parameters.Add("@Address", SqlDbType.VarChar).Value = address;
-                cmd.Parameters.Add("@Address2", SqlDbType.VarChar).Value = address2;
-                cmd.Parameters.Add("@City", SqlDbType.VarChar).Value = city;
-                cmd.Parameters.Add("@State", SqlDbType.VarChar).Value = state;
-                cmd.Parameters.Add("@Zip", SqlDbType.VarChar).Value = zip;
-                cmd.Parameters.Add("@Email", SqlDbType.VarChar).Value = email;
-                cmd.Parameters.Add("@Company", SqlDbType.VarChar).Value = company;
-                cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = title;
-                cmd.Parameters.Add("@WebAddress", SqlDbType.VarChar).Value = webAddress;
-                cmd.Parameters.Add("@IMAddress", SqlDbType.VarChar).Value = imAddress;
-                cmd.Parameters.Add("@Fax", SqlDbType.VarChar).Value = fax;
-                cmd.Parameters.Add("@Home", SqlDbType.VarChar).Value = home;
-                cmd.Parameters.Add("@Work", SqlDbType.VarChar).Value = work;
-                cmd.Parameters.Add("@Mobile", SqlDbType.VarChar).Value = mobile;
-                cmd.Parameters.Add("@Notes", SqlDbType.VarChar).Value = notes;
-                cmd.Parameters.Add("@Type", SqlDbType.Int).Value = (int)type;
-                cmd.ExecuteNonQuery();
+            try {
+                var query = GetResString("/Sql/CreateUpdateContact.sql");
+                using (var cmd = new SqlCommand(query, Sql.Connection)) {
+                    cmd.Parameters.Add("@ContactId", SqlDbType.UniqueIdentifier).Value = new Guid(contactId);
+                    cmd.Parameters.Add("@AccountId", SqlDbType.UniqueIdentifier).Value = new Guid(accountId);
+                    cmd.Parameters.Add("@First", SqlDbType.VarChar).Value = first;
+                    cmd.Parameters.Add("@Middle", SqlDbType.VarChar).Value = middle;
+                    cmd.Parameters.Add("@Last", SqlDbType.VarChar).Value = last;
+                    cmd.Parameters.Add("@Address", SqlDbType.VarChar).Value = address;
+                    cmd.Parameters.Add("@Address2", SqlDbType.VarChar).Value = address2;
+                    cmd.Parameters.Add("@City", SqlDbType.VarChar).Value = city;
+                    cmd.Parameters.Add("@State", SqlDbType.VarChar).Value = state;
+                    cmd.Parameters.Add("@Zip", SqlDbType.VarChar).Value = zip;
+                    cmd.Parameters.Add("@Email", SqlDbType.VarChar).Value = email;
+                    cmd.Parameters.Add("@Company", SqlDbType.VarChar).Value = company;
+                    cmd.Parameters.Add("@Title", SqlDbType.VarChar).Value = title;
+                    cmd.Parameters.Add("@WebAddress", SqlDbType.VarChar).Value = webAddress;
+                    cmd.Parameters.Add("@IMAddress", SqlDbType.VarChar).Value = imAddress;
+                    cmd.Parameters.Add("@Fax", SqlDbType.VarChar).Value = fax;
+                    cmd.Parameters.Add("@Home", SqlDbType.VarChar).Value = home;
+                    cmd.Parameters.Add("@Work", SqlDbType.VarChar).Value = work;
+                    cmd.Parameters.Add("@Mobile", SqlDbType.VarChar).Value = mobile;
+                    cmd.Parameters.Add("@Notes", SqlDbType.VarChar).Value = notes;
+                    cmd.Parameters.Add("@Type", SqlDbType.Int).Value = (int) type;
+                    cmd.ExecuteNonQuery();
+                    j.Message = "Contact created or updated.";
+                }
+            }catch(Exception e) {
+                j.Message = e.Message;
+                j.Error = e.Message.GetHashCode();
             }
             return j;
         }
