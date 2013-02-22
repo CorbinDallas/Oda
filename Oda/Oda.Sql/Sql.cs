@@ -96,6 +96,7 @@ namespace Oda {
         /// <summary>
         /// Initializes a new instance of the <see cref="Sql"/> class.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public Sql() {
             GetWebConfigSettings();
             Connection = CreateConnection();
@@ -190,7 +191,8 @@ namespace Oda {
 		/// <param name="overwrite">if set to <c>true</c> the row will be written even if the rowversion differs from that found in the database.</param>
 		/// <param name="commandType">Type of the command.  0 = Update, 1 = Insert, 2 = Delete</param>
 		/// <returns>JSON Data related to status of row insert, update or delete.</returns>
-		public static Dictionary<string, object> CreateUpdateOrDelete( string objectName, List<object> data, bool overwrite, Int64 commandType ) {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
+        public static Dictionary<string, object> CreateUpdateOrDelete( string objectName, List<object> data, bool overwrite, Int64 commandType ) {
 			var j = new Dictionary<string, object>();
 			var rowData = new List<SqlDataRecord>();
 			SqlMetaData[] rowUpdateTable = { 
@@ -322,6 +324,7 @@ namespace Oda {
         /// <param name="orderByDirection">The order by direction.</param>
         /// <param name="connection">The SQL connection to use.</param>
         /// <returns>JSON schema data and row data and status or delete status.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static JsonResponse JsonReadOrDelete(string query, int rowFrom, int rowTo, Guid accountId, SqlParameter[] parameters, string orderBy, 
             OrderDirection orderByDirection, SqlConnection connection) {
             //create view hash name
@@ -430,6 +433,7 @@ namespace Oda {
         /// <returns>
         /// JSON schema data and row data and status or delete status.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static JsonResponse JsonReadOrDelete(string objectName, int rowFrom, int rowTo, SqlWhere whereClause, Guid accountId, SqlWhere searchClause,
                                             IDictionary<string, string> aggregates, ICollection<int> selectedRows, bool includeSchemaData, Int64 checksum, bool deleteSelection,
                                             string orderBy, OrderDirection orderByDirection, SqlConnection connection) {

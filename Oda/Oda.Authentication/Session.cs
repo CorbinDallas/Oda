@@ -127,6 +127,7 @@ namespace Oda {
         /// Updates this property by writing it to the database.
         /// </summary>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public SessionProperty Update(SqlConnection cn, SqlTransaction trans) {
             if(SuspendUpdates) {
                 return this;
@@ -300,6 +301,7 @@ namespace Oda {
         /// <returns>
         /// Returns a reference to the session being refreshed.
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public Session Refresh(SqlConnection cn, SqlTransaction trans) {
             // fetch the most up to date info from the Sql server
             // Result 1

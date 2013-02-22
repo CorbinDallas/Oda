@@ -193,6 +193,7 @@ namespace Oda {
         /// <param name="notes">The notes.</param>
         /// <param name="type">The type.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static JsonResponse UpdateContact(string contactId, string accountId, string first, string middle, 
             string last, string address, string address2, string city, string state, string zip, 
             string email, string company, string title, string webAddress, string imAddress, 

@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Oda.Sql")]
-[assembly: AssemblyCopyright("Copyright © 2012 Tony Germaneri")]
+[assembly: AssemblyCopyright("Copyright © 2012, 2013 Tony Germaneri")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 // Setting ComVisible to false makes the types in this assembly not visible 

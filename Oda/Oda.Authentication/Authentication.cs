@@ -370,6 +370,7 @@ namespace Oda {
         /// </summary>
         /// <param name="logon">The logon.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         private static string GetNonce(string logon) {
             var nonceQuery = GetResString("/Sql/GetNonce.sql");
             using(var cmd = new SqlCommand(nonceQuery, Sql.Connection)) {
@@ -396,6 +397,7 @@ namespace Oda {
         /// <param name="logon">The logon.</param>
         /// <param name="password">The password.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static JsonResponse CreateAccount(string logon, string password) {
             var j = new JsonResponse();
             var current = Session.Current;
@@ -429,6 +431,7 @@ namespace Oda {
         /// <param name="logon">The _logon.</param>
         /// <param name="password">The _password.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static JsonResponse Logon(string logon, string password) {
             var current = Session.Current;
             var j = new JsonResponse();
@@ -463,6 +466,7 @@ namespace Oda {
         /// Logoffs the current session.
         /// </summary>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static JsonResponse Logoff() {
             var current = Session.Current;
             var j = new JsonResponse();
@@ -488,6 +492,7 @@ namespace Oda {
         /// </summary>
         /// <param name="logon">The logon.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static JsonResponse ResetPassword(string logon) {
             var salt = BCrypt.GenerateSalt();
             var newPassword = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).ToLower().Substring(1, 10);
@@ -519,6 +524,7 @@ namespace Oda {
         /// <param name="oldPassword">The old password.</param>
         /// <param name="newPassword">The new password.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities")]
         public static JsonResponse ChangePassword(string logon, string oldPassword, string newPassword) {
             var j = new JsonResponse();
             var oldNonce = GetNonce(logon);

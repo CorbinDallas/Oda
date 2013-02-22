@@ -74,11 +74,22 @@ namespace Oda {
             _logFilePath = logPath;
         }
         /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="managed"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool managed) {
+            if (managed) {
+                GC.SuppressFinalize(this);
+                Dispose();
+            }
+            _threadIsRunning = false;
+            _logThread.Abort();
+        }
+        /// <summary>
         /// Disposes this instance.
         /// </summary>
         public void Dispose() {
-            _threadIsRunning = false;
-            _logThread.Abort();
+            Dispose(false);
         }
         /// <summary>
         /// Starts the log writer thread.

@@ -22,6 +22,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
 using System.Text;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
@@ -57,7 +59,8 @@ namespace Oda {
     /// The result of a Json method execution.  
     /// All Json methods in Oda are required to return this type.
     /// </summary>
-    public class JsonResponse : Dictionary<string, object> {
+    [Serializable]
+    public class JsonResponse : Dictionary<string, object>, ISerializable {
         /// <summary>
         /// Gets or sets the Http cookie to return.
         /// </summary>
@@ -272,6 +275,21 @@ namespace Oda {
             Add("Error", 0);
             Add("Message", "");
         }
+        /// <summary>
+        /// Implements the <see cref="T:System.Runtime.Serialization.ISerializable" /> interface and returns the data needed to serialize the <see cref="T:System.Collections.Generic.Dictionary`2" /> instance.
+        /// </summary>
+        /// <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object that contains the information required to serialize the <see cref="T:System.Collections.Generic.Dictionary`2" /> instance.</param>
+        /// <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext" /> structure that contains the source and destination of the serialized stream associated with the <see cref="T:System.Collections.Generic.Dictionary`2" /> instance.</param>
+        [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context) {
+            base.GetObjectData(info,context);
+        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="JsonResponse"/> class.
+        /// </summary>
+        /// <param name="info">A <see cref="T:System.Runtime.Serialization.SerializationInfo" /> object containing the information required to serialize the <see cref="T:System.Collections.Generic.Dictionary`2" />.</param>
+        /// <param name="context">A <see cref="T:System.Runtime.Serialization.StreamingContext" /> structure containing the source and destination of the serialized stream associated with the <see cref="T:System.Collections.Generic.Dictionary`2" />.</param>
+        protected JsonResponse(SerializationInfo info, StreamingContext context) : base(info,context) { }
         /// <summary>
         /// Initializes a new instance of the <see cref="JsonResponse"/> class.
         /// </summary>

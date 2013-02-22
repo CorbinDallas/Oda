@@ -461,7 +461,6 @@ namespace Oda {
                             var mapBytes = new byte[a.Length - a.Position - 2]; // -2 to drop the \r\n
                             a.Read(mapBytes, 0, mapBytes.Length);
                             m.Map = e.GetString(mapBytes);
-                            a.Close();
                             File.Delete(n);
                             isMapFound = true;
                             continue; ;
@@ -473,7 +472,6 @@ namespace Oda {
                             var idBytes = new byte[36];
                             a.Read(idBytes, 0, 36);
                             m.Id = Guid.Parse(e.GetString(idBytes));
-                            a.Close();
                             File.Delete(n);
                             isIdFound = true;
                             continue;
@@ -531,7 +529,6 @@ namespace Oda {
                             bin.Write(buffer, 0, (int) remainingChunckSize);
                         }
                         // delete temp file
-                        a.Close();
                         File.Delete(n);
                         // make mapper ref
                         var regex = new Regex(@".*name=""([^""]+)""; filename=""([^""]+)""");
@@ -555,10 +552,8 @@ namespace Oda {
                         };
                         m.Files.Add(fm);
                     }
-                    
                 };
             }
-            fs.Close();
             fs.Dispose();
             File.Delete(fst);
             return m;
