@@ -20,9 +20,9 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /**
-* Style for the Oda.UI.TaskBar
+* Style for the Oda.UI.taskBar
 * @constructor
-* @name TaskBar
+* @name taskBar
 * @version 0.1.0 beta release
 * @author Tony Germaneri (TonyGermaneri@gmail.com)
 * @augments Oda.UI.WidgetStyle
@@ -38,12 +38,12 @@
 * @param {Oda.UI.String} [args.item.font] The font of an item.
 * @param {Oda.UI.Rect} [args.rect] The rect of the task bar.
 * @param {Oda.UI.Border} [args.border] The top border of the task bar.
-* @param {Oda.UI.Rect} [args.item.rect] The spaceing of the items.
-* @param {Oda.UI.Rect} [args.item.spacing] The spaceing of the items.
-* @param {Oda.UI.Padding} [args.item.padding] The spaceing of the items.
+* @param {Oda.UI.Rect} [args.item.rect] The spacing of the items.
+* @param {Oda.UI.Rect} [args.item.spacing] The spacing of the items.
+* @param {Oda.UI.Padding} [args.item.padding] The spacing of the items.
 * @param {Native.Object} [args] Parameters for the style.
 */
-Oda.UI.Style.TaskBar = function(args){
+Oda.UI.Style.taskBar = function(args){
     var self = Oda.beget(Oda.UI.WidgetStyle);
     // make sure objects exist
     args = args || { item: {} };
@@ -54,7 +54,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name id
     * @type Native.Integer
-    * @memberOf Oda.UI.Style.TaskBar
+    * @memberOf Oda.UI.Style.taskBar
     */
     self.id = Oda.UI.widgetIdCount++;
     self.item = { hover: {} };
@@ -63,7 +63,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name type
     * @type Native.String
-    * @memberOf Oda.UI.Style.TaskBar
+    * @memberOf Oda.UI.Style.taskBar
     */
     self.type = "TaskBarStyle";
     /**
@@ -71,7 +71,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name background
     * @type Native.String
-    * @memberOf Oda.UI.Style.TaskBar
+    * @memberOf Oda.UI.Style.taskBar
     */
     self.background = args.background || '#DDD';
     /**
@@ -79,7 +79,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name background
     * @type Native.String
-    * @memberOf Oda.UI.Style.TaskBar.item
+    * @memberOf Oda.UI.Style.taskBar.item
     */
     self.item.background = args.item.background || '#EFEFEF';
     /**
@@ -87,7 +87,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name background
     * @type Native.String
-    * @memberOf Oda.UI.Style.TaskBar.item.hover
+    * @memberOf Oda.UI.Style.taskBar.item.hover
     */
     self.item.hover.background = args.item.hover.background || '#dddddd';
     /**
@@ -95,7 +95,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name textColor
     * @type Native.String
-    * @memberOf Oda.UI.Style.TaskBar.item.hover
+    * @memberOf Oda.UI.Style.taskBar.item.hover
     */
     self.item.hover.textColor = args.item.hover.textColor || '#ffffff';
     /**
@@ -103,7 +103,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name textColor
     * @type Native.String
-    * @memberOf Oda.UI.Style.TaskBar.item
+    * @memberOf Oda.UI.Style.taskBar.item
     */
     self.item.textColor = args.item.textColor || '#000';
     /**
@@ -111,7 +111,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name border
     * @type Oda.UI.Border
-    * @memberOf Oda.UI.Style.TaskBar.item
+    * @memberOf Oda.UI.Style.taskBar.item
     */
     self.item.border = args.item.border || { size: 1, style: 'solid', color: '#FFF' };
     /**
@@ -119,7 +119,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name font
     * @type Native.String
-    * @memberOf Oda.UI.Style.TaskBar.item
+    * @memberOf Oda.UI.Style.taskBar.item
     */
     self.item.font = args.item.font || self.defaultFontFamily;
     /**
@@ -127,7 +127,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name rect
     * @type Native.Rect
-    * @memberOf Oda.UI.Style.TaskBar
+    * @memberOf Oda.UI.Style.taskBar
     */
     self.rect = args.rect || { h: 29, w: 0, x: 0, y: 0 };
     /**
@@ -135,7 +135,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name border
     * @type Oda.UI.Border
-    * @memberOf Oda.UI.Style.TaskBar
+    * @memberOf Oda.UI.Style.taskBar
     */
     self.border = args.border || { size: 1, style: 'solid', color: '#00568f' };
     /**
@@ -143,7 +143,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name spacing
     * @type Native.Integer
-    * @memberOf Oda.UI.Style.TaskBar.item
+    * @memberOf Oda.UI.Style.taskBar.item
     */
     self.item.spacing = args.item.spacing || 2;
     /**
@@ -151,7 +151,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name rect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.TaskBar.item
+    * @memberOf Oda.UI.Style.taskBar.item
     */
     self.item.rect = args.item.rect || { h: 27, w: 155, x: 0, y: 0 };
     /**
@@ -159,7 +159,7 @@ Oda.UI.Style.TaskBar = function(args){
     * @field
     * @name padding
     * @type Oda.UI.Padding
-    * @memberOf Oda.UI.Style.TaskBar.item
+    * @memberOf Oda.UI.Style.taskBar.item
     */
     self.item.padding = args.item.padding || { t: 2, r: 4, b: 2, l: 2 };
     return self;

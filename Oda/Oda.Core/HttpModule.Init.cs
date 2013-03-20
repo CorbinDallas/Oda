@@ -88,31 +88,153 @@ namespace Oda {
             HttpApplication = app;
         }
     }
+    /// <summary>
+    /// Arguments for the Http upload event.
+    /// </summary>
     public class HttpUploadStatusEventArgs : EventArgs {
+        /// <summary>
+        /// Gets the bytes read so far.
+        /// </summary>
+        /// <value>
+        /// The bytes read.
+        /// </value>
         public long BytesRead { get; internal set; }
+        /// <summary>
+        /// Gets the bytes total being uploaded.
+        /// </summary>
+        /// <value>
+        /// The bytes total.
+        /// </value>
         public long BytesTotal { get; internal set; }
+        /// <summary>
+        /// Gets the time the upload started on.
+        /// </summary>
+        /// <value>
+        /// The upload start time.
+        /// </value>
         public DateTime StartedOn { get; internal set; }
+        /// <summary>
+        /// Gets the time last updated.
+        /// </summary>
+        /// <value>
+        /// The last updated time.
+        /// </value>
         public DateTime LastUpdated { get; internal set; }
+        /// <summary>
+        /// Gets the status message from the server.
+        /// </summary>
+        /// <value>
+        /// The message.
+        /// </value>
+        public string Message { get; internal set; }
+        /// <summary>
+        /// Gets the current file.
+        /// </summary>
+        /// <value>
+        /// The current file.
+        /// </value>
+        public string CurrentFile { get; internal set; }
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="HttpUploadStatusEventArgs"/> is complete.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if complete; otherwise, <c>false</c>.
+        /// </value>
         public bool Complete { get; internal set; }
+        /// <summary>
+        /// Gets the unique id of this upload request.
+        /// </summary>
+        /// <value>
+        /// The id.
+        /// </value>
         public Guid Id { get; internal set; }
     }
     #endregion
+    /// <summary>
+    /// Used to map data from HTTP JSON requests to methods.
+    /// </summary>
     class Mapper {
+        /// <summary>
+        /// Gets or sets the list of files uploaded.
+        /// </summary>
+        /// <value>
+        /// The files.
+        /// </value>
         public List<UploadedFile> Files { get; set; }
+        /// <summary>
+        /// Gets or sets the JSON method map.
+        /// </summary>
+        /// <value>
+        /// The map.
+        /// </value>
         public string Map { get; set; }
+        /// <summary>
+        /// Gets or sets the unique id of this request.
+        /// </summary>
+        /// <value>
+        /// The id.
+        /// </value>
         public Guid Id { get; set; }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Mapper"/> class.
+        /// </summary>
         public Mapper() {
             Files = new List<UploadedFile>();
         }
     }
+    /// <summary>
+    /// Represents a file uploaded from a HTTP client.
+    /// </summary>
     public class UploadedFile {
-        public string Method { get; set; }
-        public int Instance { get; set; }
-        public int FileNumber { get; set; }
-        public int FieldNumber { get; set; }
-        public string Path { get; set; }
-        public string OrginalFileName { get; set; }
-        public string ContentType { get; set; }
+        /// <summary>
+        /// The method used by the upload stream.
+        /// </summary>
+        /// <value>
+        /// The method.
+        /// </value>
+        public string Method { get; internal set; }
+        /// <summary>
+        /// The instance number of the method if there is more than one method.
+        /// </summary>
+        /// <value>
+        /// The instance.
+        /// </value>
+        public int Instance { get; internal set; }
+        /// <summary>
+        /// The file number if this file was in a field with other files.
+        /// </summary>
+        /// <value>
+        /// The file number.
+        /// </value>
+        public int FileNumber { get; internal set; }
+        /// <summary>
+        /// The field number if this file was in a collection that contained more than one file upload field.
+        /// </summary>
+        /// <value>
+        /// The field number.
+        /// </value>
+        public int FieldNumber { get; internal set; }
+        /// <summary>
+        /// The path to the uploaded file.  This file will be deleted at the end of the request.
+        /// </summary>
+        /// <value>
+        /// The path.
+        /// </value>
+        public string Path { get; internal set; }
+        /// <summary>
+        /// The original file name
+        /// </summary>
+        /// <value>
+        /// The name of the original file.
+        /// </value>
+        public string OriginalFileName { get; internal set; }
+        /// <summary>
+        /// Gets the type of the content.
+        /// </summary>
+        /// <value>
+        /// The type of the content.
+        /// </value>
+        public string ContentType { get; internal set; }
     }
     /// <summary>
     /// The main Http module.
@@ -345,6 +467,33 @@ namespace Oda {
             // raise init event
             var args = new HttpEventArgs(HttpApplication);
             RaiseOnInitialize(args);
+            UploadStatus += (o, eventArgs) => {
+                var ev = (HttpUploadStatusEventArgs) eventArgs;
+                if(UploadStatuses.ContainsKey(ev.Id)) {
+                    // update existing key
+                    UploadStatuses[ev.Id].BytesRead = ev.BytesRead;
+                    UploadStatuses[ev.Id].BytesTotal = ev.BytesTotal;
+                    UploadStatuses[ev.Id].Complete = ev.Complete;
+                    UploadStatuses[ev.Id].LastUpdated = ev.LastUpdated;
+                    UploadStatuses[ev.Id].StartedOn = ev.StartedOn;
+                    UploadStatuses[ev.Id].Message = ev.Message;
+                    UploadStatuses[ev.Id].CurrentFile = ev.CurrentFile;
+                    if (ev.Complete) {
+                        UploadStatuses.Remove(ev.Id);
+                    }
+                }else {
+                    UploadStatuses.Add(ev.Id, new UploadStatus() {
+                        BytesRead = ev.BytesRead,
+                        BytesTotal = ev.BytesTotal,
+                        Complete = ev.Complete,
+                        Id = ev.Id,
+                        LastUpdated = ev.LastUpdated,
+                        StartedOn = ev.StartedOn,
+                        Message = ev.Message,
+                        CurrentFile = ev.CurrentFile
+                    });
+                }
+            };
             StartupState = StartupState.Started;
         }
         /// <summary>
@@ -353,210 +502,6 @@ namespace Oda {
         public void Dispose() {
             var args = new HttpEventArgs(HttpApplication);
             RaiseOnDispose(args);
-        }
-        byte[] getBoundary(byte[] b) {
-            // read until the first CR
-            var r = new List<byte>();
-            var i = 0;
-            while(b[i] != 13){
-                r.Add(b[i]);
-                i++;
-                if(i>60) {
-                    throw new FormatException("Malformed form-data.  Boundary cannot be greater than 60 characters.");
-                }
-            }
-            return r.ToArray();
-        }
-        static int FindPosition(Stream haystack, byte[] needle, long offset) {
-            int b;
-            int i = 0;
-            haystack.Position = offset;
-            while ((b = haystack.ReadByte()) != -1) {
-                if (b == needle[i++]) {
-                    if (i == needle.Length) {
-                        return (int)(haystack.Position - needle.Length);
-                    }
-                } else {
-                    i = 0;
-                }
-            }
-            return -1;
-        }
-        Mapper createTempFilesAndMapFromPost(HttpWorkerRequest r) {
-            var isIdFound = false;
-            var isMapFound = false;
-            var e = new UTF8Encoding();
-            // bytes for "Content-Disposition: form-data; "
-            var mapSig = new byte[] {
-67,111,110,116,101,110,116,45,68,105,115,112,111,
-115,105,116,105,111,110,58,32,102,111,114,109,
-45,100,97,116,97,59,32,110,97,109,101,61,
-34,109,97,112,34,13,10,13,10
-            };
-            var idSig = new byte[] { 
-67,111,110,116,101,110,116,45,68,105,115,112,111,115,105,116,105,
-111,110,58,32,102,111,114,109,45,100,97,116,97,59,32,110,
-97,109,101,61,34,105,100,34,13,10,13,10};
-            var m = new Mapper();
-            // first 46 bytes = boundary signature
-            const int f = 4096;
-            var p = r.GetPreloadedEntityBody();
-            var b = getBoundary(p);
-            var l = r.GetTotalEntityBodyLength();
-            // load stream into temp file
-            var fst = Path.GetTempFileName();
-            var fs = new FileStream(fst, FileMode.OpenOrCreate);
-            // write preloaded body to file
-            fs.Write(p,0,p.Length);
-            var c = p.Length;
-            var q = 0;
-            var u = new byte[f];
-            while(l-c>q) {
-                q = r.ReadEntityBody(u, 0, f);
-                fs.Write(u, 0, q);
-                c += q;
-            }
-            if (l-c > 0) {
-                var ux = new byte[l - c];
-                q = r.ReadEntityBody(ux, 0, (int)l - c);
-                fs.Write(ux, 0, q);
-            }
-            fs.Flush();
-            fs.Position = 0;
-            // read the entire file finding all boundaries
-            var s = new List<long>();
-            while (fs.Position<fs.Length) {
-                s.Add(FindPosition(fs, b, fs.Position));
-            }
-            fs.Position = 0;
-            // load each boundary into seperate files
-            var j = new List<string>();
-            // the last boundary is the eof
-            for(var i=0;s.Count-1>i;i++) {
-                // indexes between boundaries - this is the new file size in bytes
-                if (s[i + 1] == -1) {
-                    break;
-                }
-                var z = s[i + 1] - s[i]; // this is the size of the object between the boundaries (including current boundary)
-                var x = s[i + 1]; // end position is the begining of the next boundary -1
-                var g = (z) < f ? z : f; // chunk size (g) = 4096 (f) or next boundary pos - current boundary pos (z)
-                var h = z%g; // get remaining bytes to wrte at the end of the while loop
-                var n = Path.GetTempFileName();
-                fs.Position = s[i]; // start reading from the begining position of the object (including boundary)
-                using(var a = new FileStream(n, FileMode.OpenOrCreate)) {
-                    q = 0;
-                    c = 0;
-                    while (z-c>q){ //read blocks while position - mod block size  is less than end position
-                        q = fs.Read(u, 0, (int)g);
-                        a.Write(u, 0, q);
-                        c += q;
-                    }
-                    q = fs.Read(u, 0, (int)z-c);
-                    a.Write(u, 0, q);
-                    a.Position = 0;
-                    // read in form data
-                    if(!isMapFound){
-                        if(FindPosition(a, mapSig, 0)>-1) {
-                            // this is the map field
-                            var mapBytes = new byte[a.Length - a.Position - 2]; // -2 to drop the \r\n
-                            a.Read(mapBytes, 0, mapBytes.Length);
-                            m.Map = e.GetString(mapBytes);
-                            File.Delete(n);
-                            isMapFound = true;
-                            continue; ;
-                        }
-                    } 
-                    if (!isIdFound) {
-                        if(FindPosition(a, idSig, 0) > -1) {
-                            // id is always 36 bytes
-                            var idBytes = new byte[36];
-                            a.Read(idBytes, 0, 36);
-                            m.Id = Guid.Parse(e.GetString(idBytes));
-                            File.Delete(n);
-                            isIdFound = true;
-                            continue;
-                        }
-                    } 
-
-                    // this must be a binary file attachment, rip file apart
-
-                    a.Position = 0;
-
-                    //1) remove boundary 
-                    while (a.ReadByte() != 13) {}
-                    a.Position++; // read past lf
-                    //2) parse form data
-                    var startOfFormData = a.Position;
-                    while(a.ReadByte()!=13) {}
-                    a.Position++; // read past lf
-                    var endOfFormdata = a.Position;
-                    a.Position = startOfFormData;
-                    // create a byte array to hold form data
-                    var formDataBuffer = new byte[endOfFormdata-startOfFormData];
-                    a.Read(formDataBuffer, 0, formDataBuffer.Length);
-                    var formData = e.GetString(formDataBuffer);
-                    // form data looks like Content-Disposition: form-data; name="Authentication.CreateAccount_files_0_0"; filename="tiny.gif"
-
-                    //3) parse content type
-                    a.Position = endOfFormdata;
-                    while(a.ReadByte()!=13) {}
-                    a.Position++; // read past lf
-                    var endOfContentType = a.Position - 2; // -2 so we don't capture \r\n in content type string
-                    var contentTypeBuffer = new byte[endOfContentType - endOfFormdata];
-                    a.Position = endOfFormdata;
-                    a.Read(contentTypeBuffer, 0, contentTypeBuffer.Length);
-                    var contentType = e.GetString(contentTypeBuffer);
-                        
-                    //4) remove extra \r\n\r\n
-                    a.Position = endOfContentType + 4;
-                        
-                    //5) the rest is the binary file 
-                    // read it and store it in a new file
-                    var binLength = a.Length - a.Position;
-                    var bufferSize = f > binLength ? binLength : f;
-                    var remainingChunckSize = binLength%bufferSize;
-                    var bytesRead = 0L;
-                    var tempFileName = Path.GetTempFileName();
-                    using(var bin = new FileStream(tempFileName,FileMode.OpenOrCreate)){
-                        while (binLength - remainingChunckSize > bytesRead) {
-                            var buffer = new byte[bufferSize];
-                            bytesRead += a.Read(buffer, 0, (int)bufferSize);
-                            bin.Write(buffer,0,(int)bufferSize);
-                        }
-                        if(remainingChunckSize>0) {
-                            var buffer = new byte[remainingChunckSize];
-                            a.Read(buffer, 0, (int)remainingChunckSize);
-                            bin.Write(buffer, 0, (int) remainingChunckSize);
-                        }
-                        // delete temp file
-                        File.Delete(n);
-                        // make mapper ref
-                        var regex = new Regex(@".*name=""([^""]+)""; filename=""([^""]+)""");
-                        var matches = regex.Match(formData);
-                        var methodSig = matches.Groups[1].Value;
-                        var oFileName = matches.Groups[2].Value;
-                        regex = new Regex(@"file:::(.*)_(\d)_files_(\d+)_(\d+)");
-                        var matchesMetthod = regex.Match(methodSig);
-                        var method = matchesMetthod.Groups[1].Value;
-                        var methodInstance = matchesMetthod.Groups[2].Value;
-                        var fileField = matchesMetthod.Groups[3].Value;
-                        var fileNumber = matchesMetthod.Groups[4].Value;
-                        var fm = new UploadedFile() {
-                            ContentType = contentType.Replace("Content-Type: ", ""), // remove the words "Content-Type: " from value
-                            Path = tempFileName,
-                            FileNumber = int.Parse(fileNumber),
-                            Instance = int.Parse(methodInstance),
-                            Method = method,
-                            FieldNumber = int.Parse(fileField),
-                            OrginalFileName = oFileName
-                        };
-                        m.Files.Add(fm);
-                    }
-                };
-            }
-            fs.Dispose();
-            File.Delete(fst);
-            return m;
         }
         /// <summary>
         /// The start of an Http request
@@ -582,7 +527,7 @@ namespace Oda {
                 if (bodyLength>0) {
                     var contentType = workerRequest.GetKnownRequestHeader(HttpWorkerRequest.HeaderContentType);
                     if (contentType == null) { throw new NullReferenceException("Header Content-Type cannot be empty.  Acceptable post values are multipart/form-data or application/json."); }
-                    var filePathsAndMap = createTempFilesAndMapFromPost(workerRequest);
+                    var filePathsAndMap = ParseRequest(workerRequest);
                     try {
                         JsonResponse.InvokeJsonMethods(filePathsAndMap, ref results);
                         // after methods have been invoked, remove files from temp

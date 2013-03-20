@@ -29,6 +29,7 @@
 * @version 0.1.0 beta release
 * @author Tony Germaneri (TonyGermaneri@gmail.com)
 */
+"use strict";
 var Oda = {
     /**
     * Causes one object to inherit another as a prototype.
@@ -114,9 +115,10 @@ var Oda = {
         * @public
         */
         stylizeDialogs: function () {
-            for (d in this.Widgets.Dialogs) {
-                if (this.Widgets.Dialogs.hasOwnProperty(d)) {
-                    this.Widgets.Dialogs[d].stylize();
+            var d;
+            for (d in this.widgets.dialogs) {
+                if (this.widgets.dialogs.hasOwnProperty(d)) {
+                    this.widgets.dialogs[d].stylize();
                 }
             }
         },
@@ -329,11 +331,11 @@ var Oda = {
         * Collection of widgets implementing Oda.UI.Widget.
         * @class
         * @type Native.Object
-        * @name Widgets
+        * @name widgets
         * @memberOf Oda.UI
         * @public
         */
-        Widgets: {
+        widgets: {
             /**
             * Array of Oda.UI.Dialog instances.
             * @field
@@ -341,7 +343,7 @@ var Oda = {
             * @type Native.Array
             * @memberOf Oda.UI
             */
-            Dialogs: {},
+            dialogs: {},
             /**
             * The Oda.UI.TaskBar.
             * @field
@@ -349,15 +351,15 @@ var Oda = {
             * @type Native.String
             * @memberOf Oda.UI
             */
-            TaskBar: undefined,
+            taskBar: undefined,
             /**
-            * Collection of Oda.UI.Widgets.
+            * Collection of Oda.UI.widgets.
             * @field
-            * @name Widgets
+            * @name widgets
             * @type Native.Object
             * @memberOf Oda.UI
             */
-            Widgets: {}
+            widgets: {}
         },
         /**
         * Set of styles for objects implementing Oda.UI.Widget.

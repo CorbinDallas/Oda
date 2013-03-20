@@ -22,136 +22,136 @@
 /**
 * Creates a DHTML based task bar for holding Oda.UI.Dialog widgets and Oda.UI.Notification widgets.
 * @constructor
-* @name TaskBar
+* @name taskBar
 * @version 0.1.0 beta release
 * @author Tony Germaneri (TonyGermaneri@gmail.com)
 * @augments Oda.UI.Widget
 * @requires Oda
 * @requires Oda.UI
-* @requires Oda.UI.Style.TaskBar
+* @requires Oda.UI.Style.taskBar
 * @memberOf Oda.UI
 */
-Oda.UI.TaskBar = function (args) {
+Oda.UI.taskBar = function (args) {
     // there can be only one
-    if (Oda.UI.Widgets.TaskBar !== undefined) {
+    if (Oda.UI.widgets.taskBar !== undefined) {
         return;
     }
     args = args || { };
     var self = Oda.beget(Oda.UI.Widget);
     self.publicMembers = {};
-    self.style = args.style || Oda.UI.Style.TaskBar();
-    self.type = 'TaskBar';
+    self.style = args.style || Oda.UI.Style.taskBar();
+    self.type = 'taskBar';
     self.items = [];
     self.activeItem = undefined;
     self.hoverItem = undefined;
     self.events = {
         /**
-        * Occurs after the Oda.UI.TaskBar is initialized.
+        * Occurs after the Oda.UI.taskBar is initialized.
         * @event
         * @name init
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         init: self.addInitalEvents(args.init),
         /**
         * Occurs when the task bar is clicked.
         * @event
         * @name click
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         click: self.addInitalEvents(args.click),
         /**
         * Occurs when the mouse moves over the task bar.
         * @event
         * @name mouseover
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         mouseover: self.addInitalEvents(args.mouseover),
         /**
         * Occurs when the mouse leaves the task bar.
         * @event
         * @name mouseout
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         mouseout: self.addInitalEvents(args.mouseout),
         /**
         * Occurs when an item is clicked.
         * @event
         * @name itemClick
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         itemClick: self.addInitalEvents(args.itemClick),
         /**
         * Occurs when the mouse moves over an item.
         * @event
         * @name itemMouseover
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         itemMouseover: self.addInitalEvents(args.itemMouseover),
         /**
         * Occurs when the mouse moves off of an item.
         * @event
         * @name itemMouseout
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         itemMouseout: self.addInitalEvents(args.itemMouseout),
         /**
         * Occurs when an item is added to the collection.
         * @event
         * @name addItem
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         addItem: self.addInitalEvents(args.addItem),
         /**
         * Occurs when an item is removed from the collection.
         * @event
         * @name removeItem
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         removeItem: self.addInitalEvents(args.removeItem),
         /**
         * Occurs when the task bar's rect is updated.
         * @event
         * @name updateRect
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         updateRect: self.addInitalEvents(args.updateRect),
         /**
         * Occurs when the task bar's style is updated.
         * @event
         * @name updateStyle
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Taskbar instance.
+        * @param {Native.Object} Oda.UI.taskBar instance.
         */
         updateStyle: self.addInitalEvents(args.updateStyle)
     };
@@ -160,65 +160,65 @@ Oda.UI.TaskBar = function (args) {
         * The items belonging to the task bar.
         * @field
         * @name items
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
-        * @returns {Native.Array} Array of Oda.UI.TaskBarItem.
+        * @returns {Native.Array} Array of Oda.UI.taskBarItem.
         */
         self.publicMembers.items = self.items;
         /**
         * The rect of the task bar.
         * @field
         * @name rect
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
-        * @returns {Oda.UI.Rect} Oda.UI.Taskbar instance.
+        * @returns {Oda.UI.Rect} Oda.UI.taskBar instance.
         */
         self.publicMembers.rect = self.rect;
         /**
-        * The type of widget. Returns TaskBar.
+        * The type of widget. Returns taskBar.
         * @field
         * @name type
         * @type Native.String
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         */
         self.publicMembers.type = self.type;
         /**
-        * The session unique id of the Taskbar.
+        * The session unique id of the taskBar.
         * @field
         * @name id
         * @type Native.String
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         */
         self.publicMembers.id = self.id;
         /**
-        * Applies the current Oda.UI.Style.Taskbar to the Oda.UI.Taskbar.
+        * Applies the current Oda.UI.Style.taskBar to the Oda.UI.taskBar.
         * @function
         * @name redraw
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @public
-        * @returns {Oda.UI.Taskbar} Oda.UI.Taskbar.
+        * @returns {Oda.UI.taskBar} Oda.UI.taskBar.
         */
         self.publicMembers.redraw = self.redraw;
         /**
-        * Adds an item to the Oda.UI.Taskbar.
+        * Adds an item to the Oda.UI.taskBar.
         * @function
         * @name add
-        * @memberOf Oda.UI.Taskbar
+        * @memberOf Oda.UI.taskBar
         * @param {Native.HTMLElement} [obj] The object refrence to add to the item.
         * @param {Native.Function} [click] The function to execute when the item is clicked.
         * @param {Native.Function|Native.HTMLElement|Native.String|Native.Array} [text] The object to set as the title of the item.
         * @param {Native.Function} [over] The function to execute when the mouse moves over the item.
         * @param {Native.Function} [out] The function to execute when the mouse moves off the item.
-        * @returns {Oda.UI.TaskBarItem} Item added to the Oda.UI.Taskbar.
+        * @returns {Oda.UI.taskBarItem} Item added to the Oda.UI.taskBar.
         */
         self.publicMembers.add = self.add;
         /**
-        * Adds an item to the Oda.UI.Taskbar.
+        * Adds an item to the Oda.UI.taskBar.
         * @function
         * @name remove
-        * @memberOf Oda.UI.Taskbar
-        * @param {Oda.UI.TaskBarItem} [obj] The item to remove from the Oda.UI.Taskbar.
-        * @returns {Oda.UI.Taskbar} Item added to the Oda.UI.Taskbar.
+        * @memberOf Oda.UI.taskBar
+        * @param {Oda.UI.taskBarItem} [obj] The item to remove from the Oda.UI.taskBar.
+        * @returns {Oda.UI.taskBar} Item added to the Oda.UI.taskBar.
         */
         self.publicMembers.remove = self.remove;
         return self;
@@ -228,7 +228,7 @@ Oda.UI.TaskBar = function (args) {
         if (self.raiseEvent('init', undefined, undefined, undefined)) { return self; };
         // create an id for this widget
         self.id = Oda.UI.widgetIdCount++;
-        Oda.UI.Widgets.TaskBar = self;
+        Oda.UI.widgets.taskBar = self;
         // setup rect
         args.rect = args.rect || {};
         self.publicMembers.rect = self.rect = {

@@ -20,16 +20,16 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /**
-* Sends structred JSON requests to a HTTP server running Oda.Core.
+* Sends structured JSON requests to a HTTP server running Oda.Core.
 * @constructor
-* @name Ajax
+* @name ajax
 * @version 0.1.0 beta release
 * @author Tony Germaneri (TonyGermaneri@gmail.com)
 * @requires Oda
 * @memberOf Oda
 * @param {Native.Object || Native.Array} [args] Request object or an array of request objects.
 * @param {Native.Object} [options=undefined] Options and events associated with the request collection.
-* @param {Native.String} [args.method] The method to execute on the server.  Should be in the format <namespace>.<class>.<method>. E.g.: Oda.Authentication.Logon.  When in the Oda namespace the namespace can be ommited.
+* @param {Native.String} [args.method] The method to execute on the server.  Should be in the format <namespace>.<class>.<method>. E.g.: Oda.Authentication.Logon.  When in the Oda namespace the namespace can be omitted.
 * @param {Native.Array} [args.parameters=undefined] The array of parameters to pass to the method.  Parameters can be of the type String, Number, Boolean, File Input, or an Array or Object of these types.  Files can contain multiple files as defined in the HTML 5 doctype.
 * @param {Native.Function} [args.procedure] The procedure to run when the method responds.  The functions signature is (returnData, allReturnDataFromAllRequests).
 * @param {Native.Object} [args.context=undefined] The scope that the callback procedure runs in.  This defines the keyword 'this' inside the callback procedure.
@@ -42,12 +42,12 @@
 * @param {Native.Function} [options.readyStateChange=undefined]  Event occurs two or more times.  Occurs when request is about to be sent and when the request state has changed.
 * @param {Native.String} [options.method=POST] The method the request will use.
 * @param {Native.String} [options.responderUrl=/responder] The URL the request will use.
-* @param {Native.String} [options.contentType='application/x-www-form-urlencoded; charset=utf-8'] The MIME type of the content and the content's encoding seperated by ; .
-* @param {Native.Boolean} [options.async=true] The asynchronus mode the request will use.  True = asynchronous, false = synchronous.
+* @param {Native.String} [options.contentType='application/x-www-form-urlencoded; charset=utf-8'] The MIME type of the content and the content's encoding separated by ; .
+* @param {Native.Boolean} [options.async=true] The asynchronous mode the request will use.  True = asynchronous, false = synchronous.
 * @param {Native.Array} [options.headers=undefined] An array of arrays that represent headers. E.g.: [['X-Requested-With','XMLHttpRequest']].
-* @param {Native.Boolean} [options.delayRequest=false] Delay the request until the instance method Oda.Ajax.beginRequest() is called.
+* @param {Native.Boolean} [options.delayRequest=false] Delay the request until the instance method Oda.ajax.beginRequest() is called.
 * @example ///Create a request for a single method.///
-* var foo = Oda.Ajax({
+* var foo = Oda.ajax({
 *    method: 'Authentication.CreateAccount',
 *    parameters: ['Test', '1234'],
 *    procedure: function (e) {
@@ -55,7 +55,7 @@
 *    }
 * });
 * @example ///Create a request for two methods.///
-* var foo = Oda.Ajax([
+* var foo = Oda.ajax([
 *    {
 *        method: 'Authentication.CreateAccount',
 *        parameters: ['Test', '1234'],
@@ -72,7 +72,7 @@
 *    }
 * ]);
 * @example ///Create a request that contains a file and show the progress of the upload.///
-* var foo = Oda.Ajax({
+* var foo = Oda.ajax({
 *    method: 'FileManager.Upload',
 *    parameters: ['~\\', document.getElementById('file1')],
 *    procedure: function (e) {
@@ -85,7 +85,7 @@
 *    }
 * });
 * @example ///Create a request that contains more than one file.///
-* var x = Oda.Ajax({
+* var x = Oda.ajax({
 *    method: 'FileManager.UploadFiles',
 *    parameters: [['~\\','~\\'], [document.getElementById('file1'),document.getElementById('file2')]],
 *    procedure: function (e) {
@@ -93,9 +93,9 @@
 *    }
 * });
 */
-Oda.Ajax = function (args, options) {
-    // using this as a refrence http://www.w3.org/TR/XMLHttpRequest/
-    Oda.assert(args !== undefined, 'Oda.Ajax missing parameter.');
+Oda.ajax = function (args, options) {
+    // using this as a reference http://www.w3.org/TR/XMLHttpRequest/
+    Oda.assert(args !== undefined, 'Oda.ajax missing parameter.');
     var self = {};
     self.options = options || { };
     var createRequest = function() {
@@ -108,9 +108,9 @@ Oda.Ajax = function (args, options) {
     * Begins the request.
     * @function
     * @name beginRequest
-    * @memberOf Oda.Ajax
+    * @memberOf Oda.ajax
     * @public
-    * @returns {Oda.Ajax} Oda.Ajax instance.
+    * @returns {Oda.ajax} Oda.ajax instance.
     */
     self.beginRequest = function () {
         self.map = [];
@@ -129,7 +129,7 @@ Oda.Ajax = function (args, options) {
                 args[x].method,
                 args[x].parameters
             ]);
-            // assgin the instance number back to the mapper object
+            // assign the instance number back to the mapper object
             args[x].instanceNumber = self.methodInstances[args[x].method];
         }
         self.id = Oda.createUUID();
@@ -172,7 +172,7 @@ Oda.Ajax = function (args, options) {
                 readyStateChange();
             }
         }, false);
-        self.request.open(self.options.method || 'POST', (self.options.responderUrl || '/responder'), self.options.async === false ? false : true);
+        self.request.open(self.options.method || 'POST', (self.options.responderUrl || '/responder') + '?' + self.id, self.options.async === false ? false : true);
         self.request.setRequestHeader('Content-Type', self.options.contentType || 'application/x-www-form-urlencoded; charset=utf-8');
         self.request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         if(self.options.headers!==undefined) {
@@ -244,12 +244,12 @@ Oda.Ajax = function (args, options) {
     var readyStateChange = function() {
         if (self.request.readyState != 4 || self.request.status == 0) { return; }
         if (self.request.status != 200) {
-            // an error occured
-            Oda.UI.Widget.log('Oda.Ajax request returned a status of ' + self.request.status + ':\n' + self.request.responseText);
+            // an error occurred
+            Oda.UI.Widget.log('Oda.ajax request returned a status of ' + self.request.status + ':\n' + self.request.responseText);
             return;
         }
         var allResults = JSON.parse(self.request.responseText);
-        // seperate responses into map collection and call callback functions
+        // separate responses into map collection and call callback functions
         for (var x = 0; args.length > x; x++) {
             var instanceNumber = self.methodInstances[args[x].method] > 0 ? '_' + args[x].instanceNumber : '';
             args[x].procedure.apply(args[x].context || this, [allResults[args[x].method + instanceNumber], allResults]);

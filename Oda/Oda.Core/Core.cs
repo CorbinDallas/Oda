@@ -141,6 +141,10 @@ namespace Oda {
             }
         }
         /// <summary>
+        /// List of uploads going on in this instance.
+        /// </summary>
+        internal static Dictionary<Guid, UploadStatus> UploadStatuses = new Dictionary<Guid, UploadStatus>();
+        /// <summary>
         /// The private field for the JsonMethodUrl property.
         /// </summary>
         private static string _jsonMethodUrl;

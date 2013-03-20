@@ -23,37 +23,37 @@
 * Creates a DHTML based dialog.  The dialog contains control boxes, a title bar, an entry in the Oda.UI.TaskBar if it's visible, 
 * resizable, control boxes etc. dozens of events to attach to.
 * @constructor
-* @name Dialog
+* @name dialog
 * @version 0.1.0 beta release
 * @author Tony Germaneri (TonyGermaneri@gmail.com)
 * @augments Oda.UI.Widget
 * @requires Oda
 * @requires Oda.UI
-* @requires Oda.UI.Style.Dialog
+* @requires Oda.UI.Style.dialog
 * @memberOf Oda.UI
 * @param {Native.Object} [args] Parameters for the dialog.
-* @param {Native.Number} [args.state=0] The state of the Oda.UI.Dialog.  0: Normal, 1: minimized, 2: maximized, 3: hidden.
-* @param {Oda.UI.Rect} [args.rect] The Oda.UI.Rect of the Oda.UI.Dialog.
-* @param {Native.Boolean} [args.resizable=true] When set true the Oda.UI.Dialog will be resizable. When set false the Oda.UI.Dialog will be resizable.
+* @param {Native.Number} [args.state=0] The state of the Oda.UI.dialog.  0: Normal, 1: minimized, 2: maximized, 3: hidden.
+* @param {Oda.UI.Rect} [args.rect] The Oda.UI.Rect of the Oda.UI.dialog.
+* @param {Native.Boolean} [args.resizable=true] When set true the Oda.UI.dialog will be resizable. When set false the Oda.UI.dialog will be resizable.
 * @param {Native.Boolean} [args.showContentWhileMoving=false] When set true content will be shown while moving and resizing.  When set false a preview will be shown while moving and resizing.
-* @param {Native.Boolean} [args.centerVertically=false] When true this Oda.UI.Dialog will be centered vertically when the position is next updated or moveToCenter is called.
-* @param {Native.Boolean} [args.centerHorizontally=false] When true this Oda.UI.Dialog will be centered horizontally when the position is next updated or moveToCenter is called.
-* @param {Oda.UI.Style} [args.style=Oda.UI.Style] The Oda.UI.Style of this Oda.UI.Dialog.
-* @param {Native.Boolean} [args.modal=false] When set true the Oda.UI.Dialog will be in modal mode, appearing on top of everything and preventing access to background elements.
+* @param {Native.Boolean} [args.centerVertically=false] When true this Oda.UI.dialog will be centered vertically when the position is next updated or moveToCenter is called.
+* @param {Native.Boolean} [args.centerHorizontally=false] When true this Oda.UI.dialog will be centered horizontally when the position is next updated or moveToCenter is called.
+* @param {Oda.UI.Style} [args.style=Oda.UI.Style] The Oda.UI.Style of this Oda.UI.dialog.
+* @param {Native.Boolean} [args.modal=false] When set true the Oda.UI.dialog will be in modal mode, appearing on top of everything and preventing access to background elements.
 * @param {Native.Boolean} [args.modalCanClose=false] When set true, the close control box will be enabled even when in modal mode.
-* @param {Native.Boolean} [args.moveable=true] When set false the Oda.UI.Dialog cannot be moved.
-* @param {Native.Boolean} [args.alwaysOnTop=false] When set true the dialog will appear above all other Oda.UI.Dialog instances.
-* @param {Native.Boolean} [args.dontInit=false] When set true the dialog will not initialize until you call the Oda.UI.Dialog.Init method.
+* @param {Native.Boolean} [args.moveable=true] When set false the Oda.UI.dialog cannot be moved.
+* @param {Native.Boolean} [args.alwaysOnTop=false] When set true the dialog will appear above all other Oda.UI.dialog instances.
+* @param {Native.Boolean} [args.dontInit=false] When set true the dialog will not initialize until you call the Oda.UI.dialog.Init method.
 * @param {Native.Boolean} [args.hidden=false] When set true the dialog will be hidden.
 * @param {Native.Boolean} [args.hiddenFromTaskBar=false] When set true the dialog will be hidden from the task bar.
-* @param {Native.String} [args.title] The title of the Oda.UI.Dialog.
+* @param {Native.String} [args.title] The title of the Oda.UI.dialog.
 * @example ///Create a simple reference to a new dialog, set the title and make it modal.///
-*var myDialog = Oda.UI.Dialog({
+*var myDialog = Oda.UI.dialog({
 *	title:'My Dialog',
 *	modal: true
 *});
 * @example ///Attach to an event when you create the dialog.///
-*var myDialog = Oda.UI.Dialog({
+*var myDialog = Oda.UI.dialog({
 *	title:'My Dialog',
 *	close:function(e,dialog){
 *	    dialog.title('Can\'t close me.');
@@ -62,7 +62,7 @@
 *	}
 *});
 * @example ///Attach to an event after you create the dialog///
-*var myDialog = Oda.UI.Dialog({
+*var myDialog = Oda.UI.dialog({
 *	title:'My Dialog'
 *});
 *myDialog.addEventListener('close',function(e,dialog){
@@ -71,132 +71,132 @@
 *	return;
 *},false);
 */
-Oda.UI.Dialog = function (args) {
+Oda.UI.dialog = function (args) {
     args = args || {};
     var self = Oda.beget(Oda.UI.Widget);
     self.publicMembers = {};
-    self.style = args.style || Oda.UI.Style.Dialog();
-    self.type = 'Dialog';
+    self.style = args.style || Oda.UI.Style.dialog();
+    self.type = 'dialog';
     // setup events, set events from args
     self.events = {
         /**
-        * Occurs after the Oda.UI.Dialog is initialized.
+        * Occurs after the Oda.UI.dialog is initialized.
         * @event
         * @name init
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         init: self.addInitalEvents(args.init),
         /**
-        * Occurs before the Oda.UI.Dialog is being disposed.
+        * Occurs before the Oda.UI.dialog is being disposed.
         * @event
         * @name dispose
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         dispose: self.addInitalEvents(args.dispose),
         /**
-        * Occurs before the Oda.UI.Dialog is being shown.
+        * Occurs before the Oda.UI.dialog is being shown.
         * @event
         * @name show
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         show: self.addInitalEvents(args.show),
         /**
-        * Occurs before the Oda.UI.Dialog is hidden.
+        * Occurs before the Oda.UI.dialog is hidden.
         * @event
         * @name hide
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         hide: self.addInitalEvents(args.hide),
         /**
-        * Occurs before the Oda.UI.Dialog is closed.
+        * Occurs before the Oda.UI.dialog is closed.
         * @event
         * @name close
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         close: self.addInitalEvents(args.close),
         /**
-        * Occurs before the Oda.UI.Dialog is minimized.
+        * Occurs before the Oda.UI.dialog is minimized.
         * @event
         * @name minimize
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         minimize: self.addInitalEvents(args.minimize),
         /**
-        * Occurs before the Oda.UI.Dialog is maximized.
+        * Occurs before the Oda.UI.dialog is maximized.
         * @event
         * @name maximize
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         maximize: self.addInitalEvents(args.maximize),
         /**
-        * Occurs before the Oda.UI.Dialog is restored.
+        * Occurs before the Oda.UI.dialog is restored.
         * @event
         * @name restore
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         restore: self.addInitalEvents(args.restore),
         /**
-        * Occurs while the Oda.UI.Dialog is moved.
+        * Occurs while the Oda.UI.dialog is moved.
         * @event
         * @name move
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         move: self.addInitalEvents(args.move),
         /**
-        * Occurs while the Oda.UI.Dialog is resized.
+        * Occurs while the Oda.UI.dialog is resized.
         * @event
         * @name resize
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         resize: self.addInitalEvents(args.resize),
         /**
-        * Occurs when the Oda.UI.Dialog is stylized.
+        * Occurs when the Oda.UI.dialog is stylized.
         * @event
         * @name stylize
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         stylize: self.addInitalEvents(args.stylize),
         /**
-        * Occurs when the Oda.UI.Dialog title is changed.
+        * Occurs when the Oda.UI.dialog title is changed.
         * @event
         * @name titleChanged
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
         * @param {Native.Object} e Browser event object.
-        * @param {Native.Object} Oda.UI.Dialog instance.
+        * @param {Native.Object} Oda.UI.dialog instance.
         */
         titleChanged: self.addInitalEvents(args.titleChanged)
     };
@@ -207,118 +207,118 @@ Oda.UI.Dialog = function (args) {
         * When used in an event listener, prevents the default event.
         * @function
         * @name preventDefault
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.preventDefault = function () {
             self.cancelDefault = true;
             return self.publicMembers;
         };
         /**
-        * Closes the Oda.UI.Dialog.
+        * Closes the Oda.UI.dialog.
         * @function
         * @name close
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.close = function () {
             self.close();
             return self.publicMembers;
         };
         /**
-        * Initializes the Oda.UI.Dialog.  Should only be run once and only if dontInit argument was used during instantiation.
+        * Initializes the Oda.UI.dialog.  Should only be run once and only if dontInit argument was used during instantiation.
         * @function
         * @name init
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.init = function () {
             self.init();
             return self.publicMembers;
         };
         /**
-        * Minimizes the Oda.UI.Dialog if it isn't already minimized.
+        * Minimizes the Oda.UI.dialog if it isn't already minimized.
         * @function
         * @name minimize
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.minimize = function () {
             self.minimize();
             return self.publicMembers;
         };
         /**
-        * Maximizes the Oda.UI.Dialog if it is not already maximized.
+        * Maximizes the Oda.UI.dialog if it is not already maximized.
         * @function
         * @name maximize
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.maximize = function () {
             self.maximize();
             return self.publicMembers;
         };
         /**
-        * Restores the the Oda.UI.Dialog to the original size if it is maximized.
+        * Restores the the Oda.UI.dialog to the original size if it is maximized.
         * @function
         * @name restore
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.restore = function () {
             self.restore();
             return self.publicMembers;
         };
         /**
-        * When returns true the Oda.UI.Dialog is the active Oda.UI.Dialog, otherwise false.
+        * When returns true the Oda.UI.dialog is the active Oda.UI.dialog, otherwise false.
         * @function
         * @name isActive
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Native.Boolean} True the Oda.UI.Dialog is the active Oda.UI.Dialog, otherwise false.
+        * @returns {Native.Boolean} True the Oda.UI.dialog is the active Oda.UI.dialog, otherwise false.
         */
         self.publicMembers.isActive = function () {
             return self.isActive();
         };
         /**
-        * Sets any number of objects as the title of the Oda.UI.Dialog.
+        * Sets any number of objects as the title of the Oda.UI.dialog.
         * @function
         * @name title
-        * @param {Native.Object} [obj] Sets any number of objects as the title of the Oda.UI.Dialog.
-        * @memberOf Oda.UI.Dialog
+        * @param {Native.Object} [obj] Sets any number of objects as the title of the Oda.UI.dialog.
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.title = function (obj) {
             return self.title(obj);
         };
         /**
-        * Moves the Oda.UI.Dialog to the center of the browser. If centerHorizontally and/or centerVertically are set.
+        * Moves the Oda.UI.dialog to the center of the browser. If centerHorizontally and/or centerVertically are set.
         * @function
         * @name moveToCenter
         * @param {Oda.UI.Rect} [rect] The new Oda.UI.Rect to set.
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.moveToCenter = function () {
             self.moveToCenter();
             return self.publicMembers;
         };
         /**
-        * Places the Oda.UI.Dialog in a new position.
+        * Places the Oda.UI.dialog in a new position.
         * @function
         * @name setPosition
         * @param {Oda.UI.Point} [point] The new Oda.UI.Point to set.
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.setPosition = function (point) {
             var rect = { x: point.x, y: point.y, w: self.rect.w, h: self.rect.h };
@@ -326,49 +326,49 @@ Oda.UI.Dialog = function (args) {
             return self.publicMembers;
         };
         /**
-        * Sets the Oda.UI.Dialog to a new size and position.
+        * Sets the Oda.UI.dialog to a new size and position.
         * @function
         * @name setRect
         * @param {Oda.UI.Rect} [rect] The new Oda.UI.Rect to set.
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.setRect = function (rect) {
             self.setRect(rect);
             return self.publicMembers;
         };
         /**
-        * Shows the Oda.UI.Dialog if hidden.
+        * Shows the Oda.UI.dialog if hidden.
         * @function
         * @name show
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.show = function () {
             self.show();
             return self.publicMembers;
         };
         /**
-        * Hides the Oda.UI.Dialog if visible.
+        * Hides the Oda.UI.dialog if visible.
         * @function
         * @name hide
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.hide = function () {
             self.hide();
             return self.publicMembers;
         };
         /**
-        * Applies the current Oda.UI.Style.Dialog to the Oda.UI.Dialog.
+        * Applies the current Oda.UI.Style.dialog to the Oda.UI.dialog.
         * @function
         * @name redraw
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.redraw = function () {
             self.moveToCenter();
@@ -382,9 +382,9 @@ Oda.UI.Dialog = function (args) {
         * @name addEventListener
         * @param {Oda.UI.String} [eventName] The name of the event to subscribe to.
         * @param {Oda.UI.Function} [procedure] The function to execute when the event is raised.
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.addEventListener = function (eventName, procedure, capturePhase) {
             self.addEventListener(eventName, procedure, capturePhase);
@@ -396,20 +396,20 @@ Oda.UI.Dialog = function (args) {
         * @name removeEventListener
         * @param {Oda.UI.String} [eventName] The name of the event to unsubscribe from.
         * @param {Oda.UI.Function} [procedure] The function to execute when the event is raised.
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         * @public
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.removeEventListener = function (eventName, procedure, capturePhase) {
             self.removeEventListener(eventName, procedure, capturePhase);
             return self.publicMembers;
         };
         /**
-        * The Oda.UI.Style.Dialog of this Oda.UI.Dialog.
+        * The Oda.UI.Style.dialog of this Oda.UI.dialog.
         * @field
         * @name style
-        * @type Oda.UI.Style.Dialog
-        * @memberOf Oda.UI.Dialog
+        * @type Oda.UI.Style.dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.style = self.style;
         /**
@@ -417,7 +417,7 @@ Oda.UI.Dialog = function (args) {
         * @field
         * @name centerHorizontally
         * @type Native.Boolean
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.centerHorizontally = self.centerHorizontally;
         /**
@@ -425,7 +425,7 @@ Oda.UI.Dialog = function (args) {
         * @field
         * @name centerVertically
         * @type Native.Boolean
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.centerVertically = self.centerVertically;
         /**
@@ -433,7 +433,7 @@ Oda.UI.Dialog = function (args) {
         * @field
         * @name id
         * @type Native.String
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.id = self.id;
         /**
@@ -441,61 +441,61 @@ Oda.UI.Dialog = function (args) {
         * @field
         * @name type
         * @type Native.String
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.type = self.type;
         /**
-        * If the Oda.UI.Dialog is modal, then true otherwise false.
+        * If the Oda.UI.dialog is modal, then true otherwise false.
         * @function
         * @name isModal
-        * @memberOf Oda.UI.Dialog
-        * @returns {Native.Boolean} If the Oda.UI.Dialog is modal, then true otherwise false.
+        * @memberOf Oda.UI.dialog
+        * @returns {Native.Boolean} If the Oda.UI.dialog is modal, then true otherwise false.
         */
         self.publicMembers.isModal = function () {
             return self.modal;
         };
         /**
-        * When true, the content of the Oda.UI.Dialog will show the content while moving.
+        * When true, the content of the Oda.UI.dialog will show the content while moving.
         * @field
         * @name showContentWhileMoving
         * @type Native.Boolean
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.showContentWhileMoving = self.showContentWhileMoving;
         /**
-        * When true, the Oda.UI.Dialog can be resized.
+        * When true, the Oda.UI.dialog can be resized.
         * @field
         * @name resizable
         * @type Native.Boolean
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.resizable = self.resizable;
         /**
-        * Sets any number of objects as the content of the Oda.UI.Dialog. Can be a string, function or array of strings or functions.
+        * Sets any number of objects as the content of the Oda.UI.dialog. Can be a string, function or array of strings or functions.
         * @function
         * @name content
         * @param {Oda.UI.Object} [obj] The new content.
-        * @memberOf Oda.UI.Dialog
-        * @returns {Oda.UI.Dialog} Oda.UI.Dialog instance.
+        * @memberOf Oda.UI.dialog
+        * @returns {Oda.UI.dialog} Oda.UI.dialog instance.
         */
         self.publicMembers.content = function (obj) {
             self.appendObj(self.content, obj);
             return self.publicMembers;
         };
         /**
-        * The current Oda.UI.Rect of this Oda.UI.Dialog.
+        * The current Oda.UI.Rect of this Oda.UI.dialog.
         * @field
         * @name rect
         * @type Oda.UI.Rect
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.rect = self.rect;
         /**
-        * The current state of the Oda.UI.Dialog.  0: Normal, 1: minimized, 2: maximized, 3: hidden.
+        * The current state of the Oda.UI.dialog.  0: Normal, 1: minimized, 2: maximized, 3: hidden.
         * @field
         * @name state
         * @type Native.Number
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.state = self.state;
         /**
@@ -503,7 +503,7 @@ Oda.UI.Dialog = function (args) {
         * @field
         * @name alwaysOnTop
         * @type Native.Number
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.alwaysOnTop = self.alwaysOnTop;
         /**
@@ -511,7 +511,7 @@ Oda.UI.Dialog = function (args) {
         * @field
         * @name moveable
         * @type Native.Number
-        * @memberOf Oda.UI.Dialog
+        * @memberOf Oda.UI.dialog
         */
         self.publicMembers.moveable = self.moveable;
         return self;
@@ -638,9 +638,9 @@ Oda.UI.Dialog = function (args) {
         self.centerVertically = args.centerVertically === undefined ? false : args.centerVertically;
         self.centerHorizontally = args.centerHorizontally === undefined ? false : args.centerHorizontally;
         // add dialog to set of dialogs
-        Oda.UI.Widgets.Dialogs[self.id] = self;
+        Oda.UI.widgets.dialogs[self.id] = self;
         // add dialog to set of widgets
-        Oda.UI.Widgets.Widgets[self.id] = self;
+        Oda.UI.widgets.widgets[self.id] = self;
         // set zIndex
         self.dialog.style.zIndex = ++Oda.UI.topZIndex;
         // make the dialog the active dialog
@@ -668,8 +668,8 @@ Oda.UI.Dialog = function (args) {
         self.maximizeButton.addEventListener('mouseover', function () { self.mouseoverButtons(1); }, true);
         self.minimizeButton.addEventListener('mouseover', function () { self.mouseoverButtons(2); }, true);
         // if a taskbar exists then add this dialog to it.
-        if(Oda.UI.Widgets.TaskBar) {
-            self.taskBarItem = Oda.UI.Widgets.TaskBar.add(self, function () {
+        if(Oda.UI.widgets.taskBar) {
+            self.taskBarItem = Oda.UI.widgets.taskBar.add(self, function () {
                 if(Oda.UI.activeDialog === self){
                     if (self.state === 0) {
                         self.minimize();
@@ -780,8 +780,8 @@ Oda.UI.Dialog = function (args) {
         if (obj === undefined) { return self.titleBarText.textContent || self.titleBarText.innerText; }
         self.titleBarText.originalText = undefined;
         self.appendObj(self.titleBarText, obj);
-        if(Oda.UI.Widgets.TaskBar) {
-            Oda.UI.Widgets.TaskBar.stylize();
+        if(Oda.UI.widgets.taskBar) {
+            Oda.UI.widgets.taskBar.stylize();
         }
         return self.titleBarText.textContent || self.titleBarText.innerText;
     };
@@ -882,7 +882,7 @@ Oda.UI.Dialog = function (args) {
     self.resizeMaximized = function () {
         if (self.state === 2) {
             // if there's a task bar then don't get so big
-            var tbOffsetH = Oda.UI.Widgets.TaskBar ? Oda.UI.Widgets.TaskBar.rect.h + Oda.UI.Widgets.TaskBar.style.border.size : 0;
+            var tbOffsetH = Oda.UI.widgets.taskBar ? Oda.UI.widgets.taskBar.rect.h + Oda.UI.widgets.taskBar.style.border.size : 0;
             self.rect.x = 0 + self.style.maximizeOffsetRect.x;
             self.rect.y = 0 + self.style.maximizeOffsetRect.y;
             self.rect.w = self.client().w + self.style.maximizeOffsetRect.w;
@@ -985,7 +985,12 @@ Oda.UI.Dialog = function (args) {
             rect.y = -10000;
         }
         if (self.attached && !self.publicMembers.showContentWhileMoving) {
-            self.updateElementRect(self.preview, rect.w, rect.h, rect.x, rect.y);
+            // why do I need a -1 here?!
+            self.updateElementRect(self.preview,
+                (rect.w - s.maximizeOffsetRect.w) - s.previewOutline.size - 1,
+                (rect.h - s.maximizeOffsetRect.h) - s.previewOutline.size - 1,
+                (rect.x - s.maximizeOffsetRect.x) + s.previewOutline.size,
+                (rect.y - s.maximizeOffsetRect.y) + s.previewOutline.size);
             return self;
         }
         // updateElementRect( w, h, x, y )
@@ -1103,8 +1108,8 @@ Oda.UI.Dialog = function (args) {
     self.dispose = function dispose() {
         if (self.raiseEvent('dispose', undefined, undefined, undefined)) { return self; }
         // remove from taskbar
-        if (Oda.UI.Widgets.TaskBar && self.taskBarItem){
-            Oda.UI.Widgets.TaskBar.remove(self.taskBarItem);
+        if (Oda.UI.widgets.taskBar && self.taskBarItem){
+            Oda.UI.widgets.taskBar.remove(self.taskBarItem);
         }
         // remove events
         self.titleBar.removeEventListener('dblclick', self.maxRestoreButtonEvent, true);
@@ -1122,8 +1127,8 @@ Oda.UI.Dialog = function (args) {
         self.maximizeButton.removeEventListener('mouseover', function () { self.mouseoverButtons(1); }, true);
         self.minimizeButton.removeEventListener('mouseover', function () { self.mouseoverButtons(2); }, true);
         // remove global ref
-        delete Oda.UI.Widgets.Dialogs[self.id];
-        delete Oda.UI.Widgets.Widgets[self.id];
+        delete Oda.UI.widgets.dialogs[self.id];
+        delete Oda.UI.widgets.widgets[self.id];
         // remove from DOM
         document.body.removeChild(self.dialog);
         if (self.modal) {

@@ -66,11 +66,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core.cs" />
+    <Compile Include="GetUploadStatusJson.cs" />
     <Compile Include="HttpModule.Init.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="ParseRequest.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UploadStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="lib\Newtonsoft.Json.dll" />

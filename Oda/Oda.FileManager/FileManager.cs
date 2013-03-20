@@ -37,7 +37,7 @@ namespace Oda {
                 return j;
             }
             try {
-                targetPath = targetPath.Replace("~\\", Core.BaseDirectory) + files[0].OrginalFileName;
+                targetPath = targetPath.Replace("~\\", Core.BaseDirectory) + files[0].OriginalFileName;
                 if(File.Exists(targetPath)) {
                     File.Delete(targetPath);
                 }
@@ -76,7 +76,7 @@ namespace Oda {
             foreach(var target in targetPaths) {
                 try {
                     var f = files[x++];
-                    var targetPath = ((string)target).Replace("~\\", Core.BaseDirectory) + f.OrginalFileName;
+                    var targetPath = ((string)target).Replace("~\\", Core.BaseDirectory) + f.OriginalFileName;
                     if (File.Exists(targetPath)) {
                         File.Delete(targetPath);
                     }

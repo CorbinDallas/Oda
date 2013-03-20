@@ -22,7 +22,7 @@
 /**
 * Style for the Oda.UI.Dialog
 * @constructor
-* @name Dialog
+* @name dialog
 * @version 0.1.0 beta release
 * @author Tony Germaneri (TonyGermaneri@gmail.com)
 * @augments Oda.UI.WidgetStyle
@@ -99,7 +99,7 @@
 * @param {Native.String} [args.modalBackground] The background for the modal overlay.
 * @param {Native.String} [args.previewBackground] The background for the move/resize preview overlay.
 */
-Oda.UI.Style.Dialog = function (args) {
+Oda.UI.Style.dialog = function (args) {
     var self = Oda.beget(Oda.UI.WidgetStyle);
     // make sure objects exist
     args = args || {};
@@ -115,7 +115,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @Class
     * @name Active
     * @type Native.Object
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.Active = {};
     /**
@@ -123,7 +123,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @Class
     * @name Inactive
     * @type Native.Object
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.Inactive = {};
     /**
@@ -131,7 +131,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @Class
     * @name Hover
     * @type Native.Object
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.Hover = {};
     /**
@@ -139,7 +139,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @Class
     * @name Hover
     * @type Native.Object
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.Hover = {};
     /**
@@ -148,7 +148,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name maximizeOffsetRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.maximizeOffsetRect = args.maximizeOffsetRect || { x: -5, y: -5, h: 10, w: 10 };
     /**
@@ -156,7 +156,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name rect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.rect = args.rect || { x: parseInt(document.documentElement.clientWidth * .5, 10) - 250, y: 100, h: 350, w: 500 };
     /**
@@ -164,7 +164,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name minRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.minRect = args.minRect || { x: -5000, y: -5000, w: 165, h: 100 };
     // content
@@ -173,7 +173,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name contentRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.contentRect = args.contentRect || { x: 0, y: 0, w: 0, h: 0 };
     // title bar offset x,y,w and actual h
@@ -182,7 +182,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name titleRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.titleRect = args.titleRect || { x: 0, y: 0, w: 0, h: 25 };
     /**
@@ -190,7 +190,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name nRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.nRect = args.nRect || { x: 0, y: 0, w: 0, h: 6 };
     /**
@@ -198,7 +198,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name neRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.neRect = args.neRect || { x: 0, y: 0, w: 6, h: 6 };
     /**
@@ -206,7 +206,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name eRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.eRect = args.eRect || { x: 0, y: 0, w: 6, h: 0 };
     /**
@@ -214,7 +214,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name seRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.seRect = args.seRect || { x: 0, y: 0, w: 6, h: 6 };
     /**
@@ -222,7 +222,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name sRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.sRect = args.sRect || { x: 0, y: 0, w: 0, h: 6 };
     /**
@@ -230,7 +230,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name swRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.swRect = args.swRect || { x: 0, y: 0, w: 6, h: 6 };
     /**
@@ -238,7 +238,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name wRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.wRect = args.wRect || { x: 0, y: 0, w: 6, h: 0 };
     /**
@@ -246,7 +246,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name nwRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.nwRect = args.nwRect || { x: 0, y: 0, w: 6, h: 6 };
     // control buttons
@@ -255,7 +255,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name minimizeRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.minimizeRect = args.minimizeRect || { x: 0, y: 0, w: 34, h: 26 };
     /**
@@ -263,7 +263,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name maximizeRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.maximizeRect = args.maximizeRect || { x: 0, y: 0, w: 34, h: 26 };
     /**
@@ -271,7 +271,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name closeRect
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.closeRect = args.closeRect || { x: 0, y: 0, w: 34, h: 26 };
     // inactive button borders
@@ -280,7 +280,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name buttonBorder
     * @type Oda.UI.Border
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.buttonBorder = args.Inactive.buttonBorder || { size: 0, color: 'transparent', style: 'solid' };
     // active button borders
@@ -289,7 +289,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name buttonBorder
     * @type Oda.UI.Border
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.buttonBorder = args.Active.buttonBorder || { size: 0, color: 'transparent', style: 'solid' };
     // active hover button backgrounds
@@ -298,7 +298,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name maximizeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active.Hover
+    * @memberOf Oda.UI.Style.dialog.Active.Hover
     */
     self.Active.Hover.maximizeButtonBackground = args.Active.Hover.maximizeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///z8/QSH5BAAAAAAALAAAAAAiABgAAAItjI+py+0Po5y02ouz3g34/3EBSIokaC5Aqqycm8CafNCYPZqnJ/b+DwwKh5oCADs=)';
     /**
@@ -306,7 +306,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name minimizeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active.Hover
+    * @memberOf Oda.UI.Style.dialog.Active.Hover
     */
     self.Active.Hover.minimizeButtonBackground = args.Active.Hover.minimizeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///z8/QSH5BAAAAAAALAAAAAAiABgAAAIhjI+py+0Po5y02ouz3rz7D4YYQJZlZ6ZoeoruC8fyTE8FADs=)';
     /**
@@ -314,7 +314,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name closeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active.Hover
+    * @memberOf Oda.UI.Style.dialog.Active.Hover
     */
     self.Active.Hover.closeButtonBackground = args.Active.Hover.closeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8T8/QSH5BAAAAAAALAAAAAAiABgAAAIpjI+py+0Po5y02ouz3vwC9XVBaJBiaIpjqgJsh6ol8mJsLef6zve+WAAAOw==)';
     /**
@@ -322,7 +322,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name restoreButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active.Hover
+    * @memberOf Oda.UI.Style.dialog.Active.Hover
     */
     self.Active.Hover.restoreButtonBackground = args.Active.Hover.restoreButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8T8/QSH5BAAAAAAALAAAAAAiABgAAAIvjI+py+0Po5y02ouzBrwDnXgdiHwlKXKGuaUrGr4gu45zTMoHPbv5DwwKh8QiqQAAOw==)';
     // inactive hover button backgrounds
@@ -331,7 +331,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name maximizeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive.Hover
+    * @memberOf Oda.UI.Style.dialog.Inactive.Hover
     */
     self.Inactive.Hover.maximizeButtonBackground = args.Inactive.Hover.maximizeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///5qamiH5BAAAAAAALAAAAAAiABgAAAItjI+py+0Po5y02ouz3g34/3EBSIokaC5Aqqycm8CafNCYPZqnJ/b+DwwKh5oCADs=)';
     /**
@@ -339,7 +339,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name minimizeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive.Hover
+    * @memberOf Oda.UI.Style.dialog.Inactive.Hover
     */
     self.Inactive.Hover.minimizeButtonBackground = args.Inactive.Hover.minimizeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///5qamiH5BAAAAAAALAAAAAAiABgAAAIhjI+py+0Po5y02ouz3rz7D4YYQJZlZ6ZoeoruC8fyTE8FADs=)';
     /**
@@ -347,7 +347,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name closeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive.Hover
+    * @memberOf Oda.UI.Style.dialog.Inactive.Hover
     */
     self.Inactive.Hover.closeButtonBackground = args.Inactive.Hover.closeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8ZqamiH5BAAAAAAALAAAAAAiABgAAAIpjI+py+0Po5y02ouz3vwC9XVBaJBiaIpjqgJsh6ol8mJsLef6zve+WAAAOw==)';
     /**
@@ -355,7 +355,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name restoreButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive.Hover
+    * @memberOf Oda.UI.Style.dialog.Inactive.Hover
     */
     self.Inactive.Hover.restoreButtonBackground = args.Inactive.Hover.restoreButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8ZqamiH5BAAAAAAALAAAAAAiABgAAAIvjI+py+0Po5y02ouzBrwDnXgdiHwlKXKGuaUrGr4gu45zTMoHPbv5DwwKh8QiqQAAOw==)';
     // active button backgrounds
@@ -364,7 +364,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name maximizeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.maximizeButtonBackground = args.Active.maximizeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///y0tMCH5BAAAAAAALAAAAAAiABgAAAItjI+py+0Po5y02ouz3g34/3EBSIokaC5Aqqycm8CafNCYPZqnJ/b+DwwKh5oCADs=)';
     /**
@@ -372,7 +372,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name minimizeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.minimizeButtonBackground = args.Active.minimizeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///y0tMCH5BAAAAAAALAAAAAAiABgAAAIhjI+py+0Po5y02ouz3rz7D4YYQJZlZ6ZoeoruC8fyTE8FADs=)';
     /**
@@ -380,7 +380,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name closeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.closeButtonBackground = args.Active.closeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8S0tMCH5BAAAAAAALAAAAAAiABgAAAIpjI+py+0Po5y02ouz3vwC9XVBaJBiaIpjqgJsh6ol8mJsLef6zve+WAAAOw==)';
     /**
@@ -388,7 +388,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name restoreButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.restoreButtonBackground = args.Active.restoreButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8S0tMCH5BAAAAAAALAAAAAAiABgAAAIvjI+py+0Po5y02ouzBrwDnXgdiHwlKXKGuaUrGr4gu45zTMoHPbv5DwwKh8QiqQAAOw==)';
     // inactive button backgrounds
@@ -397,7 +397,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name maximizeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.maximizeButtonBackground = args.Inactive.maximizeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///3d3dyH5BAAAAAAALAAAAAAiABgAAAItjI+py+0Po5y02ouz3g34/3EBSIokaC5Aqqycm8CafNCYPZqnJ/b+DwwKh5oCADs=)';
     /**
@@ -405,7 +405,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name minimizeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.minimizeButtonBackground = args.Inactive.minimizeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAP///3d3dyH5BAAAAAAALAAAAAAiABgAAAIhjI+py+0Po5y02ouz3rz7D4YYQJZlZ6ZoeoruC8fyTE8FADs=)';
     /**
@@ -413,7 +413,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name closeButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.closeButtonBackground = args.Inactive.closeButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8Xd3dyH5BAAAAAAALAAAAAAiABgAAAIpjI+py+0Po5y02ouz3vwC9XVBaJBiaIpjqgJsh6ol8mJsLef6zve+WAAAOw==)';
     /**
@@ -421,7 +421,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name restoreButtonBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.restoreButtonBackground = args.Inactive.restoreButtonBackground || 'url(data:image/gif;base64,R0lGODlhIgAYAIAAAPHx8XZ2diH5BAAAAAAALAAAAAAiABgAAAIvjI+py+0Po5y02ouzBrwDnXgdiHwlKXKGuaUrGr4gu45zTMoHPbv5DwwKh8QiqQAAOw==)';
     // inactive backgrounds
@@ -430,7 +430,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name contentBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.contentBackground = args.Inactive.contentBackground || '#EEE';
     /**
@@ -438,7 +438,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name dialogBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.dialogBackground = args.Inactive.dialogBackground || 'transparent';
     /**
@@ -446,7 +446,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name titleBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.titleBackground = args.Inactive.titleBackground || '#777';
     /**
@@ -454,7 +454,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name nBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.nBackground = args.Inactive.nBackground || 'url(data:image/gif;base64,R0lGODlhAQAGAIABAI+PjwAAACH5BAEAAAEALAAAAAABAAYAAAIDjA0FADs=)';
     /**
@@ -462,7 +462,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name neBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.neBackground = args.Inactive.neBackground || 'url(data:image/gif;base64,R0lGODlhBgAGAIABAI+PjwAAACH5BAEAAAEALAAAAAAGAAYAAAIGjI+pa5AFADs=)';
     /**
@@ -470,7 +470,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name eBackground
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.eBackground = args.Inactive.eBackground || 'url(data:image/gif;base64,R0lGODlhBgABAIABAI+PjwAAACH5BAEAAAEALAAAAAAGAAEAAAIDRH4FADs=)';
     /**
@@ -478,7 +478,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name seBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.seBackground = args.Inactive.seBackground || 'url(data:image/gif;base64,R0lGODlhBgAGAIABAI+PjwAAACH5BAEAAAEALAAAAAAGAAYAAAIFRI6py1wAOw==)';
     /**
@@ -486,7 +486,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name sBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.sBackground = args.Inactive.sBackground || 'url(data:image/gif;base64,R0lGODlhAQAGAIABAI+PjwAAACH5BAEAAAEALAAAAAABAAYAAAIDRH4FADs=)';
     /**
@@ -494,7 +494,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name swBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.swBackground = args.Inactive.swBackground || 'url(data:image/gif;base64,R0lGODlhBgAGAIABAI+PjwAAACH5BAEAAAEALAAAAAAGAAYAAAIGjA2ny70FADs=)';
     /**
@@ -502,7 +502,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name wBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.wBackground = args.Inactive.wBackground || 'url(data:image/gif;base64,R0lGODlhBgABAIABAI+PjwAAACH5BAEAAAEALAAAAAAGAAEAAAIDjA0FADs=)';
     /**
@@ -510,7 +510,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name nwBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.nwBackground = args.Inactive.nwBackground || 'url(data:image/gif;base64,R0lGODlhBgAGAIABAI+PjwAAACH5BAEAAAEALAAAAAAGAAYAAAIFjI+pu1AAOw==)';
     // active backgrounds
@@ -519,7 +519,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name contentBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.contentBackground = args.Active.contentBackground || '#EEE';
     /**
@@ -527,7 +527,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name dialogBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.dialogBackground = args.Active.dialogBackground || 'transparent';
     /**
@@ -535,7 +535,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name titleBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.titleBackground = args.Active.titleBackground || '#2d2d30';
     /**
@@ -543,7 +543,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name nBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.nBackground = args.Active.nBackground || 'url(data:image/gif;base64,R0lGODlhAQAGAIABAABWjwAAACH5BAEAAAEALAAAAAABAAYAAAIDjA0FADs=)';
     /**
@@ -551,7 +551,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name neBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.neBackground = args.Active.neBackground || 'url(data:image/gif;base64,R0lGODlhBgAGAIABAABWjwAAACH5BAEAAAEALAAAAAAGAAYAAAIGjI+pa5AFADs=)';
     /**
@@ -559,7 +559,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name eBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.eBackground = args.Active.eBackground || 'url(data:image/gif;base64,R0lGODlhBgABAIABAABWjwAAACH5BAEAAAEALAAAAAAGAAEAAAIDRH4FADs=)';
     /**
@@ -567,7 +567,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name seBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.seBackground = args.Active.seBackground || 'url(data:image/gif;base64,R0lGODlhBgAGAIABAABWjwAAACH5BAEAAAEALAAAAAAGAAYAAAIFRI6py1wAOw==)';
     /**
@@ -575,7 +575,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name sBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.sBackground = args.Active.sBackground || 'url(data:image/gif;base64,R0lGODlhAQAGAIABAABWjwAAACH5BAEAAAEALAAAAAABAAYAAAIDRH4FADs=)';
     /**
@@ -583,7 +583,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name swBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.swBackground = args.Active.swBackground || 'url(data:image/gif;base64,R0lGODlhBgAGAIABAABWjwAAACH5BAEAAAEALAAAAAAGAAYAAAIGjA2ny70FADs=)';
     /**
@@ -591,7 +591,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name wBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.wBackground = args.Active.wBackground || 'url(data:image/gif;base64,R0lGODlhBgABAIABAABWjwAAACH5BAEAAAEALAAAAAAGAAEAAAIDjA0FADs=)';
     /**
@@ -599,7 +599,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name nwBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.nwBackground = args.Active.nwBackground || 'url(data:image/gif;base64,R0lGODlhBgAGAIABAABWjwAAACH5BAEAAAEALAAAAAAGAAYAAAIFjI+pu1AAOw==)';
     /**
@@ -607,7 +607,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name titleColor
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.titleColor = args.Inactive.titleColor || '#DDD';
     /**
@@ -615,7 +615,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name titleColor
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.titleColor = args.Active.titleColor || '#FFF';
     // neutral colors
@@ -624,7 +624,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name dialogColor
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.dialogColor = args.Active.dialogColor || '#000';
     /**
@@ -632,7 +632,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name contentColor
     * @type Oda.UI.Rect
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.contentColor = args.Active.contentColor || '#000';
     // padding
@@ -641,7 +641,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name titlePadding
     * @type Oda.UI.Padding
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.titlePadding = args.titlePadding || { t: 1, r: 0, b: 0, l: 10 };
     // font 
@@ -650,7 +650,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name titleFont
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.titleFont = args.titleFont || self.defaultFontFamily;
     // title border
@@ -659,7 +659,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name titleBorder
     * @type Oda.UI.Border
-    * @memberOf Oda.UI.Style.Dialog.Active
+    * @memberOf Oda.UI.Style.dialog.Active
     */
     self.Active.titleBorder = args.Active.titleBorder || { size: 1, style: 'solid', color: '#00568f' };
     /**
@@ -667,7 +667,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name titleBorder
     * @type Oda.UI.Border
-    * @memberOf Oda.UI.Style.Dialog.Inactive
+    * @memberOf Oda.UI.Style.dialog.Inactive
     */
     self.Inactive.titleBorder = args.Inactive.titleBorder || { size: 1, style: 'solid', color: '#777' };
     // modal background
@@ -676,7 +676,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name modalBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.modalBackground = args.modalBackground || 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA9JREFUeNpiYGBgaAAIMAAAhQCB69VMmQAAAABJRU5ErkJggg==)';
     // preview background
@@ -685,7 +685,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name previewBackground
     * @type Native.String
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.previewBackground = args.previewBackground || 'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA9JREFUeNpiYGBgaAAIMAAAhQCB69VMmQAAAABJRU5ErkJggg==)';
     // preview outline
@@ -694,7 +694,7 @@ Oda.UI.Style.Dialog = function (args) {
     * @field
     * @name previewOutline
     * @type Oda.UI.Border
-    * @memberOf Oda.UI.Style.Dialog
+    * @memberOf Oda.UI.Style.dialog
     */
     self.previewOutline = args.previewOutline || { size: 1, style: 'solid', color: '#00568f' };
     return self;
