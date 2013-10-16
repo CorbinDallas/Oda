@@ -2,7 +2,7 @@
 Oda is a lightweight JSON plugin framework that replaces the GET/POST key/value pair dichotomy 
 with a pure JSON solution, adds JSON method mapping as well as a easy to use plugin 
 architecture.  Oda will eventually have many plugins that can be used to connect
-to a database, authenticate, commerce, a full JavaScript UI API and much more.
+to a database, authenticate, commerce and much more.
 
 ##Goals##
 The goals of Oda is to provide an easy way to make AJAX/JSON web sites 
@@ -13,17 +13,15 @@ Oda right now supports a JSON method mapping system and plugins.  There are a fe
 
 1. Oda.Sql.  Allows connections to a Microsoft SQL Server 2003 or newer.  Comes with many JSON utilities for SQL.
 2. Oda.Authentication.  Allows for secure authentication, account and contact management.
-3. Oda.UI.  JavaScript UI API for making JavaScript applications that use Oda.  This plugin in not yet finished.
 
 ##Roadmap##
-1. Oda.UI
-2. Oda.Imaging
-3. Oda.Blog
-4. Oda.Commerce
-5. Oda.Pdf
-6. Oda.Email
-7. Oda.Menu
-8. Oda.Console
+1. Oda.Imaging
+2. Oda.Blog
+3. Oda.Commerce
+4. Oda.Pdf
+5. Oda.Email
+6. Oda.Menu
+7. Oda.Console
 
 
 ##Documentation##
@@ -33,10 +31,6 @@ Oda right now supports a JSON method mapping system and plugins.  There are a fe
 [Making Requests and Reading Responses](https://github.com/CorbinDallas/Oda/wiki/Making-Requests-and-Reading-Responses)
 
 [Creating Plugins](https://github.com/CorbinDallas/Oda/wiki/Creating-Plugins)
-
-[JavaScript UI Design Guidelines](https://github.com/CorbinDallas/Oda/wiki/Oda.UI-Widget-Design-Guidelines)
-
-[JavaScript UI Roadmap](https://github.com/CorbinDallas/Oda/wiki/Oda.UI-Roadmap)
 
 [Oda's MIT License](https://github.com/CorbinDallas/Oda/wiki/License)
 
